@@ -63,6 +63,7 @@ class RootAPIHandler(APIHandler):
         """
         data = {
             'version': __version__,
+            'dev':True
         }
         self.finish(json.dumps(data))
 

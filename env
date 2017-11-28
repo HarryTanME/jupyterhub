@@ -1,0 +1,4 @@
+# Create these values: https://github.com/settings/applications/new
+export GITHUB_CLIENT_ID=c4f2beeab297811b19ae
+export GITHUB_CLIENT_SECRET=998d7d5d9f081966556baeeb73ceed9bf3283fef
+export OAUTH_CALLBACK_URL=http://dev.wode.ai:8000/hub/oauth_callback
