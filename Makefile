@@ -9,6 +9,6 @@ clear:
 	-docker ps -a -q | xargs  --no-run-if-empty docker rm 
 	-docker images -q --filter "dangling=true" | xargs --no-run-if-empty  docker rmi
 jhub:
-	jupyterhub -f jupyterhub_config.py
+	jupyterhub -f jupyterhub_config.py --debug
 
 dev: clear jhub	

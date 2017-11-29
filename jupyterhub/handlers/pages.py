@@ -45,7 +45,7 @@ class RootHandler(BaseHandler):
             return
         user = self.get_current_user()
         if user:
-            if user.running:
+            if user.running and not self.allow_named_servers: # when allow multi servers, do NOT redirect.
                 url = user.url
                 self.log.debug("User is running: %s", url)
                 self.set_login_cookie(user) # set cookie
