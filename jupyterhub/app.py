@@ -173,6 +173,7 @@ class UpgradeDB(Application):
     classes = []
 
     def start(self):
+        print("start upgrading-db...")
         hub = JupyterHub(parent=self)
         hub.load_config_file(hub.config_file)
         self.log = hub.log

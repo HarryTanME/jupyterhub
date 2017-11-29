@@ -70,7 +70,9 @@ class Server(Base):
     port = Column(Integer, default=random_port)
     base_url = Column(Unicode(255), default='/')
     cookie_name = Column(Unicode(255), default='cookie')
-
+    #start_time = Column(DateTime, default=datetime.utcnow)
+    #end_time = Column(DateTime)
+    
     def __repr__(self):
         return "<Server(%s:%s)>" % (self.ip, self.port)
 
