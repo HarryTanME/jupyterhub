@@ -157,6 +157,7 @@ def wait_for_http_server(url, timeout=10):
     @gen.coroutine
     def is_reachable():
         try:
+            print("----url-----"+url)
             r = yield client.fetch(url, follow_redirects=False)
             return r
         except HTTPError as e:

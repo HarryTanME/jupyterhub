@@ -5,6 +5,7 @@ from traitlets import (
     observe, validate, default,
 )
 from tornado import web, gen
+import shlex
 
 class DockerImageChooserSpawner(DockerSpawner):
     '''Enable the user to select the docker image that gets spawned.
@@ -27,15 +28,28 @@ class DockerImageChooserSpawner(DockerSpawner):
         help = "Docker images that have been pre-pulled to the execution host."
     )
     form_template = Unicode("""
+        <div>
         <label for="dockerimage">Select a Docker image:</label>
         <select class="form-control" name="dockerimage" required autofocus>
             {option_template}
         </select>
-
-        <label for="args">Extra notebook CLI arguments</label>
-        <input name="args" placeholder="e.g. --debug"></input>
-        <label for="env">Environment variables (one per line)</label>
-        <textarea name="env"></textarea>
+        </div>
+        <div>
+            <label for="args">Extra notebook CLI arguments</label>
+            <input name="args" placeholder="e.g. --debug"></input>
+        </div>
+        <div>
+            <label for="env">Environment variables (one per line)</label>
+            <textarea name="env"></textarea>
+        </div>
+        <div>
+            <input type="radio" id="notebook" name="workspace" checked="checked" value="notebook">
+            <label for="useLab">Default Jupyter Notebook</label>
+            <input type="radio" id="lab" name="workspace" value="lab">
+            <label for="useLab">Use Jupyter Lab(beta)</label>
+            <input type="radio" id="rstudio" name="workspace" value="rstudio">
+            <label for="useRStudio">Use RStudio</label>
+        </div>
         
         """,
         config = True, help = "Form template."
@@ -56,7 +70,6 @@ class DockerImageChooserSpawner(DockerSpawner):
     def options_from_form(self, formdata):
         """Parse the submitted form data and turn it into the correct
            structures for self.user_options."""
-        print(formdata)
         default = self.dockerimages[0]
 
         # formdata looks like {'dockerimage': ['jupyterhub/singleuser']}"""
@@ -86,23 +99,30 @@ class DockerImageChooserSpawner(DockerSpawner):
                 key, value = line.split('=', 1)
                 env[key.strip()] = value.strip()
         
-        arg_s = formdata.get('args', [''])[0].strip()
+        arg_s = formdata.get('args', [''])[0].strip()   
+        
+        print("------"+str(formdata.get('workspace')))
+        wkspc=' --NotebookApp.default_url=/{}'.format(formdata.get('workspace')[0])
+        if formdata.get('workspace') and formdata.get('workspace')[0] in ["lab", "rstudio"]:
+            arg_s += wkspc
         if arg_s:
             options['argv'] = shlex.split(arg_s)
-        print(options)
+
         return options
-    
+        
     def get_args(self):
         """Return arguments to pass to the notebook server"""
         argv = super().get_args()
         if self.user_options.get('argv'):
             argv.extend(self.user_options['argv'])
+            
         return argv
     
     def get_env(self):
         env = super().get_env()
         if self.user_options.get('env'):
             env.update(self.user_options['env'])
+        print("----------subclass was invoken get_env")
         return env
     
 
@@ -111,11 +131,12 @@ class DockerImageChooserSpawner(DockerSpawner):
             extra_start_kwargs=None, extra_host_config=None):
         # container_prefix is used to construct container_name
         self.container_prefix = self.user_options['container_prefix']
-        
+
         # start the container
-        yield DockerSpawner.start(
+        ip_port = yield DockerSpawner.start(
             self, image=self.user_options['container_image'],
             extra_create_kwargs=extra_create_kwargs,
             extra_host_config=extra_host_config)
+        return ip_port
     
     

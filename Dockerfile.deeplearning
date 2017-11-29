@@ -1,5 +1,4 @@
-FROM jupyterhub/singleuser:0.8
-
+FROM wodeai/deeplearning:latest
 
 USER root
 WORKDIR /root

@@ -1,10 +1,8 @@
 build-image:
-	cp Dockerfile.singleuser Dockerfile.datascience
-	cp Dockerfile.singleuser Dockerfile.deeplearning
-	cp Dockerfile.singleuser Dockerfile.nlp
 	docker build -t wodeai/datascience:hubdev -f Dockerfile.datascience .
 	docker build -t wodeai/deeplearning:hubdev -f Dockerfile.deeplearning .
 	docker build -t wodeai/nlp:hubdev -f Dockerfile.nlp .
+	docker build -t wodeai/r-ntoebook -f Dockerfile.r-notebook .
 
 clear:
 	-docker ps -a -q | xargs --no-run-if-empty  docker stop

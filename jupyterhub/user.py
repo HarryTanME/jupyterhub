@@ -168,7 +168,7 @@ class User(HasTraits):
         super().__init__(**kwargs)
 
         self.allow_named_servers = self.settings.get('allow_named_servers', False)
-
+        
         self.base_url = self.prefix = url_path_join(
             self.settings.get('base_url', '/'), 'user', self.escaped_name) + '/'
 

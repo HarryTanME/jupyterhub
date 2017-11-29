@@ -1,4 +1,5 @@
-FROM wodeai/datascience:latest
+FROM wodeai/r-notebook:latest
+
 
 USER root
 WORKDIR /root

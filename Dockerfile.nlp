@@ -1,4 +1,4 @@
-FROM jupyterhub/singleuser:0.8
+FROM wodeai/nlp:latest
 
 
 USER root
