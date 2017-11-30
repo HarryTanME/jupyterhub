@@ -133,7 +133,7 @@ class User(Base):
     _orm_spawners = relationship("Spawner", backref="user")
     @property
     def orm_spawners(self):
-        return {s.name: s for s in self._orm_spawners}
+        return {s.name: s for s in self._orm_spawners if s.end_time is None }#ht: server_id -1 means shutdown.
 
     admin = Column(Boolean, default=False)
     last_activity = Column(DateTime, default=datetime.utcnow)
@@ -183,9 +183,9 @@ class Spawner(Base):
 
     state = Column(JSONDict)
     name = Column(Unicode(255))
-
+    
     last_activity = Column(DateTime, default=datetime.utcnow)
-
+    end_time = Column(DateTime)
 
 class Service(Base):
     """A service run with JupyterHub

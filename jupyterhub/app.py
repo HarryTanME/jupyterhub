@@ -1224,7 +1224,8 @@ class JupyterHub(Application):
             yield self.proxy.delete_user(user, server_name)
             yield user.stop(server_name)
 
-        for orm_user in db.query(orm.User):
+        for orm_user in db.query(orm.User ):
+            print("~~~~~orm_user~~"+str(orm_user))
             self.users[orm_user.id] = user = User(orm_user, self.tornado_settings)
             self.log.debug("Loading state for %s from db", user.name)
             for name, spawner in user.spawners.items():

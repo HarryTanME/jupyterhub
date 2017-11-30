@@ -193,7 +193,7 @@ class User(HasTraits):
             # migrate user.state to spawner.state
             orm_spawner.state = self.state
             self.state = None
-        
+            
         spawn_kwargs = dict(
             user=self,
             orm_spawner=orm_spawner,
@@ -506,6 +506,7 @@ class User(HasTraits):
             self.last_activity = spawner.orm_spawner.last_activity = datetime.utcnow()
             # remove server entry from db
             spawner.server = None
+            spawner.orm_spawner.end_time=datetime.utcnow()
             if not spawner.will_resume:
                 # find and remove the API token if the spawner isn't
                 # going to re-use it next time

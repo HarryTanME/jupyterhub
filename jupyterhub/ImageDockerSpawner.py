@@ -131,7 +131,8 @@ class DockerImageChooserSpawner(DockerSpawner):
             extra_start_kwargs=None, extra_host_config=None):
         # container_prefix is used to construct container_name
         self.container_prefix = self.user_options['container_prefix']
-
+        self.cmd='/bin/bash -c " echo 123 >> /home/wode-user/text3.txt ; start-notebook.sh --ip=0.0.0.0 --port=8888 --hub-api-url=http://10.0.1.10:8081/hub/api "'
+        #self.cmd=" start-notebook.sh"
         # start the container
         ip_port = yield DockerSpawner.start(
             self, image=self.user_options['container_image'],

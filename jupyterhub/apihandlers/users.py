@@ -4,9 +4,10 @@
 # Distributed under the terms of the Modified BSD License.
 
 import json
-
+import binascii
+import os
 from tornado import gen, web
-
+import base64
 from .. import orm
 from ..utils import admin_only
 from .base import APIHandler
@@ -182,7 +183,12 @@ class UserServerAPIHandler(APIHandler):
     @gen.coroutine
     @admin_or_self
     def post(self, name, server_name=''):
+        # force every server has its owner name.
+        if server_name == '':
+            server_name=binascii.hexlify(os.urandom(8)).decode('ascii')
+            
         user = self.find_user(name)
+        print("~~~~list spawner~~~~~"+str(user.spawners))
         if server_name and not self.allow_named_servers:
             raise web.HTTPError(400, "Named servers are not enabled.")
         spawner = user.spawners[server_name]
@@ -204,12 +210,15 @@ class UserServerAPIHandler(APIHandler):
                 spawner._spawn_pending = False
             if state is None:
                 raise web.HTTPError(400, "%s is already running" % spawner._log_name)
-
+            
         options = self.get_json_body()
+        print("~~~~options~~~~~"+str(options))  
+        
         yield self.spawn_single_user(user, server_name, options=options)
         status = 202 if spawner.pending == 'spawn' else 201
         self.set_header('Content-Type', 'text/plain')
         self.set_status(status)
+        self.write(json.dumps({"session_name":"{}".format(server_name)}))
 
     @gen.coroutine
     @admin_or_self
