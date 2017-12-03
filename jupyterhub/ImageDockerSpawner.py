@@ -34,21 +34,36 @@ class DockerImageChooserSpawner(DockerSpawner):
             {option_template}
         </select>
         </div>
-        <div>
-            <label for="args">Extra notebook CLI arguments</label>
-            <input name="args" placeholder="e.g. --debug"></input>
+        <div class="cmd">
+            <div><label for="env">Pre-launch Commands</label></div>
+            <div><textarea rows="2" cols="55" name="pre-cmd" >
+#pip install <package>;\n#git clone <git repo>; \nstart-notebook.sh --ip=0.0.0.0 --port=8888 --hub-api-url=http://10.0.1.10:8081/hub/api
+            </textarea></div>
         </div>
+        <!--
         <div>
-            <label for="env">Environment variables (one per line)</label>
-            <textarea name="env"></textarea>
+            <div><label for="args">Extra notebook CLI arguments</label></div>
+            <div><textarea rows="2" cols="55"name="args" placeholder="e.g. --debug"></textarea></div>
+        </div> -->
+        <div>
+            <div><label for="data2mount">Data to Mount</label></div>
+            <div><textarea rows="1" cols="55" name="data2mount" placeholder=""></textarea></div>
         </div>
-        <div>
+        <div class="env">
+            <div><label for="env">Environment variables (one per line)</label></div>
+            <div><textarea rows="2" cols="55" name="env"></textarea></div>
+        </div>
+        <div class="workspace">
+            <div>
             <input type="radio" id="notebook" name="workspace" checked="checked" value="notebook">
             <label for="useLab">Default Jupyter Notebook</label>
-            <input type="radio" id="lab" name="workspace" value="lab">
+            </div>
+            <div><input type="radio" id="lab" name="workspace" value="lab">
             <label for="useLab">Use Jupyter Lab(beta)</label>
-            <input type="radio" id="rstudio" name="workspace" value="rstudio">
+            </div>
+            <div><input type="radio" id="rstudio" name="workspace" value="rstudio">
             <label for="useRStudio">Use RStudio</label>
+            </div>
         </div>
         
         """,
@@ -71,7 +86,7 @@ class DockerImageChooserSpawner(DockerSpawner):
         """Parse the submitted form data and turn it into the correct
            structures for self.user_options."""
         default = self.dockerimages[0]
-
+        requestFromAPI=True
         # formdata looks like {'dockerimage': ['jupyterhub/singleuser']}"""
         dockerimage = formdata.get('dockerimage', [default])[0]
 
@@ -99,9 +114,14 @@ class DockerImageChooserSpawner(DockerSpawner):
                 key, value = line.split('=', 1)
                 env[key.strip()] = value.strip()
         
+        if formdata.get('data2mount',[''])[0] != "":
+            options['folder2mount']= formdata.get('data2mount',[''])[0].strip()
+        
         arg_s = formdata.get('args', [''])[0].strip()   
         
-        print("------"+str(formdata.get('workspace')))
+        if formdata.get('pre-cmd', None) and formdata.get('pre-cmd',None)[0] != "" :
+            options['cmd'] = formdata.get('pre-cmd')[0].strip()+';'
+            
         wkspc=' --NotebookApp.default_url=/{}'.format(formdata.get('workspace')[0])
         if formdata.get('workspace') and formdata.get('workspace')[0] in ["lab", "rstudio"]:
             arg_s += wkspc
@@ -109,6 +129,12 @@ class DockerImageChooserSpawner(DockerSpawner):
             options['argv'] = shlex.split(arg_s)
 
         return options
+    
+    
+    
+    #@property
+    #def requestFromAPI(self):
+    #    return requestFromAPI
         
     def get_args(self):
         """Return arguments to pass to the notebook server"""
@@ -134,7 +160,11 @@ class DockerImageChooserSpawner(DockerSpawner):
             self.container_prefix = self.user_options['container_prefix']
         if 'cmd' in self.user_options:
             self.cmd='/bin/bash -c "{}"'.format(self.user_options['cmd'])
-
+        
+        if 'folder2mount' in self.user_options:
+            data_folder=self.user_options['folder2mount']
+            self.read_only_volumes= {data_folder:"/home/wode-user/dataset/"}
+        
         # start the container
         ip_port = yield DockerSpawner.start(
             self, image=self.user_options['container_image'],
