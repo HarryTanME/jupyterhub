@@ -444,6 +444,9 @@ class User(HasTraits):
             self.state = {}
         spawner.orm_spawner.state = spawner.get_state()
         self.last_activity = spawner.orm_spawner.last_activity = datetime.utcnow()
+        if spawner.orm_spawner.state is None and spawner.orm_spawner.server_id is not None:
+            self.log.error("Server_id exists but no Container information found:\n {}".format(str(options)))
+            raise ValueError("Server {} has no cainter info.".format(spawner.orm_spawner.server_id))
         db.commit()
         spawner._waiting_for_response = True
         try:

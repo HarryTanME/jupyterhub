@@ -2,6 +2,7 @@
 
 {% block main %}
 
+{% if not allow_named_servers %}
 <div class="container">
   <div class="row">
     <div class="text-center">
@@ -17,6 +18,27 @@
     </div>
   </div>
 </div>
+{% endif %}
+
+{% if allow_named_servers %}
+<div class="container">
+  <div class="row">
+    <div>What is up, {{ user}}  <p />
+      {{user.servers}}</div> 
+    <div class="text-center">
+     <a id="start"role="button" class="btn btn-lg btn-success" target="_blank" href="{{ url }}">
+      Start New Server
+      </a>
+    <ul>
+    {% for s in user.spawners %}
+       <li> <a target="_blank" href="{{ user.url}}{{s}}" ><p> {{ user.url}}{{s}} </p></a>
+        </li>    
+    {% endfor %}
+    </ul>
+    </div>
+  </div>
+</div>
+{% endif %}
 
 {% endblock %}
 

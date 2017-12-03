@@ -600,6 +600,7 @@ class BaseHandler(RequestHandler):
             logout_url=self.settings['logout_url'],
             static_url=self.static_url,
             version_hash=self.version_hash,
+            allow_named_servers = self.allow_named_servers,
         )
 
     def write_error(self, status_code, **kwargs):

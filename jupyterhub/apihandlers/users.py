@@ -112,7 +112,7 @@ class UserAPIHandler(APIHandler):
     def get(self, name):
         user = self.find_user(name)
         self.write(json.dumps(self.user_model(user)))
-    
+
     @admin_only
     @gen.coroutine
     def post(self, name):
@@ -138,6 +138,7 @@ class UserAPIHandler(APIHandler):
         
         self.write(json.dumps(self.user_model(user)))
         self.set_status(201)
+    
     
     @admin_only
     @gen.coroutine
@@ -219,7 +220,33 @@ class UserServerAPIHandler(APIHandler):
         self.set_header('Content-Type', 'text/plain')
         self.set_status(status)
         self.write(json.dumps({"session_name":"{}".format(server_name)}))
+    
+    def _getData(self, user, server_name=''):
 
+        model = self.user_model(self.users[user])
+        if self.allow_named_servers :
+            servers = model['servers'] 
+        elif model['server'] is not None:
+            servers = {"":model['server']}
+        else:
+            servers = {}
+        return servers
+    
+    @gen.coroutine
+    @admin_or_self
+    def get(self, name, server_name=''):
+        user = self.find_user(name)
+        if user is None:
+            status=400
+            error_json ={"error":status, "message":"User {} doesn't exists".format(name)}
+            self.set_status(status)
+            self.write(json.dumps(error_json))
+        else:
+            data = self._getData(user, server_name)
+            status = 200
+            self.set_status(status)
+            self.write(json.dumps(data))
+            
     @gen.coroutine
     @admin_or_self
     def delete(self, name, server_name=''):
@@ -251,7 +278,25 @@ class UserServerAPIHandler(APIHandler):
         self.set_header('Content-Type', 'text/plain')
         self.set_status(status)
 
+class ServerStatusAPIHandler(UserServerAPIHandler):
+    def _getData(self, user, server_name=""):
+        spawner = user.spawners[server_name]
+#        c= yield spawner.get_container()
+#        for a in c['State']:
+#            print(a)
+        data=yield spawner._status()
+    
+        return {"spawner":data}#list(*c['State'])
 
+class ServerLogsAPIHandler(UserServerAPIHandler):
+    def _getData(self, user, server_name=""):
+        return {"data":"Logs"}
+        
+class ServerOutputsAPIHandler(UserServerAPIHandler):
+
+    def _getData(self, user, server_name=""):
+        return {"data":"Output"}
+        
 class UserAdminAccessAPIHandler(APIHandler):
     """Grant admins access to single-user servers
     
@@ -273,10 +318,14 @@ class UserAdminAccessAPIHandler(APIHandler):
 
 
 default_handlers = [
-    (r"/api/user", SelfAPIHandler),
-    (r"/api/users", UserListAPIHandler),
-    (r"/api/users/([^/]+)", UserAPIHandler),
-    (r"/api/users/([^/]+)/server", UserServerAPIHandler),
-    (r"/api/users/([^/]+)/servers/([^/]*)", UserServerAPIHandler),
-    (r"/api/users/([^/]+)/admin-access", UserAdminAccessAPIHandler),
+    (r"/api/user/?", SelfAPIHandler),
+    (r"/api/users/?", UserListAPIHandler),#admin only
+    (r"/api/user/([^/]+)/?", UserAPIHandler),
+#    (r"/api/users/([^/]+)/server", UserServerAPIHandler),
+    (r"/api/user/([^/]+)/servers/?", UserServerAPIHandler),
+    (r"/api/user/([^/]+)/servers/([^/]*)", UserServerAPIHandler),
+    (r"/api/user/([^/]+)/servers/([^/]*)/status", ServerStatusAPIHandler),
+    (r"/api/user/([^/]+)/servers/([^/]*)/logs", ServerLogsAPIHandler),
+    (r"/api/user/([^/]+)/servers/([^/]*)/outputs", ServerOutputsAPIHandler),
+    (r"/api/user/([^/]+)/admin-access", UserAdminAccessAPIHandler),#admin only
 ]

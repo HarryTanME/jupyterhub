@@ -139,6 +139,7 @@ class SpawnHandler(BaseHandler):
             form_options["%s_file"%key] = byte_list
         try:
             options = user.spawner.options_from_form(form_options)
+            print("~~~~~~~~"+str(options))
             yield self.spawn_single_user(user, options=options)
         except Exception as e:
             self.log.error("Failed to spawn single-user server with form", exc_info=True)
