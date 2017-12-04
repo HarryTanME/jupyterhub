@@ -23,18 +23,21 @@
 {% if allow_named_servers %}
 <div class="container">
   <div class="row">
-    <div>What is up, {{ user}}  <p />
+    <div>Welcome, {{ user.name}}  <p />
       {{user.servers}}</div> 
     <div class="text-center">
-     <a id="start"role="button" class="btn btn-lg btn-success" target="_blank" href="{{ url }}">
-      Start New Server
-      </a>
+
     <ul>
     {% for s in user.spawners %}
-       <li> <a target="_blank" href="{{ user.url}}{{s}}" ><p> {{ user.url}}{{s}} </p></a>
-        </li>    
+        {% if s != ""  %}
+           <li> <a target="_blank" href="{{ user.url}}{{s}}" ><p> {{ user.url}}{{s}} </p></a>
+            </li>  
+        {% endif %}
     {% endfor %}
     </ul>
+    <a id="start"role="button" class="btn btn-sm btn-success" target="_blank" href="{{ url }}">
+      Start New Server
+      </a>
     </div>
   </div>
 </div>

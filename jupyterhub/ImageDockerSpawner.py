@@ -36,7 +36,7 @@ class DockerImageChooserSpawner(DockerSpawner):
         </div>
         <div class="cmd">
             <div><label for="env">Pre-launch Commands</label></div>
-            <div><textarea rows="2" cols="55" name="pre-cmd" >
+            <div><textarea rows="5" cols="55" name="pre-cmd" >
 #pip install <package>;\n#git clone <git repo>; \nstart-notebook.sh --ip=0.0.0.0 --port=8888 --hub-api-url=http://10.0.1.10:8081/hub/api
             </textarea></div>
         </div>
@@ -54,6 +54,7 @@ class DockerImageChooserSpawner(DockerSpawner):
             <div><textarea rows="2" cols="55" name="env"></textarea></div>
         </div>
         <div class="workspace">
+            <div>Choose your entry software:</div>
             <div>
             <input type="radio" id="notebook" name="workspace" checked="checked" value="notebook">
             <label for="useLab">Default Jupyter Notebook</label>

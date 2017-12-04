@@ -1,0 +1,21 @@
+# Here is the json config file for the WodeAI sample project.
+#    "project_id":'PJ001'
+#    "user_id": "harrytanme"
+#    "create_time": "2017-12-01 03:22:12 UCT"
+#    "last_update": "2017-12-02 04:18:53 UCT"
+{
+    "name": "TextSummary-Amazon-Food-Review"
+    "public":true
+    "description":"To study how to generat text summary for an artical or news."    
+    "data_sources":[{"source":"/data/data/common_data/snap_amazon_food_review" "target":"$HOME/dataset" "control":"ro"},  
+                {"source":"/data/modelzoo/glove/" "target":"$HOME/model" "control":"ro"}]
+    "git_repo":"https://github.com/"
+    "docker_image":"wodeai/nlp:devhub"
+    "ENV":[]
+    "pre_cmd":"pip install tensorflow"
+    "full_cmd":""
+    "gpu":0
+    "workspace_software":"lab"
+}
+
+

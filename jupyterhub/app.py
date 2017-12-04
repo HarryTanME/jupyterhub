@@ -807,7 +807,7 @@ class JupyterHub(Application):
         # set default handlers
         h.extend(handlers.default_handlers)
         h.extend(apihandlers.default_handlers)
-
+        print("~~~~apihandlers.default_handlers~~~"+str(apihandlers.default_handlers))
         h.append((r'/logo', LogoHandler, {'path': self.logo_file}))
         self.handlers = self.add_url_prefix(self.hub_prefix, h)
         # some extra handlers, outside hub_prefix

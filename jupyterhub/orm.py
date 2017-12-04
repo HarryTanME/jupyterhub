@@ -16,7 +16,7 @@ from sqlalchemy.types import TypeDecorator, TEXT, LargeBinary
 from sqlalchemy import (
     inspect,
     Column, Integer, ForeignKey, Unicode, Boolean,
-    DateTime, Enum
+    DateTime, Enum, JSON
 )
 from sqlalchemy.ext.declarative import declarative_base, declared_attr
 from sqlalchemy.orm import sessionmaker, relationship
@@ -187,6 +187,43 @@ class Spawner(Base):
     last_activity = Column(DateTime, default=datetime.utcnow)
     end_time = Column(DateTime)
 
+class Project(Base):
+    """"Metadata about a project"""
+    __tablename__ = 'projects'
+    
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'))
+    name=  Column(Unicode(255))
+#    description =  Column(Unicode(1000), unique=True)
+#    data_sources = Column(Unicode(255), unique=True)
+#    git_repo = Column(Unicode(255), unique=True)
+#    docker_imageColumn(Unicode(255), unique=True)
+#    pre_cmd = Column(Unicode(255), unique=True)
+#    full_cmd =Column(Unicode(500), unique=True)
+#    workspace_software =Column(Unicode(255), unique=True)
+    config= Column(Unicode(2000))
+    create_time = Column(DateTime, default=datetime.utcnow)
+    last_update = Column(DateTime, default=datetime.utcnow)
+
+    
+    def __repr__(self):
+        return "<Proj_{}_UserId_{}>".format(self.name, self.user_id)
+    
+    @classmethod
+    def find(cls, db, user_id, proj_name):
+        """Find a user by name.
+        Returns None if not found.
+        """
+        return db.query(cls).filter(cls.name == proj_name).filter(cls.user_id==user_id).first()
+    
+    
+    @classmethod
+    def find(cls, db, user_id):
+        """Find a user by name.
+        Returns None if not found.
+        """
+        return db.query(cls).filter(cls.user_id==user_id).all()
+    
 class Service(Base):
     """A service run with JupyterHub
 

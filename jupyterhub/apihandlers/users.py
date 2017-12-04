@@ -177,7 +177,6 @@ class UserAPIHandler(APIHandler):
         self.db.commit()
         self.write(json.dumps(self.user_model(user)))
 
-
 class UserServerAPIHandler(APIHandler):
     """Start and stop single-user servers"""
 
