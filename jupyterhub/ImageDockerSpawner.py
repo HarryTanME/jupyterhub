@@ -116,7 +116,7 @@ class DockerImageChooserSpawner(DockerSpawner):
                 env[key.strip()] = value.strip()
         
         if formdata.get('data2mount',[''])[0] != "":
-            options['folder2mount']= formdata.get('data2mount',[''])[0].strip()
+            options['data_sources']= formdata.get('data2mount',[''])[0].strip()
         
         arg_s = formdata.get('args', [''])[0].strip()   
         
@@ -166,9 +166,16 @@ class DockerImageChooserSpawner(DockerSpawner):
             data_folder=self.user_options['folder2mount']
             self.read_only_volumes= {data_folder:"/home/wode-user/dataset/"}
         
+        if 'data_sources' in self.user_options:
+            sources=self.user_options['data_sources']
+            for source in sources:
+                if source['control'] == 'ro':
+                    self.read_only_volumes= {source['source']:source['target']}
+        
+        
         # start the container
         ip_port = yield DockerSpawner.start(
-            self, image=self.user_options['container_image'],
+            self, image=self.user_options['docker_image'],
             extra_create_kwargs=extra_create_kwargs,
             extra_host_config=extra_host_config)
         return ip_port
