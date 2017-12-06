@@ -151,7 +151,7 @@ not, Jupyter Notebook version 4 or greater must be installed.
 
 The JupyterHub docker image can be started with the following command:
 
-    docker run -d --name jupyterhub jupyterhub/jupyterhub jupyterhub
+    docker run -p 8000:8000 -d --name jupyterhub jupyterhub/jupyterhub jupyterhub
 
 This command will create a container named `jupyterhub` that you can
 **stop and resume** with `docker stop/start`.
@@ -206,6 +206,15 @@ We use [pytest](http://doc.pytest.org/en/latest/) for **running tests**:
 
 ```bash
 pytest jupyterhub/tests
+```
+
+If you see test failures because of timeouts, you may wish to increase the
+`ASYNC_TEST_TIMEOUT` used by the
+[pytest-tornado-plugin](https://github.com/eugeniy/pytest-tornado/blob/c79f68de2222eb7cf84edcfe28650ebf309a4d0c/README.rst#markers)
+from the default of 5 seconds:
+
+```bash
+export ASYNC_TEST_TIMEOUT=15
 ```
 
 ### Building the Docs locally
