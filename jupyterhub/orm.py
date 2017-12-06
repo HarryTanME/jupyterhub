@@ -210,7 +210,7 @@ class Project(Base):
         return "<Proj_{}_UserId_{}>".format(self.name, self.user_id)
     
     @classmethod
-    def find(cls, db, user_id, proj_name):
+    def find_one(cls, db, user_id, proj_name):
         """Find a user by name.
         Returns None if not found.
         """
@@ -218,7 +218,7 @@ class Project(Base):
     
     
     @classmethod
-    def find(cls, db, user_id):
+    def find_all(cls, db, user_id):
         """Find a user by name.
         Returns None if not found.
         """

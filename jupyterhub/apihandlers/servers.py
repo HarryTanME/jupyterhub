@@ -58,7 +58,7 @@ class UserServerAPIHandler(APIHandler):
         self.write(json.dumps({"session_name":"{}".format(server_name)}))
     
     def _getData(self, user, server_name=''):
-
+        print("hahahha")
         model = self.user_model(self.users[user])
         if self.allow_named_servers :
             servers = model['servers'] 
@@ -114,16 +114,32 @@ class UserServerAPIHandler(APIHandler):
         self.set_header('Content-Type', 'text/plain')
         self.set_status(status)
 
-class ServerStatusAPIHandler(UserServerAPIHandler):
+class ServerStatusAPIHandler(APIHandler):
+    @gen.coroutine
     def _getData(self, user, server_name=""):
         spawner = user.spawners[server_name]
 #        c= yield spawner.get_container()
 #        for a in c['State']:
 #            print(a)
         data=yield spawner._status()
-    
-        return {"spawner":data}#list(*c['State'])
+        print(data)
+        return data["status"]
 
+    @gen.coroutine
+    @admin_or_self
+    def get(self, name, server_name=''):
+        user = self.find_user(name)
+        if user is None:
+            status=400
+            error_json ={"error":status, "message":"User {} doesn't exists".format(name)}
+            self.set_status(status)
+            self.write(json.dumps(error_json))
+        else:
+            data = yield self._getData(user, server_name)
+            status = 200
+            self.set_status(status)
+            self.write(data)
+            
 class ServerLogsAPIHandler(UserServerAPIHandler):
     def _getData(self, user, server_name=""):
         return {"data":"Logs"}
@@ -135,17 +151,18 @@ class ServerOutputsAPIHandler(UserServerAPIHandler):
         
 
 
-class ProjectServerAPIHandler(UserServerAPIHandler):
+class ProjectServerAPIHandler(_ProjectAPIHandler):
     
     @gen.coroutine
     @admin_or_self
     def post(self, name, proj_name, server_name=''):
+        print("ProjectServerAPIHandler starts.")
         # force every server has its owner name.
         if server_name == '':
             server_name=binascii.hexlify(os.urandom(8)).decode('ascii')
             
         user = self.find_user(name)
-        project = _ProjectAPIHandler.find_user_project(user, proj_name)
+        project = self.find_user_project(user, proj_name)
         
         if server_name and not self.allow_named_servers:
             raise web.HTTPError(400, "Named servers are not enabled.")
@@ -168,8 +185,9 @@ class ProjectServerAPIHandler(UserServerAPIHandler):
                 spawner._spawn_pending = False
             if state is None:
                 raise web.HTTPError(400, "%s is already running" % spawner._log_name)
-            
-        options = project.config + self.get_json_body()
+        
+        options = json.loads(project.config)
+        options.update(self.get_json_body() or {})
         print("~~~~options~~~~~"+str(options))  
         
         yield self.spawn_single_user(user, server_name, options=options)
@@ -183,7 +201,7 @@ class ProjectServerAPIHandler(UserServerAPIHandler):
 
 default_handlers =[
     (r"/api/user/([^/]+)/servers/?", UserServerAPIHandler),
-    (r"/api/user/([^/]+)/project/([^/]*)/server/([^/]*)", ProjectServerAPIHandler),
+    (r"/api/user/([^/]+)/project/([^/]+)/server/([^/]*)", ProjectServerAPIHandler),
     (r"/api/user/([^/]+)/servers/([^/]*)", UserServerAPIHandler),
     (r"/api/user/([^/]+)/servers/([^/]*)/status", ServerStatusAPIHandler),
     (r"/api/user/([^/]+)/servers/([^/]*)/logs", ServerLogsAPIHandler),

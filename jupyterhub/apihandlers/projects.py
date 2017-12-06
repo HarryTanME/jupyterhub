@@ -31,11 +31,11 @@ class _ProjectAPIHandler(UserAPIHandler):
         }
     
     def find_user_projects(self, user):
-        projects = orm.Project.find(self.db, user.id)
+        projects = orm.Project.find_all(self.db, user.id)
         return projects
     
-    def find_user_proj(self, user, proj_name):
-        project = orm.Project.find(self.db, user.id, proj_name)
+    def find_user_project(self, user, proj_name):
+        project = orm.Project.find_one(self.db, user.id, proj_name)
         return project
 
 class UserProjectListAPIHandler(_ProjectAPIHandler):
