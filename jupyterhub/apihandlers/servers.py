@@ -141,14 +141,48 @@ class ServerStatusAPIHandler(APIHandler):
             self.write(data)
             
 class ServerLogsAPIHandler(UserServerAPIHandler):
+    @gen.coroutine
     def _getData(self, user, server_name=""):
-        return {"data":"Logs"}
-        
+        spawner = user.spawners[server_name]
+        log= yield spawner._logs_container()
+        print(type(log))
+        print(log)
+        return log
+    
+    @gen.coroutine
+    @admin_or_self
+    def get(self, name, server_name=''):
+        user = self.find_user(name)
+        if user is None:
+            status=400
+            error_json ={"error":status, "message":"User {} doesn't exists".format(name)}
+            self.set_status(status)
+            self.write(json.dumps(error_json))
+        else:
+            data = yield self._getData(user, server_name)
+            status = 200
+            self.set_status(status)
+            self.write(str(data))
+            
 class ServerOutputsAPIHandler(UserServerAPIHandler):
-
+    @gen.coroutine
     def _getData(self, user, server_name=""):
         return {"data":"Output"}
-        
+    
+    @gen.coroutine
+    @admin_or_self
+    def get(self, name, server_name=''):
+        user = self.find_user(name)
+        if user is None:
+            status=400
+            error_json ={"error":status, "message":"User {} doesn't exists".format(name)}
+            self.set_status(status)
+            self.write(json.dumps(error_json))
+        else:
+            data = yield self._getData(user, server_name)
+            status = 200
+            self.set_status(status)
+            self.write(data)  
 
 
 class ProjectServerAPIHandler(_ProjectAPIHandler):
