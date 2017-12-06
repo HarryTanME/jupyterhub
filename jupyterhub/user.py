@@ -448,6 +448,15 @@ class User(HasTraits):
             self.log.error("Server_id exists but no Container information found:\n {}".format(str(options)))
             raise ValueError("Server {} has no cainter info.".format(spawner.orm_spawner.server_id))
         db.commit()
+        
+        ###Only wait for the server to return if it the cmd has start_notebook.sh
+        ###Not waiting for the servers doesn't have large impact, 
+        if 'cmd' in options and  type(options['cmd']) ==type("string") and options['cmd'].find("start-notebook.sh")== -1:
+            self.log.info("Spawner bypasses the waiting for server up but returns directly.")
+            spawner._waiting_for_response = False
+            spawner._start_pending = False
+            return self
+        
         spawner._waiting_for_response = True
         try:
             resp = yield server.wait_up(http=True, timeout=spawner.http_timeout)
