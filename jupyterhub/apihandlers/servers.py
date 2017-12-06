@@ -163,6 +163,30 @@ class ServerLogsAPIHandler(UserServerAPIHandler):
             status = 200
             self.set_status(status)
             self.write(str(data))
+        
+class ServerStatsAPIHandler(UserServerAPIHandler):
+    @gen.coroutine
+    def _getData(self, user, server_name=""):
+        spawner = user.spawners[server_name]
+        log= yield spawner._stats_container()
+        print(type(log))
+        print(log)
+        return log
+    
+    @gen.coroutine
+    @admin_or_self
+    def get(self, name, server_name=''):
+        user = self.find_user(name)
+        if user is None:
+            status=400
+            error_json ={"error":status, "message":"User {} doesn't exists".format(name)}
+            self.set_status(status)
+            self.write(json.dumps(error_json))
+        else:
+            data = yield self._getData(user, server_name)
+            status = 200
+            self.set_status(status)
+            self.write(str(data))
             
 class ServerOutputsAPIHandler(UserServerAPIHandler):
     @gen.coroutine
@@ -238,6 +262,7 @@ default_handlers =[
     (r"/api/user/([^/]+)/project/([^/]+)/server/([^/]*)", ProjectServerAPIHandler),
     (r"/api/user/([^/]+)/servers/([^/]*)", UserServerAPIHandler),
     (r"/api/user/([^/]+)/servers/([^/]*)/status", ServerStatusAPIHandler),
+    (r"/api/user/([^/]+)/servers/([^/]*)/stats", ServerStatsAPIHandler),
     (r"/api/user/([^/]+)/servers/([^/]*)/logs", ServerLogsAPIHandler),
     (r"/api/user/([^/]+)/servers/([^/]*)/outputs", ServerOutputsAPIHandler),
 ]
