@@ -161,7 +161,8 @@ class DockerImageChooserSpawner(DockerSpawner):
             self.container_prefix = self.user_options['container_prefix']
         if 'cmd' in self.user_options:
             self.cmd='/bin/bash -c "{}"'.format(self.user_options['cmd'])
-        
+
+        #below setting only works for UI-based option.
         if 'folder2mount' in self.user_options:
             data_folder=self.user_options['folder2mount']
             self.read_only_volumes= {data_folder:"/home/wode-user/dataset/"}
@@ -170,7 +171,13 @@ class DockerImageChooserSpawner(DockerSpawner):
             sources=self.user_options['data_sources']
             for source in sources:
                 if source['control'] == 'ro':
-                    self.read_only_volumes= {source['source']:source['target']}
+                    print(source['source'])
+                    self.read_only_volumes[source['source']]= source['target']
+        
+        if 'workspace' in self.user_options:
+            workspace = self.user_options['workspace']
+            #FIXME: DON'T USE HARDCODED PATH. 
+            self.volumes[workspace] = "/home/wode-user/work/"
         
         
         # start the container

@@ -177,125 +177,6 @@ class UserAPIHandler(APIHandler):
         self.db.commit()
         self.write(json.dumps(self.user_model(user)))
 
-class UserServerAPIHandler(APIHandler):
-    """Start and stop single-user servers"""
-
-    @gen.coroutine
-    @admin_or_self
-    def post(self, name, server_name=''):
-        # force every server has its owner name.
-        if server_name == '':
-            server_name=binascii.hexlify(os.urandom(8)).decode('ascii')
-            
-        user = self.find_user(name)
-        print("~~~~list spawner~~~~~"+str(user.spawners))
-        if server_name and not self.allow_named_servers:
-            raise web.HTTPError(400, "Named servers are not enabled.")
-        spawner = user.spawners[server_name]
-        pending = spawner.pending
-        if pending == 'spawn':
-            self.set_header('Content-Type', 'text/plain')
-            self.set_status(202)
-            return
-        elif pending:
-            raise web.HTTPError(400, "%s is pending %s" % (spawner._log_name, pending))
-
-        if spawner.ready:
-            # include notify, so that a server that died is noticed immediately
-            # set _spawn_pending flag to prevent races while we wait
-            spawner._spawn_pending = True
-            try:
-                state = yield spawner.poll_and_notify()
-            finally:
-                spawner._spawn_pending = False
-            if state is None:
-                raise web.HTTPError(400, "%s is already running" % spawner._log_name)
-            
-        options = self.get_json_body()
-        print("~~~~options~~~~~"+str(options))  
-        
-        yield self.spawn_single_user(user, server_name, options=options)
-        status = 202 if spawner.pending == 'spawn' else 201
-        self.set_header('Content-Type', 'text/plain')
-        self.set_status(status)
-        self.write(json.dumps({"session_name":"{}".format(server_name)}))
-    
-    def _getData(self, user, server_name=''):
-
-        model = self.user_model(self.users[user])
-        if self.allow_named_servers :
-            servers = model['servers'] 
-        elif model['server'] is not None:
-            servers = {"":model['server']}
-        else:
-            servers = {}
-        return servers
-    
-    @gen.coroutine
-    @admin_or_self
-    def get(self, name, server_name=''):
-        user = self.find_user(name)
-        if user is None:
-            status=400
-            error_json ={"error":status, "message":"User {} doesn't exists".format(name)}
-            self.set_status(status)
-            self.write(json.dumps(error_json))
-        else:
-            data = self._getData(user, server_name)
-            status = 200
-            self.set_status(status)
-            self.write(json.dumps(data))
-            
-    @gen.coroutine
-    @admin_or_self
-    def delete(self, name, server_name=''):
-        user = self.find_user(name)
-        if server_name:
-            if not self.allow_named_servers:
-                raise web.HTTPError(400, "Named servers are not enabled.")
-            if server_name not in user.spawners:
-                raise web.HTTPError(404, "%s has no server named '%s'" % (name, server_name))
-
-        spawner = user.spawners[server_name]
-        if spawner.pending == 'stop':
-            self.log.debug("%s already stopping", spawner._log_name)
-            self.set_header('Content-Type', 'text/plain')
-            self.set_status(202)
-            return
-
-        if not spawner.ready:
-            raise web.HTTPError(
-                400, "%s is not running %s" %
-                (spawner._log_name, '(pending: %s)' % spawner.pending if spawner.pending else '')
-            )
-        # include notify, so that a server that died is noticed immediately
-        status = yield spawner.poll_and_notify()
-        if status is not None:
-            raise web.HTTPError(400, "%s is not running" % spawner._log_name)
-        yield self.stop_single_user(user, server_name)
-        status = 202 if spawner._stop_pending else 204
-        self.set_header('Content-Type', 'text/plain')
-        self.set_status(status)
-
-class ServerStatusAPIHandler(UserServerAPIHandler):
-    def _getData(self, user, server_name=""):
-        spawner = user.spawners[server_name]
-#        c= yield spawner.get_container()
-#        for a in c['State']:
-#            print(a)
-        data=yield spawner._status()
-    
-        return {"spawner":data}#list(*c['State'])
-
-class ServerLogsAPIHandler(UserServerAPIHandler):
-    def _getData(self, user, server_name=""):
-        return {"data":"Logs"}
-        
-class ServerOutputsAPIHandler(UserServerAPIHandler):
-
-    def _getData(self, user, server_name=""):
-        return {"data":"Output"}
-        
 class UserAdminAccessAPIHandler(APIHandler):
     """Grant admins access to single-user servers
     
@@ -314,17 +195,10 @@ class UserAdminAccessAPIHandler(APIHandler):
         user = self.find_user(name)
         if user is None:
             raise web.HTTPError(404)
-
-
 default_handlers = [
     (r"/api/user/?", SelfAPIHandler),
     (r"/api/users/?", UserListAPIHandler),#admin only
     (r"/api/user/([^/]+)/?", UserAPIHandler),
 #    (r"/api/users/([^/]+)/server", UserServerAPIHandler),
-    (r"/api/user/([^/]+)/servers/?", UserServerAPIHandler),
-    (r"/api/user/([^/]+)/servers/([^/]*)", UserServerAPIHandler),
-    (r"/api/user/([^/]+)/servers/([^/]*)/status", ServerStatusAPIHandler),
-    (r"/api/user/([^/]+)/servers/([^/]*)/logs", ServerLogsAPIHandler),
-    (r"/api/user/([^/]+)/servers/([^/]*)/outputs", ServerOutputsAPIHandler),
     (r"/api/user/([^/]+)/admin-access", UserAdminAccessAPIHandler),#admin only
 ]

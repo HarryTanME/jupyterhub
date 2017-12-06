@@ -66,7 +66,7 @@ class UserProjectAPIHandler(_ProjectAPIHandler):
         if project is not None:
             raise web.HTTPError(401, "Project name [{}] already exists.".format(proj_name))
         
-        data = self.get_json_body()#data is a dict.
+        data = self.get_json_body()
 
         if data:
             if not self._check_project_model(data):
@@ -74,7 +74,7 @@ class UserProjectAPIHandler(_ProjectAPIHandler):
         else :
             raise web.HTTPError(401, "Project config is empty.")
             
-        new_proj= orm.Project(name=proj_name, user_id = user.id, config=str(data),
+        new_proj= orm.Project(name=proj_name, user_id = user.id, config=json.dumps(data),
                           create_time = datetime.datetime.now(), last_update =  datetime.datetime.now())
         self.db.add(new_proj)
         self.db.commit()
