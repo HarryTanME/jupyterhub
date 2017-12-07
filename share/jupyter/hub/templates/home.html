@@ -26,13 +26,13 @@
     <div>Welcome, {{ user.name}}  <p />
       {{user.servers}}</div> 
     <div class="text-center">
-
+        <div>Running Servers:</div>
     <ul>
-    {% for s in user.spawners %}
-        {% if s != ""  %}
-           <li> <a target="_blank" href="{{ user.url}}{{s}}" ><p> {{ user.url}}{{s}} </p></a>
-            </li>  
-        {% endif %}
+    {% for s in user.running_spawners %}
+           <li> <a target="_blank" href="{{ user.url}}{{s.name}}" ><p> {{s.name if s.name != "" else "Running Server"}} </p></a>
+            </li> 
+        <li> <span role="button" class="stop-server btn btn-xs btn-danger">stop server</span>
+            </li>
     {% endfor %}
     </ul>
     <a id="start"role="button" class="btn btn-sm btn-success" target="_blank" href="{{ url }}">
@@ -41,6 +41,25 @@
     </div>
   </div>
 </div>
+{% endif %}
+
+
+{% if user.projects %}
+    <div class="text-center">
+    <div>Your Projects:</div>
+    <ul>
+    {% for proj in user.projects %}
+        {% if proj != ""  %}
+           <li> <a target="_blank" href="{{ user.url}}project/{{proj.name}}" ><p> {{proj.name}} </p></a>
+            </li>
+          <li>  <a id="start"role="button" class="btn btn-sm btn-success" target="_blank" href="{{ user.url}}project/{{proj.name}}/server">
+          Start Project Server
+          </a> </li>
+        {% endif %}
+    {% endfor %}
+    </ul>
+    </div>
+
 {% endif %}
 
 {% endblock %}

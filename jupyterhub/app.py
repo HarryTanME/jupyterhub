@@ -335,7 +335,7 @@ class JupyterHub(Application):
 
     @default('logo_file')
     def _logo_file_default(self):
-        return os.path.join(self.data_files_path, 'static', 'images', 'jupyter.png')
+        return os.path.join(self.data_files_path, 'static', 'images', 'Wode.AI.png') #was jupyter.png
 
     jinja_environment_options = Dict(
         help="Supply extra arguments that will be passed to Jinja environment."
@@ -547,7 +547,9 @@ class JupyterHub(Application):
     allow_named_servers = Bool(False,
         help="Allow named single-user servers per user"
     ).tag(config=True)
-
+    
+    session_outputs_path = Unicode().tag(config=True)
+    
     # class for spawning single-user servers
     spawner_class = Type(LocalProcessSpawner, Spawner,
         help="""The class to use for spawning single-user servers.
@@ -1341,7 +1343,9 @@ class JupyterHub(Application):
             oauth_provider=self.oauth_provider,
             concurrent_spawn_limit=self.concurrent_spawn_limit,
             active_server_limit=self.active_server_limit,
+            session_outputs_path = self.session_outputs_path,
         )
+        print("~~~~~~~~~~~~~~spawner.session_outputs_path "+self.session_outputs_path)
         # allow configured settings to have priority
         settings.update(self.tornado_settings)
         self.tornado_settings = settings

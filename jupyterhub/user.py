@@ -208,7 +208,17 @@ class User(HasTraits):
         spawner = spawner_class(**spawn_kwargs)
         spawner.load_state(orm_spawner.state or {})
         return spawner
-
+    
+    @property
+    def running_spawners(self):
+        print("~~~~~~~user proj property called.")
+        return [s for s in self.spawners.values() if s.active]
+    
+    @property
+    def projects(self):
+        print("~~~~~~~user proj property called.")
+        return orm.Project.find_all(self.db, self.orm_user.id)
+    
     # singleton property, self.spawner maps onto spawner with empty server_name
     @property
     def spawner(self):
@@ -338,7 +348,8 @@ class User(HasTraits):
         spawner.user_options = options or {}
         # we are starting a new server, make sure it doesn't restore state
         spawner.clear_state()
-
+        spawner.session_outputs_path=self.settings['session_outputs_path']
+        print("~~~~~~~~~~~~~~spawner.session_outputs_path "+spawner.session_outputs_path)
         # create API and OAuth tokens
         spawner.api_token = api_token
         spawner.admin_access = self.settings.get('admin_access', False)

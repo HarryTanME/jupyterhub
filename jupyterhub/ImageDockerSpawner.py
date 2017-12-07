@@ -101,7 +101,7 @@ class DockerImageChooserSpawner(DockerSpawner):
         # prefixes. Otherwise docker will only save one container per user. We
         # borrow the image name for the prefix.
         options = {
-            'container_image': dockerimage,
+            'docker_image': dockerimage,
             'container_prefix': '{}-{}'.format(
                 super().container_prefix, dockerimage.replace('/', '-').replace(':','-')
             )

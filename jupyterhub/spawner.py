@@ -156,6 +156,7 @@ class Spawner(LoggingConfigurable):
     admin_access = Bool(False)
     api_token = Unicode()
     oauth_client_id = Unicode()
+    session_outputs_path=Unicode()
 
     will_resume = Bool(False,
         help="""Whether the Spawner will resume on next start
@@ -209,7 +210,7 @@ class Spawner(LoggingConfigurable):
         connections.
         """
     ).tag(config=True)
-
+    
     poll_interval = Integer(30,
         help="""
         Interval (in seconds) on which to poll the spawner for single-user server's status.
@@ -370,6 +371,11 @@ class Spawner(LoggingConfigurable):
         """
     ).tag(config=True)
 
+    
+    @property
+    def allow_named_servers(self):
+        return self.settings.get('allow_named_servers', False)
+    
     @validate('notebook_dir', 'default_url')
     def _deprecate_percent_u(self, proposal):
         v = proposal['value']
