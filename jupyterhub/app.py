@@ -315,7 +315,7 @@ class JupyterHub(Application):
 
     domain = Unicode(
         help="domain name, e.g. 'example.com' (excludes protocol, port)"
-    )
+    ).tag(config=True)
 
     @default('domain')
     def _domain_default(self):

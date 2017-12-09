@@ -88,7 +88,7 @@ class UserProjectAPIHandler(_ProjectAPIHandler):
         if proj_name is None or proj_name == "":
             raise web.HTTPError(400, "Project Id cannot be null or empty.")
         
-        project = self.find_user_proj(user, proj_name)
+        project = self.find_user_project(user, proj_name)
         self.write(json.dumps(self._project_model(user, project)))
 
     
@@ -101,7 +101,7 @@ class UserProjectAPIHandler(_ProjectAPIHandler):
         if proj_name is None or proj_name == "":
             raise web.HTTPError(400, "Project Id cannot be null or empty.")
         
-        project = self.find_user_proj(user, proj_name)
+        project = self.find_user_project(user, proj_name)
         if project is None:
             raise web.HTTPError(400, "Project [{}] doesn't exist.".format(proj_name))
         
@@ -119,7 +119,7 @@ class UserProjectAPIHandler(_ProjectAPIHandler):
         if proj_name is None or proj_name == "":
             raise web.HTTPError(400, "Project Id cannot be null or empty.")
         
-        project = self.find_user_proj(user, proj_name)
+        project = self.find_user_project(user, proj_name)
         if project is None:
             raise web.HTTPError(400, "Failed to find the project []" % proj_name)
         

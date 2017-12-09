@@ -133,8 +133,13 @@ class User(Base):
     _orm_spawners = relationship("Spawner", backref="user")
     @property
     def orm_spawners(self):
-        return {s.name: s for s in self._orm_spawners if s.end_time is None }#ht: server_id -1 means shutdown.
+        return {s.name: s for s in self._orm_spawners if s.end_time is None }
 
+    @property
+    def all_spawners(self):
+        return {s.name: s for s in self._orm_spawners }
+
+    
     admin = Column(Boolean, default=False)
     last_activity = Column(DateTime, default=datetime.utcnow)
 
@@ -215,6 +220,94 @@ class Project(Base):
         Returns None if not found.
         """
         return db.query(cls).filter(cls.name == proj_name).filter(cls.user_id==user_id).first()
+    
+    
+    @classmethod
+    def find_all(cls, db, user_id):
+        """Find a user by name.
+        Returns None if not found.
+        """
+        return db.query(cls).filter(cls.user_id==user_id).all()
+
+    
+class SessionComments(Base):
+    """"Metadata about a session comment"""
+    __tablename__ = 'sessionComments'
+    
+    id = Column(Unicode(32), primary_key=True)
+    session_id = Column(Integer, ForeignKey('spawners.id', ondelete='CASCADE'))
+    user_id = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'))
+    body=  Column(Unicode(2550))
+    create_time = Column(DateTime, default=datetime.utcnow)
+    last_update = Column(DateTime, default=datetime.utcnow)
+    
+    def __repr__(self):
+        return "<comment_{}>".format(self.session_id)
+    
+    
+    @classmethod
+    def find_by_session(cls, db, session_id):
+        """Find a project by session_id/spawner_id.
+        Returns None if not found.
+        """
+        #fixme`
+        return db.query(cls).filter(cls.session_id==session_id).all()
+
+
+
+class ProjectComments(Base):
+    """"Metadata about a project comment"""
+    __tablename__ = 'projectComments'
+    
+    id = Column(Unicode(32), primary_key=True)
+    proejct_id = Column(Integer, ForeignKey('projects.id', ondelete='CASCADE'))
+    user_id = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'))
+    body=  Column(Unicode(2550))
+    create_time = Column(DateTime, default=datetime.utcnow)
+    last_update = Column(DateTime, default=datetime.utcnow)
+    
+    def __repr__(self):
+        return "<comment_{}>".format(self.proejct_id)
+    
+    @classmethod
+    def find_by_project(cls, db, project_id):
+        """Find all comments by user name and project name.
+        Returns None if not found.
+        """
+        #fixme
+        return db.query(cls).filter(cls.project_id==project_id).all()
+    
+    
+    @classmethod
+    def find_by_comment_id(cls, db, common_id):
+        """Find all comments by user name and project name.
+        Returns None if not found.
+        """
+        #fixme
+        return db.query(cls).filter(cls.id==common_id).first()
+    
+class Image(Base):
+    """"Metadata about a image"""
+    __tablename__ = 'images'
+    
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'))
+    name=  Column(Unicode(255))
+    config= Column(Unicode(2000))
+    status = Column(Unicode(20))
+    create_time = Column(DateTime, default=datetime.utcnow)
+    last_update = Column(DateTime, default=datetime.utcnow)
+
+    
+    def __repr__(self):
+        return "<Image_{}_UserId_{}>".format(self.name, self.user_id)
+    
+    @classmethod
+    def find_one(cls, db, user_id, image_name):
+        """Find a user by name.
+        Returns None if not found.
+        """
+        return db.query(cls).filter(cls.name == image_name).filter(cls.user_id==user_id).first()
     
     
     @classmethod

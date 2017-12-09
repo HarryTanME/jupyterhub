@@ -25,7 +25,6 @@ class UserServerAPIHandler(APIHandler):
             server_name=binascii.hexlify(os.urandom(8)).decode('ascii')
             
         user = self.find_user(name)
-        print("~~~~list spawner~~~~~"+str(user.spawners))
         if server_name and not self.allow_named_servers:
             raise web.HTTPError(400, "Named servers are not enabled.")
         spawner = user.spawners[server_name]
@@ -49,7 +48,6 @@ class UserServerAPIHandler(APIHandler):
                 raise web.HTTPError(400, "%s is already running" % spawner._log_name)
             
         options = self.get_json_body()
-        print("~~~~options~~~~~"+str(options))  
         
         yield self.spawn_single_user(user, server_name, options=options)
         status = 202 if spawner.pending == 'spawn' else 201
@@ -111,7 +109,6 @@ class UserServerAPIHandler(APIHandler):
             raise web.HTTPError(400, "%s is not running" % spawner._log_name)
         yield self.stop_single_user(user, server_name)
         status = 202 if spawner._stop_pending else 204
-        self.set_header('Content-Type', 'text/plain')
         self.set_status(status)
 
 class ServerStatusAPIHandler(APIHandler):
@@ -168,10 +165,8 @@ class ServerStatsAPIHandler(UserServerAPIHandler):
     @gen.coroutine
     def _getData(self, user, server_name=""):
         spawner = user.spawners[server_name]
-        log= yield spawner._stats_container()
-        print(type(log))
-        print(log)
-        return log
+        hist= yield spawner.stats_history
+        return hist
     
     @gen.coroutine
     @admin_or_self
@@ -214,7 +209,6 @@ class ProjectServerAPIHandler(_ProjectAPIHandler):
     @gen.coroutine
     @admin_or_self
     def post(self, name, proj_name, server_name=''):
-        print("ProjectServerAPIHandler starts.")
         # force every server has its owner name.
         if server_name == '':
             server_name=binascii.hexlify(os.urandom(8)).decode('ascii')

@@ -95,13 +95,16 @@ def admin_or_self(method):
     """Decorator for restricting access to either the target user or admin"""
     def m(self, name, *args, **kwargs):
         current = self.get_current_user()
+        self.log.debug("Current user is null")
         if current is None:
             raise web.HTTPError(403)
         if not (current.name == name or current.admin):
+            self.log.debug("User doesn't match, {} {}".format(name, current.name))
             raise web.HTTPError(403)
         
         # raise 404 if not found
         if not self.find_user(name):
+            self.log.debug("Can't find user {}".format(name))
             raise web.HTTPError(404)
         return method(self, name, *args, **kwargs)
     return m

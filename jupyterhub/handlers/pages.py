@@ -12,7 +12,7 @@ from tornado.httputil import url_concat
 from .. import orm
 from ..utils import admin_only, url_path_join
 from .base import BaseHandler
-
+import os, binascii
 
 class RootHandler(BaseHandler):
     """Render the Hub root page.
@@ -137,23 +137,26 @@ class SpawnHandler(BaseHandler):
             form_options[key] = [ bs.decode('utf8') for bs in byte_list ]
         for key, byte_list in self.request.files.items():
             form_options["%s_file"%key] = byte_list
+        server_name=binascii.hexlify(os.urandom(8)).decode('ascii')
+        
         try:
             options = user.spawner.options_from_form(form_options)
             print("~~~~~~~~"+str(options))
-            yield self.spawn_single_user(user, options=options)
+            yield self.spawn_single_user(user,server_name =server_name,  options=options)
         except Exception as e:
             self.log.error("Failed to spawn single-user server with form", exc_info=True)
             self.finish(self._render_form(str(e)))
             return
         self.set_login_cookie(user)
-        url = user.url
-
+        url = user.url+server_name
+        #next will have some issues.
         next_url = self.get_argument('next', '')
+        
         if next_url and not next_url.startswith('/'):
             self.log.warning("Disallowing redirect outside JupyterHub: %r", next_url)
         elif next_url:
             url = next_url
-
+        print("~~~spawn redirect url~~"+url)
         self.redirect(url)
 
 class AdminHandler(BaseHandler):
