@@ -62,7 +62,7 @@ class UserProjectAPIHandler(_ProjectAPIHandler):
         user = self.find_user(name)
         if user is None:
             raise web.HTTPError(400, "User [{}] doesn't exists.".format(name))
-        project = self.find_user_proj(user, proj_name)
+        project = self.find_user_project(user, proj_name)
         if project is not None:
             raise web.HTTPError(401, "Project name [{}] already exists.".format(proj_name))
         

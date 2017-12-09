@@ -10,7 +10,7 @@ from tornado import web, gen
 from tornado.httputil import url_concat
 
 from .. import orm
-from ..utils import admin_only, url_path_join
+from ..utils import admin_only, url_path_join, unique_server_name
 from .base import BaseHandler
 import os, binascii
 
@@ -137,7 +137,8 @@ class SpawnHandler(BaseHandler):
             form_options[key] = [ bs.decode('utf8') for bs in byte_list ]
         for key, byte_list in self.request.files.items():
             form_options["%s_file"%key] = byte_list
-        server_name=binascii.hexlify(os.urandom(8)).decode('ascii')
+        #server_name=binascii.hexlify(os.urandom(8)).decode('ascii')
+        server_name = unique_server_name()
         
         try:
             options = user.spawner.options_from_form(form_options)

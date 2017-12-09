@@ -175,6 +175,9 @@ class User(HasTraits):
         self.spawners = _SpawnerDict(self._new_spawner)
         # load existing named spawners
         for name in self.orm_spawners:
+            if name is None:
+                self.log.warn("There is a spawner with Null name.")
+                continue
             self.spawners[name] = self._new_spawner(name)
 
     def _new_spawner(self, name, spawner_class=None, **kwargs):
@@ -182,7 +185,7 @@ class User(HasTraits):
         if spawner_class is None:
             spawner_class = self.spawner_class
         self.log.debug("Creating %s for %s:%s", spawner_class, self.name, name)
-        
+        print("~~~~_new_spanwer name~~~"+str(name))
         orm_spawner = self.orm_spawners.get(name)
         if orm_spawner is None:
             orm_spawner = orm.Spawner(user=self.orm_user, name=name)

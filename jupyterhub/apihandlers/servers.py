@@ -8,9 +8,9 @@ import json
 import binascii
 import os
 from tornado import gen, web
-import base64
+import base64,datetime
 from .. import orm
-from ..utils import admin_only
+from ..utils import admin_only, unique_server_name
 from .base import APIHandler
 from .projects import _ProjectAPIHandler, admin_or_self
 
@@ -21,9 +21,8 @@ class UserServerAPIHandler(APIHandler):
     @admin_or_self
     def post(self, name, server_name=''):
         # force every server has its owner name.
-        if server_name == '':
-            server_name=binascii.hexlify(os.urandom(8)).decode('ascii')
-            
+        server_name = unique_server_name(server_name)
+        self.log.debug("server name: "+str(server_name))
         user = self.find_user(name)
         if server_name and not self.allow_named_servers:
             raise web.HTTPError(400, "Named servers are not enabled.")
@@ -210,9 +209,10 @@ class ProjectServerAPIHandler(_ProjectAPIHandler):
     @admin_or_self
     def post(self, name, proj_name, server_name=''):
         # force every server has its owner name.
-        if server_name == '':
-            server_name=binascii.hexlify(os.urandom(8)).decode('ascii')
-            
+        timestamp= datetime.datetime.now().strftime('%y%m%d%H%M%S%f')
+        if server_name == "":
+            server_name = "DefaultServer"
+        server_name +=timestamp
         user = self.find_user(name)
         project = self.find_user_project(user, proj_name)
         

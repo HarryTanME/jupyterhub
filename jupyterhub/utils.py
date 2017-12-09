@@ -13,6 +13,7 @@ import socket
 from threading import Thread
 import uuid
 import warnings
+import datetime
 
 from tornado import web, gen, ioloop
 from tornado.httpclient import AsyncHTTPClient, HTTPError
@@ -299,3 +300,10 @@ def url_path_join(*pieces):
 
     return result
 
+def unique_server_name(server_name=""):
+    """create a new unique server name."""
+    timestamp= datetime.datetime.now().strftime('%y%m%d%H%M%S%f')
+    if server_name == "":
+        server_name = "DefaultServer"
+    server_name += "_"+timestamp
+    return server_name
