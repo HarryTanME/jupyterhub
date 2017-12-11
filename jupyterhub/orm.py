@@ -133,7 +133,7 @@ class User(Base):
     _orm_spawners = relationship("Spawner", backref="user")
     @property
     def orm_spawners(self):
-        return {s.name: s for s in self._orm_spawners if s.end_time is None }
+        return {s.name: s for s in self._orm_spawners }
 
     @property
     def all_spawners(self):
@@ -185,7 +185,7 @@ class Spawner(Base):
 
     server_id = Column(Integer, ForeignKey('servers.id', ondelete='SET NULL'))
     server = relationship(Server)
-
+    project_id = Column(Integer, ForeignKey('projects.id', ondelete='SET NULL'))
     state = Column(JSONDict)
     name = Column(Unicode(255), unique=True)
     option = Column(JSONDict)
@@ -195,6 +195,10 @@ class Spawner(Base):
     @classmethod
     def find_by_name(cls, db, spawner_name):
         return db.query(cls).filter(cls.name == spawner_name).first()
+    
+    @classmethod
+    def find_by_userid(cls, db, user_id):
+        return db.query(cls).filter(cls.user_id == user_id).order_by(cls.last_activity.desc()).all()
         
 class Project(Base):
     """"Metadata about a project"""
@@ -234,7 +238,7 @@ class Project(Base):
         return db.query(cls).filter(cls.user_id==user_id).all()
 
     
-class SessionComments(Base):
+class SessionComment(Base):
     """"Metadata about a session comment"""
     __tablename__ = 'sessionComments'
     
@@ -246,7 +250,7 @@ class SessionComments(Base):
     last_update = Column(DateTime, default=datetime.utcnow)
     
     def __repr__(self):
-        return "<comment_{}>".format(self.session_id)
+        return "<sessioncomment_{}>".format(self.id)
     
     @classmethod
     def find_by_session(cls, db, session_name):
@@ -264,11 +268,11 @@ class SessionComments(Base):
         return db.query(cls).filter(cls.id==comment_id).first()
 
 
-class SessionTags(Base):
+class SessionTag(Base):
     """"Metadata about a session tag"""
     __tablename__ = 'sessionTags'
     
-    id = Column(Unicode(32), primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     session_name = Column(Unicode(255), ForeignKey('spawners.name', ondelete='CASCADE'))
     user_id = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'))
     tag=  Column(Unicode(255))
@@ -277,16 +281,32 @@ class SessionTags(Base):
     def __repr__(self):
         return "<sessionTag_{}>".format(self.tag)
     
+    @classmethod
+    def find_session_tag(cls, db, session_name, tag):
+        return db.query(cls).filter(cls.session_name==session_name and cls.tag == tag).first()
     
     @classmethod
     def find_by_session(cls, db, session_name):
+        """Find all tags of session_name.
+        Returns [] if not found.
+        """
+        return db.query(cls).filter(cls.session_name==session_name).all()
+    
+    @classmethod
+    def find_by_project(cls, db, proj_id):
+        """Find all tags of a project.
+        Returns [] if not found.
+        """
+        return db.query(cls).join(Spawner).join(Project).filter(Spawner.project_id == Project.id).filter(Project.id==proj_id).all()
+
+    @classmethod
+    def find_sessions_by_project_tag(cls, db, project_name, tag):
         """Find a project by session_id/spawner_id.
         Returns None if not found.
         """
-        return db.query(cls).filter(cls.session_name==session_name).all()
-
-
-class ProjectComments(Base):
+        return db.query(cls).join(Spawner).join(Project).filter(cls.tag == tag).filter(Project.name==project_name).all()
+    
+class ProjectComment(Base):
     """"Metadata about a project comment"""
     __tablename__ = 'projectComments'
     
@@ -298,7 +318,7 @@ class ProjectComments(Base):
     last_update = Column(DateTime, default=datetime.utcnow)
     
     def __repr__(self):
-        return "<comment_{}>".format(self.proejct_id)
+        return "<projcomment_{}>".format(self.id)
     
     @classmethod
     def find_by_project(cls, db, project_id):

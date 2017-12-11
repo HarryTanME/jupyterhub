@@ -95,7 +95,6 @@ def admin_or_self(method):
     """Decorator for restricting access to either the target user or admin"""
     def m(self, name, *args, **kwargs):
         current = self.get_current_user()
-        self.log.debug("Current user is null")
         if current is None:
             raise web.HTTPError(403)
         if not (current.name == name or current.admin):
@@ -110,6 +109,10 @@ def admin_or_self(method):
     return m
 
 class UserAPIHandler(APIHandler):
+    
+    def find_session(self, session_name):
+        spawner = orm.Spawner.find_by_name(self.db, session_name)
+        return spawner
     
     @admin_or_self
     def get(self, name):

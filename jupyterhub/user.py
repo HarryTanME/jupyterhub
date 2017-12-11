@@ -12,7 +12,7 @@ from tornado import gen
 from tornado.log import app_log
 from traitlets import HasTraits, Any, Dict, default
 
-from .utils import url_path_join
+from .utils import url_path_join, unique_server_name
 
 from . import orm
 from ._version import _check_version, __version__
@@ -174,20 +174,21 @@ class User(HasTraits):
 
         self.spawners = _SpawnerDict(self._new_spawner)
         # load existing named spawners
-        for name in self.orm_spawners:
-            if name is None:
-                self.log.warn("There is a spawner with Null name.")
-                continue
-            self.spawners[name] = self._new_spawner(name)
+        #for name in self.orm_spawners:
+        #    if name is None:
+        #        self.log.warn("There is a spawner with Null name.")
+        #        continue
+        #    self.spawners[name] = self._new_spawner(name)
 
     def _new_spawner(self, name, spawner_class=None, **kwargs):
         """Create a new spawner"""
         if spawner_class is None:
             spawner_class = self.spawner_class
         self.log.debug("Creating %s for %s:%s", spawner_class, self.name, name)
-        print("~~~~_new_spanwer name~~~"+str(name))
         orm_spawner = self.orm_spawners.get(name)
         if orm_spawner is None:
+            if name == "":
+                name = unique_server_name(name)
             orm_spawner = orm.Spawner(user=self.orm_user, name=name)
             self.db.add(orm_spawner)
             self.db.commit()
@@ -214,12 +215,10 @@ class User(HasTraits):
     
     @property
     def running_spawners(self):
-        print("~~~~~~~user proj property called.")
         return [s for s in self.spawners.values() if s.active]
     
     @property
     def projects(self):
-        print("~~~~~~~user proj property called.")
         return orm.Project.find_all(self.db, self.orm_user.id)
     
     # singleton property, self.spawner maps onto spawner with empty server_name

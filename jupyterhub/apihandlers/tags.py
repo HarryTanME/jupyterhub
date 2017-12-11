@@ -16,58 +16,82 @@ from .users import admin_or_self, UserAPIHandler
 
 class TagsAPIHandler(UserAPIHandler):
     """Start and stop single-user servers"""
-
-    @gen.coroutine
-    @token_authenticated
-    def post(self,name, session_name, tag):
+    
+    def find_session_tag(self, session_name, tag):
+        tag1 = orm.SessionTag.find_session_tag(self.db, session_name, tag)
+        return tag1
         
+    
+    def find_session(self, session_name):
+        spawner = orm.Spawner.find_by_name(self.db, session_name)
+        return spawner
+    
+    @gen.coroutine
+    @admin_or_self
+    def post(self,name, session_name, tag):
         user = self.find_user(name)
         if user is None:
             raise web.HTTPError(400, "User [{}] doesn't exists.".format(name))
             
-        session = user.find_session(session_name)
+        session = self.find_session(session_name)
         
         if session is None:
             raise web.HTTPError(400, "Session [{}] doesn't exists.".format(session_name))
 
-        new_tag= orm.Tag()#fixme
+        new_tag= orm.SessionTag(session_name = session_name,user_id =user.id ,tag = tag, create_time =datetime.datetime.now())
         self.db.add(new_tag)
         self.db.commit()
         self.set_status(200)
-        self.write('{"status":"success", "message":"Tag is posted."}')
+        self.write({"status":200, "message":"Tag is posted."})
+    
     
     @gen.coroutine
-    @token_authenticated
-    def get(self, user, project_name):
-        self.write('{"status":"success", "message":"Content of the message."}')
-        
-        user = self.find_user(name)
-        if user is None:
-            raise web.HTTPError(400, "User [{}] doesn't exists.".format(name))
-            
-        aa = []
-        tags = self.find_project_tags(user, project_name)#fixme
-        for tag in tags:
-            aa.append(tag)#fixme
-        self.set_status(200)
-        self.write(json.dumps(aa))
-    
-    @gen.coroutine
-    @token_authenticated
+    @admin_or_self
     def delete(self,name, session_name, tag):
-        session_tag = self.find_session_tag(session_name, tag)#fixme
-        #if session_tag is None:
+        session = self.find_session(session_name)   
+        if session is None:
+            raise web.HTTPError(400, "Session [{}] doesn't exists.".format(session_name))
+            
+        session_tag = self.find_session_tag(session_name, tag)
+
+        #we purposely don't check the existence of a tag, just to smooth the experience.
+        if session_tag is None:
+            self.log.warn('Trying to delete a non-existing session tag.')
+            self.write('{"status":"success", "message":"Tag is deleted."}')
+            return
         #    raise web.HTTPError(400, "Session [{}] doesn't exists.".format(session_name))
 
-        self.log.info("Deleting project %s for user %s", session_name, tag)
+        self.log.info("Deleting tag %s for session %s", tag, session_name)
         self.db.delete(session_tag)
         self.db.commit()
         self.set_status(200)
-        self.write('{"status":"success", "message":"Tag is deleted."}')
+        self.write({"status":200, "message":"Tag is deleted."})
 
+class ProjectTagListAPIHandler(UserAPIHandler):
+    """ This API returns the list of tags of a project"""
+    def find_tags_by_project(self, user,  proj_name):
+        proj = orm.Project.find_one(self.db, user.id, proj_name)
+        if proj is None:
+            raise web.HTTPError(400, "Project [{}] doesn't exists.".format(proj_name))
+        tags = orm.SessionTag.find_by_project(self.db, proj.id)#not tested.
+        return tags
+    
+    @gen.coroutine
+    @token_authenticated
+    def get(self, name, project_name):
+        user = self.find_user(name)
+        if user is None:
+            raise web.HTTPError(400, "User [{}] doesn't exists.".format(name))
+        aa = []
+        tags = self.find_tags_by_project(user=user, proj_name=project_name)
+        for tag in tags:
+            aa.append(tag.tag)
+        self.set_status(200)
+        self.write(json.dumps(aa))
+    
 default_handlers = [
-    (r"/api/user/([^/]+)/server/([^/]+)/tag/([^/]+)", TagsAPIHandler),
-    (r"/api/user/([^/]+)/project/([^/]*)/tags/?", TagsAPIHandler),
+    (r"/api/user/([^/]+)/servers/([^/]+)/tag/([^/]+)", TagsAPIHandler),
+    (r"/api/user/([^/]+)/project/([^/]*)/tags/?", ProjectTagListAPIHandler),
 ]
 
 

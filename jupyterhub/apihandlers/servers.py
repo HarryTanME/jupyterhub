@@ -10,9 +10,10 @@ import os
 from tornado import gen, web
 import base64,datetime
 from .. import orm
-from ..utils import admin_only, unique_server_name
+from ..utils import admin_only, unique_server_name, token_authenticated
 from .base import APIHandler
 from .projects import _ProjectAPIHandler, admin_or_self
+from .users import UserAPIHandler
 
 class UserServerAPIHandler(APIHandler):
     """Start and stop single-user servers"""
@@ -52,10 +53,9 @@ class UserServerAPIHandler(APIHandler):
         status = 202 if spawner.pending == 'spawn' else 201
         self.set_header('Content-Type', 'text/plain')
         self.set_status(status)
-        self.write(json.dumps({"session_name":"{}".format(server_name)}))
+        self.write(json.dumps({"session_name":"{}".format(server_name),"url":str(user.url+server_name)}))
     
-    def _getData(self, user, server_name=''):
-        print("hahahha")
+    def _getActiveSpawners(self, user):
         model = self.user_model(self.users[user])
         if self.allow_named_servers :
             servers = model['servers'] 
@@ -65,19 +65,35 @@ class UserServerAPIHandler(APIHandler):
             servers = {}
         return servers
     
+    def _getAllSpawners(self, user):
+        spawners = orm.Spawner.find_by_userid(self.db, user.id)
+        return spawners
+    
     @gen.coroutine
     @admin_or_self
-    def get(self, name, server_name=''):
+    def get(self, name):
+        tag = self.get_argument("tag", None, False) #just a placeholder, not implemented.
+        sess_stats = self.get_argument("status", None, False)         
         user = self.find_user(name)
         if user is None:
             status=400
             error_json ={"error":status, "message":"User {} doesn't exists".format(name)}
             self.set_status(status)
             self.write(json.dumps(error_json))
-        else:
-            data = self._getData(user, server_name)
+        elif sess_stats is not None and sess_stats != "" :
+            if sess_stats not in ['active']:
+                raise  web.HTTPError(403, 'Status can only be "active" (for now).')
+            data = self._getActiveSpawners(user)
             status = 200
             self.set_status(status)
+            self.write(json.dumps(data))
+        else:
+            orm_spawners = self._getAllSpawners(user)
+            status = 200
+            self.set_status(status)
+            data =[]
+            for s in orm_spawners:
+                data.append(s.name)
             self.write(json.dumps(data))
             
     @gen.coroutine
@@ -141,8 +157,6 @@ class ServerLogsAPIHandler(UserServerAPIHandler):
     def _getData(self, user, server_name=""):
         spawner = user.spawners[server_name]
         log= yield spawner._logs_container()
-        print(type(log))
-        print(log)
         return log
     
     @gen.coroutine
@@ -164,7 +178,8 @@ class ServerStatsAPIHandler(UserServerAPIHandler):
     @gen.coroutine
     def _getData(self, user, server_name=""):
         spawner = user.spawners[server_name]
-        hist= yield spawner.stats_history
+        hist= spawner.stats_history
+#        print(str(hist))
         return hist
     
     @gen.coroutine
@@ -249,14 +264,60 @@ class ProjectServerAPIHandler(_ProjectAPIHandler):
         self.write(json.dumps({"session_name":"{}".format(server_name)}))
     
 
+class ServerTagsAPIHandler(UserAPIHandler):
+    """API returns the list of tags for a given session/server."""
+    def find_tags_by_session(self, session_name):
+        tags = orm.SessionTag.find_by_session(self.db, session_name)
+        return tags
+    
+    #find by tags
+    def find_session_tags(self, tag):
+        sessions = orm.SessionTag.find_by_tag(tag)
+        return sessions
+    
+    @gen.coroutine
+    @token_authenticated
+    def get(self, name, session_name): 
+        session = self.find_session(session_name)                            
+        if session is None:
+            raise web.HTTPError(400, "Session [{}] doesn't exists.".format(session_name))
+            
+        aa = []
+        tags = self.find_tags_by_session(session_name)
+        for tag in tags:
+            aa.append(tag.tag)
+        self.set_status(200)
+        self.write(json.dumps(aa))
+    
 
+class SesseionListAPIHandler(UserAPIHandler):
+    """ This API returns the list of sessions in a project by a given tag."""
+    def find_by_project(self, proj_name, tag):
+        sessions = orm.SessionTag.find_sessions_by_project_tag(self.db, proj_name, tag)
+        return sessions
+    
+    @gen.coroutine
+    @token_authenticated
+    def get(self, user, project_name):
+        tag = self.get_argument("tag", None, False)
+        if tag is not None and tag != "":
+            aa = []
+            sessions = self.find_by_project(project_name, tag)
+            for s in sessions:
+                aa.append(s.session_name)
+            self.set_status(200)
+            self.write(json.dumps(aa))
+        else :
+            return all_sesssions(user, project_name)
 
 default_handlers =[
     (r"/api/user/([^/]+)/servers/?", UserServerAPIHandler),
     (r"/api/user/([^/]+)/project/([^/]+)/server/([^/]*)", ProjectServerAPIHandler),
-    (r"/api/user/([^/]+)/servers/([^/]*)", UserServerAPIHandler),
-    (r"/api/user/([^/]+)/servers/([^/]*)/status", ServerStatusAPIHandler),
-    (r"/api/user/([^/]+)/servers/([^/]*)/stats", ServerStatsAPIHandler),
-    (r"/api/user/([^/]+)/servers/([^/]*)/logs", ServerLogsAPIHandler),
-    (r"/api/user/([^/]+)/servers/([^/]*)/outputs", ServerOutputsAPIHandler),
+    (r"/api/user/([^/]+)/project/([^/]*)/servers/?", SesseionListAPIHandler),
+    (r"/api/user/([^/]+)/server/([^/]*)", UserServerAPIHandler),
+    (r"/api/user/([^/]+)/server/([^/]*)/status/?", ServerStatusAPIHandler),
+    (r"/api/user/([^/]+)/server/([^/]*)/stats/?", ServerStatsAPIHandler),
+    (r"/api/user/([^/]+)/server/([^/]*)/logs/?", ServerLogsAPIHandler),
+    (r"/api/user/([^/]+)/server/([^/]*)/outputs/?", ServerOutputsAPIHandler),
+    (r"/api/user/([^/]+)/server/([^/]*)/tags/?", ServerTagsAPIHandler),
 ]

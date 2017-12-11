@@ -12,7 +12,7 @@ import base64
 from .. import orm
 from ..utils import admin_only, token_authenticated
 from .base import APIHandler
-from .users import admin_or_self
+from .users import admin_or_self, UserAPIHandler
 
 
 
@@ -31,7 +31,7 @@ class SessionCommenListtsAPIHandler(APIHandler):
         }
     
     def find_session_comments(self, session_name):
-        comments = orm.SessionComments.find_by_session(self.db, session_name)
+        comments = orm.SessionComment.find_by_session(self.db, session_name)
         return comments
 
     @gen.coroutine
@@ -45,7 +45,7 @@ class SessionCommenListtsAPIHandler(APIHandler):
         self.write(json.dumps(aa))
 
 
-class SessionCommentsAPIHandler(APIHandler):
+class SessionCommentsAPIHandler(UserAPIHandler):
     """Handle comments on a session/server"""
 
     def _check_comment_model(self, data):
@@ -66,13 +66,9 @@ class SessionCommentsAPIHandler(APIHandler):
             'last_update':str(comment.last_update)
         }
         
-    def find_session(self, session_name):
-        spawner = orm.Spawner.find_by_name(self.db, session_name)
-        return spawner
-    
     
     def find_by_comment_id(self, comment_id):
-        comment = orm.SessionComments.find_by_comment_id(self.db, comment_id)
+        comment = orm.SessionComment.find_by_comment_id(self.db, comment_id)
         return comment
     
     @gen.coroutine
@@ -94,7 +90,7 @@ class SessionCommentsAPIHandler(APIHandler):
             
         comment_id = server_name=binascii.hexlify(os.urandom(16)).decode('ascii')
         print(len(comment_id))
-        new_comment= orm.SessionComments(id=comment_id ,user_id = user.id, session_name=spawner.name, body=data['body'],
+        new_comment= orm.SessionComment(id=comment_id ,user_id = user.id, session_name=spawner.name, body=data['body'],
                           create_time = datetime.datetime.now(), last_update =  datetime.datetime.now())
         self.db.add(new_comment)
         self.db.commit()
@@ -163,7 +159,7 @@ class ProjectCommenListtsAPIHandler(APIHandler):
         }
     
     def find_project_comments(self, project):
-        comments = orm.ProjectComments.find_by_project(self.db, project.id)
+        comments = orm.ProjectComment.find_by_project(self.db, project.id)
         return comments
     
     
@@ -212,7 +208,7 @@ class ProjectCommentsAPIHandler(APIHandler):
     
     
     def find_project_comment(self, project, comment_id):
-        comment = orm.ProjectComments.find_by_comment_id(self.db, comment_id)
+        comment = orm.ProjectComment.find_by_comment_id(self.db, comment_id)
         return comment
 
     @gen.coroutine
@@ -234,7 +230,7 @@ class ProjectCommentsAPIHandler(APIHandler):
             
         comment_id = server_name=binascii.hexlify(os.urandom(16)).decode('ascii')
         print(len(comment_id))
-        new_comment= orm.ProjectComments(id=comment_id ,user_id = user.id, proejct_id=project.id, body=data['body'],
+        new_comment= orm.ProjectComment(id=comment_id ,user_id = user.id, proejct_id=project.id, body=data['body'],
                           create_time = datetime.datetime.now(), last_update =  datetime.datetime.now())
         self.db.add(new_comment)
         self.db.commit()

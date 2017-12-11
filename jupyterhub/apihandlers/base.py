@@ -100,7 +100,7 @@ class APIHandler(BaseHandler):
             'name': user.name,
             'admin': user.admin,
             'groups': [ g.name for g in user.groups ],
-            'server': user.url if user.running else None,
+            'server': user.url, #if user.running else None, #removed the if part, try not to get runing status 
             'pending': None,
             'last_activity': user.last_activity.isoformat(),
         }
