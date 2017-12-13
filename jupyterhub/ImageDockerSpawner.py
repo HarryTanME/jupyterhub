@@ -6,6 +6,7 @@ from traitlets import (
 )
 from tornado import web, gen
 import shlex
+import os
 
 class DockerImageChooserSpawner(DockerSpawner):
     '''Enable the user to select the docker image that gets spawned.
@@ -116,7 +117,9 @@ class DockerImageChooserSpawner(DockerSpawner):
                 env[key.strip()] = value.strip()
         
         if formdata.get('data2mount',[''])[0] != "":
-            options['data_sources']= formdata.get('data2mount',[''])[0].strip()
+            data2mount = formdata.get('data2mount',[''])[0].strip()
+            options['data_sources']= [{"source":"/data/data/deeplearning/"+data2mount, 
+                                      "target":"/home/wode-user/dataset","control":"ro"}]#fixme: remove hardcoded shared data.
         
         arg_s = formdata.get('args', [''])[0].strip()   
         
@@ -128,14 +131,9 @@ class DockerImageChooserSpawner(DockerSpawner):
             arg_s += wkspc
         if arg_s:
             options['argv'] = shlex.split(arg_s)
-
+        options['workspace'] =self.user.user_data_path
         return options
-    
-    
-    
-    #@property
-    #def requestFromAPI(self):
-    #    return requestFromAPI
+
         
     def get_args(self):
         """Return arguments to pass to the notebook server"""
@@ -162,14 +160,11 @@ class DockerImageChooserSpawner(DockerSpawner):
         if 'cmd' in self.user_options:
             self.cmd='/bin/bash -c "{}"'.format(self.user_options['cmd'])
 
-        #below setting only works for UI-based option.
-        if 'folder2mount' in self.user_options:
-            data_folder=self.user_options['folder2mount']
-            self.read_only_volumes= {data_folder:"/home/wode-user/dataset/"}
         
         if 'data_sources' in self.user_options:
             sources=self.user_options['data_sources']
             for source in sources:
+                print(source)
                 if source['control'] == 'ro':
                     print(source['source'])
                     self.read_only_volumes[source['source']]= source['target']
@@ -178,6 +173,7 @@ class DockerImageChooserSpawner(DockerSpawner):
             workspace = self.user_options['workspace']
             #FIXME: DON'T USE HARDCODED PATH. 
             self.volumes[workspace] = "/home/wode-user/work/"
+            
         
         
         # start the container

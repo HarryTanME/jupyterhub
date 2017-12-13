@@ -156,8 +156,9 @@ class Spawner(LoggingConfigurable):
     admin_access = Bool(False)
     api_token = Unicode()
     oauth_client_id = Unicode()
-    session_outputs_path=Unicode()
-
+    #session_outputs_path=Unicode()
+    #users_data_path=Unicode()
+    
     will_resume = Bool(False,
         help="""Whether the Spawner will resume on next start
 

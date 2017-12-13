@@ -48,7 +48,10 @@ class UserServerAPIHandler(APIHandler):
                 raise web.HTTPError(400, "%s is already running" % spawner._log_name)
             
         options = self.get_json_body()
-        
+        if "workspace" not in options:# this is hackable, meaning users can overwrite workspace to mount their own path.
+            #self.volumes[user_home] = "/home/wode-user/work/"
+            options["workspace"] = current_user.user_data_path
+            
         yield self.spawn_single_user(user, server_name, options=options)
         status = 202 if spawner.pending == 'spawn' else 201
         self.set_header('Content-Type', 'text/plain')
@@ -311,13 +314,13 @@ class SesseionListAPIHandler(UserAPIHandler):
             return all_sesssions(user, project_name)
 
 default_handlers =[
-    (r"/api/user/([^/]+)/servers/?", UserServerAPIHandler),
+    (r"/api/user/([^/]+)/sessions/?", UserServerAPIHandler),
     (r"/api/user/([^/]+)/project/([^/]+)/server/([^/]*)", ProjectServerAPIHandler),
     (r"/api/user/([^/]+)/project/([^/]*)/servers/?", SesseionListAPIHandler),
-    (r"/api/user/([^/]+)/server/([^/]*)", UserServerAPIHandler),
-    (r"/api/user/([^/]+)/server/([^/]*)/status/?", ServerStatusAPIHandler),
-    (r"/api/user/([^/]+)/server/([^/]*)/stats/?", ServerStatsAPIHandler),
-    (r"/api/user/([^/]+)/server/([^/]*)/logs/?", ServerLogsAPIHandler),
-    (r"/api/user/([^/]+)/server/([^/]*)/outputs/?", ServerOutputsAPIHandler),
-    (r"/api/user/([^/]+)/server/([^/]*)/tags/?", ServerTagsAPIHandler),
+    (r"/api/user/([^/]+)/session/([^/]*)", UserServerAPIHandler),
+    (r"/api/user/([^/]+)/session/([^/]*)/status/?", ServerStatusAPIHandler),
+    (r"/api/user/([^/]+)/session/([^/]*)/stats/?", ServerStatsAPIHandler),
+    (r"/api/user/([^/]+)/session/([^/]*)/logs/?", ServerLogsAPIHandler),
+    (r"/api/user/([^/]+)/session/([^/]*)/outputs/?", ServerOutputsAPIHandler),
+    (r"/api/user/([^/]+)/session/([^/]*)/tags/?", ServerTagsAPIHandler),
 ]

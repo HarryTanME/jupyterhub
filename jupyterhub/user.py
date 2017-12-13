@@ -5,6 +5,7 @@ from collections import defaultdict
 from datetime import datetime, timedelta
 from urllib.parse import quote, urlparse
 import warnings
+import os
 
 from oauth2.error import ClientNotFoundError
 from sqlalchemy import inspect
@@ -153,6 +154,10 @@ class User(HasTraits):
                 yield self.save_auth_state(auth_state)
         return auth_state
 
+    @property
+    def user_data_path(self):
+        return os.path.join(self.settings.get('users_data_path'), str(self.id))
+    
     @property
     def authenticator(self):
         return self.settings.get('authenticator', None)
@@ -351,7 +356,8 @@ class User(HasTraits):
         # we are starting a new server, make sure it doesn't restore state
         spawner.clear_state()
         spawner.session_outputs_path=self.settings['session_outputs_path']
-        print("~~~~~~~~~~~~~~spawner.session_outputs_path "+spawner.session_outputs_path)
+        spawner.users_data_path=self.settings['users_data_path']
+
         # create API and OAuth tokens
         spawner.api_token = api_token
         spawner.admin_access = self.settings.get('admin_access', False)

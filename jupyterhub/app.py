@@ -549,6 +549,7 @@ class JupyterHub(Application):
     ).tag(config=True)
     
     session_outputs_path = Unicode().tag(config=True)
+    users_data_path = Unicode().tag(config=True)
     
     # class for spawning single-user servers
     spawner_class = Type(LocalProcessSpawner, Spawner,
@@ -1344,8 +1345,9 @@ class JupyterHub(Application):
             concurrent_spawn_limit=self.concurrent_spawn_limit,
             active_server_limit=self.active_server_limit,
             session_outputs_path = self.session_outputs_path,
+            users_data_path = self.users_data_path,    
         )
-        print("~~~~~~~~~~~~~~spawner.session_outputs_path "+self.session_outputs_path)
+
         # allow configured settings to have priority
         settings.update(self.tornado_settings)
         self.tornado_settings = settings
