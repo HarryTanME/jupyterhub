@@ -50,7 +50,7 @@ class UserServerAPIHandler(APIHandler):
         options = self.get_json_body()
         if "workspace" not in options:# this is hackable, meaning users can overwrite workspace to mount their own path.
             #self.volumes[user_home] = "/home/wode-user/work/"
-            options["workspace"] = current_user.user_data_path
+            options["workspace"] = self.current_user.user_data_path
             
         yield self.spawn_single_user(user, server_name, options=options)
         status = 202 if spawner.pending == 'spawn' else 201

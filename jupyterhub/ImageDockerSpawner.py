@@ -35,37 +35,40 @@ class DockerImageChooserSpawner(DockerSpawner):
             {option_template}
         </select>
         </div>
-        <div class="cmd">
+        <div class="software">
+            <div>Choose your entry software:</div>
+            <div>
+            <input type="radio" id="notebook" name="software" checked="checked" value="notebook">
+            <label for="useLab">Default Jupyter Notebook</label>
+            </div>
+            <div><input type="radio" id="lab" name="software" value="lab">
+            <label for="useLab">Use Jupyter Lab(beta)</label>
+            </div>
+            <div><input type="radio" id="rstudio" name="software" value="rstudio">
+            <label for="useRStudio">Use RStudio</label>
+            </div>
+        </div>
+        <div>
+            <div><label for="data2mount">Data to Mount:</label></div>
+            <div><textarea rows="1" cols="55" name="data2mount" placeholder="View available publid datasets at wode.ai/dataset"></textarea></div>
+        </div>
+        <br />
+        <div class="pre-cmd">
             <div><label for="env">Pre-launch Commands</label></div>
-            <div><textarea rows="5" cols="55" name="pre-cmd" >
-#pip install <package>;\n#git clone <git repo>; \nstart-notebook.sh --ip=0.0.0.0 --port=8888 --hub-api-url=http://10.0.1.10:8081/hub/api
-            </textarea></div>
+            <div><textarea rows="3" cols="60" name="pre-cmd" placeholder="#pip install <package>;\n#git clone <git repo>;"></textarea></div>
+        </div>
+        <div class="cmd">
+            <div><label for="env">Main Commands</label></div>
+            <div><textarea rows="2" cols="60" name="cmd" placeholder="(Start Jupyter Notebook by default.)"></textarea></div>
         </div>
         <!--
         <div>
             <div><label for="args">Extra notebook CLI arguments</label></div>
-            <div><textarea rows="2" cols="55"name="args" placeholder="e.g. --debug"></textarea></div>
+            <div><textarea rows="2" cols="60"name="args" placeholder="e.g. --debug"></textarea></div>
         </div> -->
-        <div>
-            <div><label for="data2mount">Data to Mount</label></div>
-            <div><textarea rows="1" cols="55" name="data2mount" placeholder=""></textarea></div>
-        </div>
         <div class="env">
             <div><label for="env">Environment variables (one per line)</label></div>
-            <div><textarea rows="2" cols="55" name="env"></textarea></div>
-        </div>
-        <div class="workspace">
-            <div>Choose your entry software:</div>
-            <div>
-            <input type="radio" id="notebook" name="workspace" checked="checked" value="notebook">
-            <label for="useLab">Default Jupyter Notebook</label>
-            </div>
-            <div><input type="radio" id="lab" name="workspace" value="lab">
-            <label for="useLab">Use Jupyter Lab(beta)</label>
-            </div>
-            <div><input type="radio" id="rstudio" name="workspace" value="rstudio">
-            <label for="useRStudio">Use RStudio</label>
-            </div>
+            <div><textarea rows="2" cols="60" name="env"></textarea></div>
         </div>
         
         """,
@@ -124,11 +127,14 @@ class DockerImageChooserSpawner(DockerSpawner):
         arg_s = formdata.get('args', [''])[0].strip()   
         
         if formdata.get('pre-cmd', None) and formdata.get('pre-cmd',None)[0] != "" :
-            options['cmd'] = formdata.get('pre-cmd')[0].strip()+';'
-            
-        wkspc=' --NotebookApp.default_url=/{}'.format(formdata.get('workspace')[0])
-        if formdata.get('workspace') and formdata.get('workspace')[0] in ["lab", "rstudio"]:
-            arg_s += wkspc
+            options['pre-cmd'] = formdata.get('pre-cmd')[0].strip()+';'
+        
+        if formdata.get('cmd', None) and formdata.get('cmd',None)[0] != "" :
+            options['cmd'] = formdata.get('cmd')[0].strip()+';'
+        
+        software=' --NotebookApp.default_url=/{}'.format(formdata.get('software')[0])
+        if formdata.get('software') and formdata.get('software')[0] in ["lab", "rstudio"]:
+            arg_s += software
         if arg_s:
             options['argv'] = shlex.split(arg_s)
         options['workspace'] =self.user.user_data_path

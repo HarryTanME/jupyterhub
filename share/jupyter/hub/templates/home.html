@@ -31,11 +31,11 @@
     {% for s in user.running_spawners %}
            <li> <a target="_blank" href="{{ user.url}}{{s.name}}" ><p> {{s.name if s.name != "" else "Running Sessions"}} </p></a>
             </li> 
-        <li> <span role="button" class="stop-server btn btn-xs btn-danger">stop session</span>
+        <li> <span role="button" class="stop-server btn btn-xs btn-danger" data-servername="{{s.name}}">stop session</span>
             </li>
     {% endfor %}
     </ul>
-    <a id="start"role="button" class="btn btn-sm btn-success" target="_blank" href="{{ url }}">
+    <a id="start" role="button" class="btn btn-sm btn-success" target="_blank" href="{{ url }}">
       Start New Session
       </a>
     </div>
@@ -50,7 +50,8 @@
     <ul>
     {% for proj in user.projects %}
         {% if proj != ""  %}
-           <li> <a target="_blank" href="{{ user.url}}project/{{proj.name}}" ><p> {{proj.name}} </p></a>
+        <!-- -->
+           <li> <a target="_blank" href="{{ user.url}}project/{{proj.name}}"><p class="project-name" data-url="{{ user.url}}project/{{proj.name}}"> {{proj.name}} </p></a>
            <a id="start"role="button" class="btn btn-sm btn-success" target="_blank" href="{{ user.url}}project/{{proj.name}}/server">
           Start Project Session
           </a> </li>

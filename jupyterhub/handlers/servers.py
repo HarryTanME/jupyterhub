@@ -17,10 +17,15 @@ import os, binascii
 class ProjectHandler(BaseHandler):
     @web.authenticated
     def get(self, username, proj_name):
-        self.write(username+"  "+proj_name)
+        
+        user = self.get_current_user()
+        
+        html = self.render_template('project.html',
+            user=user,
+            proj_name=proj_name,
+        )
+        self.finish(html)
 
-        
-        
 class ServerInfoHandler(BaseHandler):
     @web.authenticated
     def get(self, username, server_name):

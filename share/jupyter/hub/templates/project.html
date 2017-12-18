@@ -1,0 +1,22 @@
+{% extends "page.html" %}
+
+
+{% block main %}
+<div id="proj_info">haha</div>
+
+
+{% endblock %}
+
+{% block script %}
+{{ super() }}
+
+    <script type="text/javascript">
+      window.jhdata = {
+          proj_name: "{{proj_name}}",
+            user: "{{user.name}}",
+      }
+      
+    </script>
+
+
+{% endblock %}

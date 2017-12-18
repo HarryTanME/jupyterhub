@@ -43,20 +43,33 @@ define(['jquery', 'utils'], function ($, utils) {
         $.ajax(url, options);
     };
     
+    
+    
+    JHAPI.prototype.get_project = function (user, proj_name, options) {
+        options = options || {};
+        options = ajax_defaults(options || {});
+        var url = utils.url_path_join(
+            this.base_url,
+            'api',
+            'user', user, 'project',proj_name
+        );
+        $.ajax(url, options);
+    };
+    
     JHAPI.prototype.start_server = function (user, options) {
         options = options || {};
         options = update(options, {type: 'POST', dataType: null});
         this.api_request(
-            utils.url_path_join('users', user, 'server'),
+            utils.url_path_join('user', user, 'session'),
             options
         );
     };
     
-    JHAPI.prototype.stop_server = function (user, options) {
+    JHAPI.prototype.stop_server = function (user, server_name, options) {
         options = options || {};
         options = update(options, {type: 'DELETE', dataType: null});
         this.api_request(
-            utils.url_path_join('users', user, 'server'),
+            utils.url_path_join('user', user, 'session', server_name),
             options
         );
     };
