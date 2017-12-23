@@ -15,52 +15,78 @@
       {% endif %}
         My Server
       </a>
-    </div>
+      </div>
   </div>
 </div>
 {% endif %}
+
+<div class="container">
+  <div class="row">
+    <div>Welcome, {{ user.name}} 
+        <a id="start" role="button" class="btn btn-sm btn-success" target="_blank" href="{{ url }}">
+          Start New Session
+        </a>
+    </div> 
+      
+
+    <hr/>
 
 {% if allow_named_servers %}
 <div class="container">
-  <div class="row">
-    <div>Welcome, {{ user.name}}  <p />
-      {{user.servers}}</div> 
-    <div class="text-center">
-        <div>Running Servers:</div>
-    <ul>
+ <div>Running Servers:</div>
+    <tr class="user-row" >
     {% for s in user.running_spawners %}
-           <li> <a target="_blank" href="{{ user.url}}{{s.name}}" ><p> {{s.name if s.name != "" else "Running Sessions"}} </p></a>
-            </li> 
-        <li> <span role="button" class="stop-server btn btn-xs btn-danger" data-servername="{{s.name}}">stop session</span>
-            </li>
+        <td > <a target="_blank" href="{{ user.url}}{{s.name}}" > {{s.name if s.name != "" else "Default Session"}}</a>
+            </td> 
+         <td> <span role="button" class ="session-more btn-info btn-xs">More</span>
+        </td>
+        <td> <span role="button" class="stop-server btn btn-xs btn-danger" data-servername="{{s.name}}">Stop Session</span>
+            </td>
+
+        <div id="sessionCommands" style="display:none">
+            <td> <span role="button" class="session-logs btn-info btn-xs " data-servername="{{s.name}}">Logs</span>
+                </td>
+            <td> <span role="button" class="session-status btn-info btn-xs " data-servername="{{s.name}}">Status</span>
+                </td>
+            <td> <span role="button" class="session-stats btn-info btn-xs " data-servername="{{s.name}}">Stats</span>
+                </td>
+            <td> <span role="button" class="session-tags btn-info btn-xs " data-servername="{{s.name}}">Show Tags</span>
+                </td>
+            <td> <span role="button" class="add-session-tag btn-info btn-xs " data-servername="{{s.name}}">Add Tag</span>
+                </td>
+            <td> <span role="button" class="add-session-comment btn-info btn-xs " data-servername="{{s.name}}">Add Comment</span>
+                </td>
+            <td> <span role="button" class="session-comments btn-info btn-xs " data-servername="{{s.name}}">Show Comments</span>
+                </td>
+        </div>
     {% endfor %}
-    </ul>
-    <a id="start" role="button" class="btn btn-sm btn-success" target="_blank" href="{{ url }}">
-      Start New Session
-      </a>
+    </tr>
     </div>
   </div>
+    <hr/>
 </div>
-{% endif %}
-
-
+{% endif %}   
 {% if user.projects %}
-    <div class="text-center">
+    <div class="container">
     <div>Your Projects:</div>
-    <ul>
+
     {% for proj in user.projects %}
         {% if proj != ""  %}
-        <!-- -->
-           <li> <a target="_blank" href="{{ user.url}}project/{{proj.name}}"><p class="project-name" data-url="{{ user.url}}project/{{proj.name}}"> {{proj.name}} </p></a>
-           <a id="start"role="button" class="btn btn-sm btn-success" target="_blank" href="{{ user.url}}project/{{proj.name}}/server">
-          Start Project Session
-          </a> </li>
+        <div class="col-sm-3">
+           <a target="_blank" href="{{ user.url}}project/{{proj.name}}" ><p class="project-name" data-projname="{{proj.name}}"> {{proj.name}} </p></a>
+           <span role="button" class="start-project btn btn-sm btn-success" data-projname="{{proj.name}}">Start Project Session </span> 
+            <span role="button" class="delete-project btn btn-xs btn-danger" data-projname="{{proj.name}}">Delete Project </span> 
+        </div>    
         {% endif %}
     {% endfor %}
-    </ul>
+
     </div>
 
 {% endif %}
+
+<div id ="session_info" class="container">
+    
+</div>
 
 {% endblock %}
 

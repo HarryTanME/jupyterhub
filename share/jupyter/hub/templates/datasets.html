@@ -1,0 +1,244 @@
+{% extends "page.html" %}
+
+{% block main %}
+<link rel="stylesheet" href="http://wode.ai/Portals/_default/Containers/20073-UnlimitedColorsPack-055/container.css?cdv=104" type="text/css">
+<link rel="stylesheet" href="http://wode.ai/Portals/_default/skins/20073-unlimitedcolorspack-055/skin.css?cdv=104" type="text/css">
+<div class="container">
+    <blockquote class="dg-blockquote">
+        <p>Now you don't have to download super large datasets any more. WodeAI does that for you.</p>
+        <p>You attach one of these datasets in the "Data to Mount" Session Option when starting your new session. They will show up in the "~/dataset" folder.</p>
+    </blockquote>
+    
+<div class="col-sm-9">
+<dl class="dl-horizontal">
+ <dt><strong>Name</strong></dt>
+ <dd><strong>MNIST</strong></dd>
+ <dt>Size</dt>
+ <dd>53M</dd>
+ <dt>Source</dt>
+ <dd>http://yann.lecun.com/exdb/mnist/</dd>
+ <dt>Description</dt>
+ <dd>The MNIST database of handwritten digits, available from this page, has a training set of 60,000 examples, and a test set of 10,000 examples. It is a subset of a larger set available from NIST. The digits have been size-normalized and centered in a fixed-size image.
+ <p>It is a good database for people who want to try learning techniques and pattern recognition methods on real-world data while spending minimal efforts on preprocessing and formatting.</p>
+ </dd>
+ <dt><strong>Name</strong></dt>
+ <dd><strong>CIFAR-10</strong></dd>
+ <dt>Size</dt>
+ <dd>341M</dd>
+ <dt>Source</dt>
+ <dd>https://www.cs.toronto.edu/~kriz/cifar.html</dd>
+ <dt>Description</dt>
+ <dd>The CIFAR-10 and CIFAR-100 are labeled subsets of the 80 million tiny images dataset. They were collected by Alex Krizhevsky, Vinod Nair, and Geoffrey Hinton.
+ <p>The CIFAR-10 dataset The CIFAR-10 dataset consists of 60000 32x32 colour images in 10 classes, with 6000 images per class. There are 50000 training images and 10000 test images. The dataset is divided into five training batches and one test batch, each with 10000 images. The test batch contains exactly 1000 randomly-selected images from each class. The training batches contain the remaining images in random order, but some training batches may contain more images from one class than another. Between them, the training batches contain exactly 5000 images from each class.</p>
+ </dd>
+ <dt><strong>Name</strong></dt>
+ <dd><strong>Wikipedia (english)</strong></dd>
+ <dt>Size</dt>
+ <dd>13G</dd>
+ <dt>Source</dt>
+ <dd>https://dumps.wikimedia.org/enwiki/latest/enwiki-latest-pages-articles.xml.bz2</dd>
+ <dt>Description</dt>
+ <dd>This is a static dump of English Wikipedia as of July 2017.</dd>
+ <dt><strong>Name</strong></dt>
+ <dd><strong>Amazon-Reviews2</strong></dd>
+ <dt>Size</dt>
+ <dd>22G</dd>
+ <dt>Source</dt>
+ <dd>https://archive.org/details/amazon-reviews-1995-2013</dd>
+ <dt>Description</dt>
+ <dd>This dataset consists of reviews from amazon. The data span a period of 18 years, including ~35 million reviews up to March 2013. Reviews include product and user information, ratings, and a plaintext review. Note: this dataset contains potential duplicates, due to products whose reviews Amazon merges. A file has been added below (possible_dupes.txt.gz) to help identify products that are potentially duplicates of each other.&quot;</dd>
+ <dt><strong>Name</strong></dt>
+ <dd><strong>Youtube-UCF</strong></dd>
+ <dt>Size</dt>
+ <dd>626M</dd>
+ <dt>Source</dt>
+ <dd>http://crcv.ucf.edu/data/UCF_YouTube_Action.php</dd>
+ <dt>Description</dt>
+ <dd>Overview
+ <p>It contains 11 action categories: basketball shooting, biking/cycling, diving, golf swinging, horse back riding, soccer juggling, swinging, tennis swinging, trampoline jumping, volleyball spiking, and walking with a dog. This data set is very challenging due to large variations in camera motion, object appearance and pose, object scale, viewpoint, cluttered background, illumination conditions, etc. For each category, the videos are grouped into 25 groups with more than 4 action clips in it. The video clips in the same group share some common features, such as the same actor, similar background, similar viewpoint, and so on. The videos are ms mpeg4 format. You need to install the right Codec (e.g. K-lite Codec Pack contains a cellection of Codecs) to access them. If you happen to use this data set, you can refer the following paper: J. Liu, J. Luo and M. Shah, Recognizing realistic actions from videos &#39;in the wild&#39;, CVPR 2009, Miami, FL. (For action biking and walking class, we select all the videos; for the rest of action classes, we only select the videos numbered from 01 to 04 from each group).</p>
+ </dd>
+ <dt><strong>Name</strong></dt>
+ <dd><strong>Amazon-Reviews</strong></dd>
+ <dt>Size</dt>
+ <dd>354M</dd>
+ <dt>Source</dt>
+ <dd>http://times.cs.uiuc.edu/~wang296/Data/</dd>
+ <dt>Description</dt>
+ <dd>Hongning Wang, Yue Lu and ChengXiang Zhai. Latent Aspect Rating Analysis without Aspect Keyword Supervision. The 17th ACM SIGKDD Conference on Knowledge Discovery and Data Mining (KDD&#39;2011), P618-626, 2011.
+ <p>Hongning Wang, Yue Lu and Chengxiang Zhai. Latent Aspect Rating Analysis on Review Text Data: A Rating Regression Approach. The 16th ACM SIGKDD Conference on Knowledge Discovery and Data Mining (KDD&#39;2010), p783-792, 2010.</p>
+ </dd>
+ <dt><strong>Name</strong></dt>
+ <dd><strong>Audio-CMU-AN4</strong></dd>
+ <dt>Size</dt>
+ <dd>153M</dd>
+ <dt>Source</dt>
+ <dd>http://www.speech.cs.cmu.edu/databases/an4</dd>
+ <dt>Description</dt>
+ <dd>This directory contains the alphanumeric database (aka &#39;census&#39; aka &#39;an4&#39;) recorded at Carnegie Mellon University circa 1991. This database is described in details in &#39;Acoustical and environmental robustness in automatic speech recognition&#39;, by Alex Acero, published by Kluwer Academic Publishers, 1993.
+ <p>Subjects were asked to spell out personal information, such as name, address, telephone number, birthdates, etc. They were instructed to not use their actual numbers. In addition to these, subjects also spoke randomly generated sequences of words containing control words. The database used internally at CMU has 1018 training and 140 test utterances, whereas the database provided here has 948 training and 130 test utterances. The sentences containing social security numbers were removed, just in case any of the subjects did not follow the advice to use a fake number. All data are sampled at 16 kHz, 16-bit linear sampling. All recordings were made with a close talking microphone.</p>
+ </dd>
+ <dt><strong>Name</strong></dt>
+ <dd><strong>Stanford Sentiment Treebank</strong></dd>
+ <dt>Size</dt>
+ <dd>20M</dd>
+ <dt>Source</dt>
+ <dd>https://nlp.stanford.edu/sentiment/treebank.html</dd>
+ <dt>Description</dt>
+ <dd>
+ <p>Deeply Moving: Deep Learning for Sentiment Analysis This website provides a live demo for predicting the sentiment of movie reviews. Most sentiment prediction systems work just by looking at words in isolation, giving positive points for positive words and negative points for negative words and then summing up these points. That way, the order of words is ignored and important information is lost. In constrast, our new deep learning model actually builds up a representation of whole sentences based on the sentence structure. It computes the sentiment based on how words compose the meaning of longer phrases. This way, the model is not as easily fooled as previous models.&nbsp;</p>
+ </dd>
+ <dt><strong>Name</strong></dt>
+ <dd><strong>PASCAL</strong></dd>
+ <dt>Size</dt>
+ <dd>3.8G</dd>
+ <dt>Source</dt>
+ <dd>http://host.robots.ox.ac.uk/pascal/VOC/voc2012/index.html</dd>
+ <dt>Description</dt>
+ <dd>The PASCAL VOC project p<span style="font-size: 16px;">rovides standardised image data sets for object class recognition Provides a common set of tools for accessing the data sets and annotations Enables evaluation and comparison of different methods Ran challenges evaluating performance on object class recognition (from 2005-2012, now finished) Pascal VOC data sets Data sets from the VOC challenges are available through the challenge links below, and evalution of new methods on these data sets can be achieved through the PASCAL VOC Evaluation Server. The evaluation server will remain active even though the challenges have now finished.</span></dd>
+ <dt><strong>Name</strong></dt>
+ <dd><strong>Multi-Salient-Object</strong></dd>
+ <dt>Size</dt>
+ <dd>350M</dd>
+ <dt>Source</dt>
+ <dd>http://www.bu.edu/cs/ivc/software-data/</dd>
+ <dt>Description</dt>
+ <dd>People can immediately and precisely identify that an image contains 1, 2, 3 or 4 items by a simple glance. The phenomenon, known as Subitizing, inspires us to pursue the task of Salient Object Subitizing, i.e. predicting the existence and the number of salient objects in a scene using holistic cues. We have collected two benchmark image datasets for salient object subitizing, and include a baseline algorithm as described in: Jianming Zhang, Shugao Ma, Mehrnoosh Sameki, Stan Sclaroff, Margrit Betke, Zhe Lin, Xiaohui Shen, Brian Price and Radomir Mech, &ldquo;Salient Object Subitizing&rdquo;. In Proc. IEEE Conference on Computer Vision and Pattern Recognition (CVPR), June 2015</dd>
+ <dt><strong>Name</strong></dt>
+ <dd><strong>BSDS-image-segment</strong></dd>
+ <dt>Size</dt>
+ <dd>44M</dd>
+ <dt>Source</dt>
+ <dd>https://www2.eecs.berkeley.edu/Research/Projects/CS/vision/bsds/</dd>
+ <dt>Description</dt>
+ <dd>The goal of this work is to provide an empirical basis for research on image segmentation and boundary detection. To this end, we have collected 12,000 hand-labeled segmentations of 1,000 Corel dataset images from 30 human subjects. Half of the segmentations were obtained from presenting the subject with a color image; the other half from presenting a grayscale image. The public benchmark based on this data consists of all of the grayscale and color segmentations for 300 images. The images are divided into a training set of 200 images, and a test set of 100 images.</dd>
+ <dt><strong>Name</strong></dt>
+ <dd><strong>vgg_face</strong></dd>
+ <dt>Size</dt>
+ <dd>1.1G</dd>
+ <dt>Source</dt>
+ <dd>http://www.robots.ox.ac.uk/~vgg/software/vgg_face/src/vgg_face_caffe.tar.gz</dd>
+ <dt>Description</dt>
+ <dd>&nbsp;
+ <p>The VGG-Face CNN descriptors are computed using our CNN implementation based on the VGG-Very-Deep-16 CNN architecture&nbsp;and are evaluated on the Labeled Faces in the Wild&nbsp;and the YouTube Faces&nbsp;dataset. Additionally the code also contains our fast implementation of the DPM Face detector of&nbsp;using the cascade DPM code. Details of how to crop the face given a detection can be found in vgg_face_matconvnet package below in class faceCrop in +lib/+face_proc directory.</p>
+ </dd>
+ <dt><strong>Name</strong></dt>
+ <dd><strong>Stanford_cs224d</strong></dd>
+ <dt>Size</dt>
+ <dd>172M</dd>
+ <dt>Source</dt>
+ <dd>http://web.stanford.edu/class/cs224n/assignments.html</dd>
+ <dt>Description</dt>
+ <dd>This is the dataset for Stanford&#39;s CS224d course assignments.</dd>
+ <dt><strong>Name</strong></dt>
+ <dd><strong>Stanford_cs231n</strong></dd>
+ <dt>Size</dt>
+ <dd>2.4G</dd>
+ <dt>Source</dt>
+ <dd>http://cs231n.stanford.edu/assignments.html</dd>
+ <dt>Description</dt>
+ <dd>This is the dataset for Stanford&#39;s CS231n course assignments.</dd>
+ <dt><strong>Name</strong></dt>
+ <dd><strong>imagenet</strong></dd>
+ <dt>Size</dt>
+ <dd>3.8M</dd>
+ <dt>Source</dt>
+ <dd>Please load the .npz file with numpy</dd>
+ <dt>Description</dt>
+ <dd>(This is not ready yet. We are working on onboarding this dataset.)</dd>
+ <dt><strong>Name</strong></dt>
+ <dd><strong>ImageNet-ILSVRC</strong></dd>
+ <dt>Size</dt>
+ <dd>8.0K</dd>
+ <dt>Source</dt>
+ <dd>http://www.image-net.org/challenges/LSVRC/</dd>
+ <dt>Description</dt>
+ <dd>(This is not ready yet. We are working on onboarding this dataset.)</dd>
+ <dt><strong>Name</strong></dt>
+ <dd><strong>Oxford-102-Flowers</strong></dd>
+ <dt>Size</dt>
+ <dd>1.1G</dd>
+ <dt>Source</dt>
+ <dd>http://www.robots.ox.ac.uk/~vgg/data/flowers/102</dd>
+ <dt>Description</dt>
+ <dd>Overview
+ <p>We have created a 102 category dataset, consisting of 102 flower categories. The flowers chosen to be flower commonly occuring in the United Kingdom. Each class consists of between 40 and 258 images. The details of the categories and the number of images for each class can be found on this category statistics page. The images have large scale, pose and light variations. In addition, there are categories that have large variations within the category and several very similar categories. The dataset is visualized using isomap with shape and colour features.</p>
+ </dd>
+ <dt><strong>Name</strong></dt>
+ <dd><strong>Celeb-A</strong></dd>
+ <dt>Size</dt>
+ <dd>24G</dd>
+ <dt>Source</dt>
+ <dd>http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html</dd>
+ <dt>Description</dt>
+ <dd>CelebFaces Attributes Dataset (CelebA) is a large-scale face attributes dataset with more than 200K celebrity images, each with 40 attribute annotations. The images in this dataset cover large pose variations and background clutter. CelebA has large diversities, large quantities, and rich annotations, including
+ <p>10,177 number of identities,a 202,599 number of face images, and 5 landmark locations, 40 binary attributes annotations per image. The dataset can be employed as the training and test sets for the following computer vision tasks: face attribute recognition, face detection, and landmark (or facial part) localization.</p>
+ </dd>
+ <dt><strong>Name</strong></dt>
+ <dd><strong>OUI-AdienceFaceImage</strong></dd>
+ <dt>Size</dt>
+ <dd>6.1G</dd>
+ <dt>Source</dt>
+ <dd>http://www.openu.ac.il/home/hassner/Adience/data.html#agegender</dd>
+ <dt>Description</dt>
+ <dd>In order to facilitate the study of age and gender recognition, we provide a data set and benchmark of face photos. The data included in this collection is intended to be as true as possible to the challenges of real-world imaging conditions. In particular, it attempts to capture all the variations in appearance, noise, pose, lighting and more, that can be expected of images taken without careful preparation or posing.
+ <p>The sources of the images included in our set are Flickr albums, assembled by automatic upload from iPhone5 (or later) smart-phone devices, and released by their authors to the general public under the Creative Commons (CC) license.</p>
+ </dd>
+ <dt><strong>Name</strong></dt>
+ <dd><strong>AlexNet-Places205</strong></dd>
+ <dt>Size</dt>
+ <dd>427M</dd>
+ <dt>Source</dt>
+ <dd>http://places.csail.mit.edu/</dd>
+ <dt>Description</dt>
+ <dd>Scene recognition is one of the hallmark tasks of computer vision, allowing defining a context for object recognition. Here we introduce a new scene-centric database called Places, with 205 scene categories and 2.5 millions of images with a category label. Using convolutional neural network (CNN), we learn deep scene features for scene recognition tasks, and establish new state-of-the-art performances on scene-centric benchmarks. Here we provide the Places Database and the trained CNNs for academic research and education purposes.</dd>
+ <dt><strong>Name</strong></dt>
+ <dd><strong>Selfies</strong></dd>
+ <dt>Size</dt>
+ <dd>2.2G</dd>
+ <dt>Source</dt>
+ <dd>http://crcv.ucf.edu/data/Selfie/</dd>
+ <dt>Description</dt>
+ <dd>Selfie dataset contains 46,836 selfie images annotated with 36 different attributes divided into several categories as follows. Gender: is female. Age: baby, child, teenager, youth, middle age, senior. Race: white, black, asian. Face shape: oval, round, heart. Facial gestures: smiling, frowning, mouth open, tongue out, duck face. Hair color: black, blond, brown, red. Hair shape: curly, straight, braid. Accessories: glasses, sunglasses, lipstick, hat, earphone. Misc.: showing cellphone, using mirror, having braces, partial face. Lighting condition: harsh, dim.</dd>
+ <dt><strong>Name</strong></dt>
+ <dd><strong>coco_captioning</strong></dd>
+ <dt>Size</dt>
+ <dd>60G</dd>
+ <dt>Source</dt>
+ <dd>http://cocodataset.org/#download</dd>
+ <dt>Description</dt>
+ <dd>
+ <p>COCO is a large-scale object detection, segmentation, and captioning dataset. COCO has several features: Object segmentation Recognition in context Superpixel stuff segmentation 330K images (&gt;200K labeled) 1.5 million object instances 80 object categories 91 stuff categories 5 captions per image 250,000 people with keypoints</p>
+ </dd>
+ <dt><strong>Name</strong></dt>
+ <dd><strong>Forum_text</strong></dd>
+ <dt>Size</dt>
+ <dd>259M</dd>
+ <dt>Source</dt>
+ <dd>http://times.cs.uiuc.edu/~wang296/Data/</dd>
+ <dt>Description</dt>
+ <dd>Forum data sets for &#39;Online forum mining and analysis&#39; Hongning Wang, Chi Wang, ChengXiang Zhai and Jiawei Han. Learning Online Discussion Structures by Conditional Random Fields. The 34th Annual International ACM SIGIR Conference (SIGIR&#39;2011), P435-444, 2011.</dd>
+ <dt><strong>Name</strong></dt>
+ <dd><strong>TripAdvisor</strong></dd>
+ <dt>Size</dt>
+ <dd>435M</dd>
+ <dt>Source</dt>
+ <dd>http://times.cs.uiuc.edu/~wang296/Data/</dd>
+ <dt>Description</dt>
+ <dd>Hongning Wang, Yue Lu and ChengXiang Zhai. Latent Aspect Rating Analysis without Aspect Keyword Supervision. The 17th ACM SIGKDD Conference on Knowledge Discovery and Data Mining (KDD&#39;2011), P618-626, 2011.
+ <p>Hongning Wang, Yue Lu and Chengxiang Zhai. Latent Aspect Rating Analysis on Review Text Data: A Rating Regression Approach. The 16th ACM SIGKDD Conference on Knowledge Discovery and Data Mining (KDD&#39;2010), p783-792, 2010.</p>
+ </dd>
+</dl>
+
+</div>
+</div>
+
+
+
+{% endblock %}
+
+{% block script %}
+{{ super() }}
+    <script type="text/javascript">
+       
+    </script>
+{% endblock %}

@@ -11,7 +11,7 @@ import base64
 from .. import orm
 from ..utils import admin_only
 from .base import APIHandler
-from .users import admin_or_self, UserAPIHandler
+from .users import admin_or_self, UserAPIHandler, valid_user
 
 class _ProjectAPIHandler(UserAPIHandler):
     
@@ -89,6 +89,8 @@ class UserProjectAPIHandler(_ProjectAPIHandler):
             raise web.HTTPError(400, "Project Id cannot be null or empty.")
         
         project = self.find_user_project(user, proj_name)
+        if project is None:
+            raise web.HTTPError(400, "Project [] is not found.".format(proj_name))
         self.write(json.dumps(self._project_model(user, project)))
 
     

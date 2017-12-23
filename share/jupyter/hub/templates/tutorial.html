@@ -1,0 +1,41 @@
+{% extends "page.html" %}
+
+{% block main %}
+<link rel="stylesheet" href="{{ static_url("css/course.css") }}" type="text/css">
+
+<div class="container">
+    <div> <h1>{{ course["DisplayName"] }}</h1></div>
+    <div class="header-description">
+    <div>Github: <a href="{{ course['Source_github'] }}" target="_blank">{{ course["Source_github"] }}</a></div>
+    <div>Type: {{ course["Type"] }}</div>
+    <div>Difficulty: {{ course["Difficulty"] }}</div>
+    <div>Course Number: {{ course["Code"] }}</div>
+    <div>Description: {{ course["Description"] }}</div>
+    <div>Categoy: {{ course["Category"] }}</div>
+    <div>Estimated Hours: {{ course["Hours"] }}</div>
+    {% if course["HasVideo"] and course["VideoURL"] != '' %}
+    <div>Video: 
+        {% for i,url in enumerate(course["VideoURL"].split(';')) %}
+            <a href="{{url}}" target="_blank">{{"Video_"+str(i+1)}}</a>
+        {% endfor %}  
+    </div>
+    {% endif %}    
+    </div>
+    <div class="take-course">
+        <!--href="/{{course['Image']}}/?repo={{ course['FolderName'] }}" -->
+        <span role="button" class="start-project btn btn-info btn-md" data-github="{{ course['Source_github'] }}" data-image="{{course['Image']}}" data-name="{{course['FolderName']}}" target="_blank">Try this Tutorial</a>
+    </div>
+</div>
+
+<br />
+    {{ tree|safe }}
+{% endblock %}
+
+
+
+{% block script %}
+{{ super() }}
+    <script type="text/javascript">
+        require(["tutorial"]);
+    </script>
+{% endblock %}

@@ -12,7 +12,7 @@ import base64
 from .. import orm
 from ..utils import admin_only, token_authenticated
 from .base import APIHandler
-from .users import admin_or_self, UserAPIHandler
+from .users import admin_or_self, UserAPIHandler, valid_user
 
 
 
@@ -35,7 +35,7 @@ class SessionCommenListtsAPIHandler(APIHandler):
         return comments
 
     @gen.coroutine
-    @token_authenticated
+    @valid_user
     def get(self, session_name):
         comments = self.find_session_comments(session_name)
         aa = []
@@ -72,7 +72,7 @@ class SessionCommentsAPIHandler(UserAPIHandler):
         return comment
     
     @gen.coroutine
-    @token_authenticated
+    @valid_user
     def post(self, session_name):
         user= self.get_current_user()
         spawner = self.find_session(session_name)
@@ -89,7 +89,7 @@ class SessionCommentsAPIHandler(UserAPIHandler):
             raise web.HTTPError(401, "The body is empty.")
             
         comment_id = server_name=binascii.hexlify(os.urandom(16)).decode('ascii')
-        print(len(comment_id))
+        print((data['body']))
         new_comment= orm.SessionComment(id=comment_id ,user_id = user.id, session_name=spawner.name, body=data['body'],
                           create_time = datetime.datetime.now(), last_update =  datetime.datetime.now())
         self.db.add(new_comment)
@@ -99,7 +99,7 @@ class SessionCommentsAPIHandler(UserAPIHandler):
     
     
     @gen.coroutine
-    @token_authenticated
+    @valid_user
     def get(self, session_name, comment_id):
         comment = self.find_by_comment_id(comment_id)
         if comment is None:
@@ -108,7 +108,7 @@ class SessionCommentsAPIHandler(UserAPIHandler):
         self.write(json.dumps(self._comment_model( comment)))
     
     @gen.coroutine
-    @token_authenticated
+    @admin_or_self
     def delete(self, session_name, comment_id):
         comment = self.find_by_comment_id(comment_id)
         if comment is None:
@@ -125,7 +125,7 @@ class SessionCommentsAPIHandler(UserAPIHandler):
         self.write({"status":200, "message":"Comment is deleted."})
         
     @gen.coroutine
-    @token_authenticated
+    @admin_or_self
     def put(self, session_name, comment_id):
         comment = self.find_by_comment_id(comment_id)
         if comment is None:
@@ -164,7 +164,7 @@ class ProjectCommenListtsAPIHandler(APIHandler):
     
     
     @gen.coroutine
-    @token_authenticated
+    @valid_user
     def get(self, name, proj_name):
         user = self.find_user(name)
         project = self.find_project(user, proj_name)
@@ -212,7 +212,7 @@ class ProjectCommentsAPIHandler(APIHandler):
         return comment
 
     @gen.coroutine
-    @token_authenticated
+    @valid_user
     def post(self, name, proj_name):
         user = self.find_user(name)
         project = self.find_project(user, proj_name)
@@ -240,7 +240,7 @@ class ProjectCommentsAPIHandler(APIHandler):
     
     
     @gen.coroutine
-    @token_authenticated
+    @valid_user
     def get(self,  name, proj_name, comment_id):
         user = self.find_user(name)
         project = self.find_project(user, proj_name)
@@ -254,7 +254,7 @@ class ProjectCommentsAPIHandler(APIHandler):
         self.write(json.dumps(self._comment_model(user, project.id, comment)))
     
     @gen.coroutine
-    @token_authenticated
+    @admin_or_self
     def delete(self,  name, proj_name, comment_id):
         user = self.find_user(name)
         project = self.find_project(user, proj_name)
@@ -272,7 +272,7 @@ class ProjectCommentsAPIHandler(APIHandler):
         self.write({"status":200, "message":"Comment is deleted."})
     
     @gen.coroutine
-    @token_authenticated
+    @admin_or_self
     def put(self,  name, proj_name, comment_id):
         user = self.find_user(name)
         project = self.find_project(user, proj_name)
@@ -298,10 +298,10 @@ class ProjectCommentsAPIHandler(APIHandler):
         
         
 default_handlers = [
-    (r"/api/server/([^/]+)/comment/([^/]+)", SessionCommentsAPIHandler),
-    (r"/api/server/([^/]+)/comment/?", SessionCommentsAPIHandler),
+    (r"/api/session/([^/]+)/comment/([^/]+)", SessionCommentsAPIHandler),
+    (r"/api/session/([^/]+)/comment/?", SessionCommentsAPIHandler),
+    (r"/api/session/([^/]+)/comments/?", SessionCommenListtsAPIHandler),
     (r"/api/user/([^/]+)/project/([^/]+)/comment/([^/]+)", ProjectCommentsAPIHandler),
     (r"/api/user/([^/]+)/project/([^/]+)/comment/?", ProjectCommentsAPIHandler),
-    (r"/api/server/([^/]+)/comments/?", SessionCommenListtsAPIHandler),
     (r"/api/user/([^/]+)/project/([^/]+)/comments/?", ProjectCommenListtsAPIHandler),
 ]

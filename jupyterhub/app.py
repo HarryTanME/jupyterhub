@@ -13,7 +13,7 @@ from operator import itemgetter
 import os
 import re
 import signal
-import sys
+import sys, json
 from textwrap import dedent
 from urllib.parse import urlparse
 
@@ -550,6 +550,8 @@ class JupyterHub(Application):
     
     session_outputs_path = Unicode().tag(config=True)
     users_data_path = Unicode().tag(config=True)
+    course_list_file = Unicode().tag(config=True)
+    repo_path = Unicode().tag(config=True)
     
     # class for spawning single-user servers
     spawner_class = Type(LocalProcessSpawner, Spawner,
@@ -1292,6 +1294,23 @@ class JupyterHub(Application):
             ssl_key=self.ssl_key,
         )
 
+    
+    def getCourses(self, json_file):
+        print("current cwd: "+str(os.getcwd()))
+        
+        with open(json_file,'r') as jsonfile:
+            courses = json.load(jsonfile)
+
+        cdict={}
+        categories ={}
+        for course in courses:
+            if course["Hide"] !=1 and course["Chinese"] != 1:
+                cdict[course["Code"]] = course            
+                categories.setdefault(course["Category"], []).append(course["Code"])
+
+        return cdict, categories
+    
+        
     def init_tornado_settings(self):
         """Set up the tornado settings dict."""
         base_url = self.hub.base_url
@@ -1304,6 +1323,10 @@ class JupyterHub(Application):
             **jinja_options
         )
 
+        
+        course_list, course_categories = self.getCourses(self.course_list_file)
+        print(course_categories)
+        
         login_url = url_path_join(base_url, 'login')
         logout_url = self.authenticator.logout_url(base_url)
 
@@ -1346,6 +1369,9 @@ class JupyterHub(Application):
             active_server_limit=self.active_server_limit,
             session_outputs_path = self.session_outputs_path,
             users_data_path = self.users_data_path,    
+            course_list = course_list,
+            course_categories = course_categories,
+            repo_path = self.repo_path,
         )
 
         # allow configured settings to have priority

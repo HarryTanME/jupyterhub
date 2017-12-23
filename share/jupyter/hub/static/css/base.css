@@ -1,0 +1,97 @@
+/* header style
+-------------------------------------------------------------- */
+header {
+    width: 100%;
+    height: 150px;
+    overflow: hidden;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 999;
+    background-color: #666666 ;#0683c9;
+    -webkit-transition: height 0.3s;
+    -moz-transition: height 0.3s;
+    -ms-transition: height 0.3s;
+    -o-transition: height 0.3s;
+    transition: height 0.3s;
+    font-family: Arial, Helvetica, sans-serif;
+}
+header h1#logo {
+    display: inline-block;
+    height: 250px;
+    line-height: 150px;
+    float: left;
+    font-family: "Raleway";
+    font-size: 60px;
+    color: white;
+    font-weight: 400;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    -ms-transition: all 0.3s;
+    -o-transition: all 0.3s;
+    transition: all 0.3s;
+}
+header h1#logo a {
+    color: white;
+}    
+header nav {
+    display: inline-block;
+    float: right;
+}
+header nav a {
+    line-height: 150px;
+    margin-left: 20px;
+    color: white;
+    font-weight: lighter;
+    font-size: 14px;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    -ms-transition: all 0.3s;
+    -o-transition: all 0.3s;
+    transition: all 0.3s;
+}
+header nav a:hover {
+    color: white;
+}
+header.smaller {
+    height: 46px;
+}
+header.smaller h1#logo {
+    width: 250px;
+    height: 46px;
+    line-height: 46px;
+    font-size: 14px;
+}
+header.smaller nav a {
+    line-height: 46px;
+}
+
+/* basic content
+-------------------------------------------------------------- */
+#content {
+    margin-top: 46px;
+    padding-top: 10px;
+}
+
+.hidden{
+    display: none;
+}
+
+.hr-label::before {
+    right: 0.5em;
+    margin-left: -50%;
+}
+.label-or-left,.label-or-right {
+    float: left;
+    border-top: 1px solid gray;
+    vertical-align: middle;
+    margin-top: 11px;
+    width: calc(50% - 15px)
+}
+.label-or-text{
+    margin-left: 6px;
+    color: gray;
+}
+.label-or-right {
+    float: right;
+}

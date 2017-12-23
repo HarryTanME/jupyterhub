@@ -47,13 +47,54 @@ define(['jquery', 'utils'], function ($, utils) {
     
     JHAPI.prototype.get_project = function (user, proj_name, options) {
         options = options || {};
-        options = ajax_defaults(options || {});
-        var url = utils.url_path_join(
-            this.base_url,
-            'api',
-            'user', user, 'project',proj_name
-        );
-        $.ajax(url, options);
+        options = update(options, {type: 'GET', dataType: null});
+
+        this.api_request(utils.url_path_join('user', user, 'project',proj_name), options);
+    };
+    
+    
+    
+    JHAPI.prototype.get_project_sessions = function (user, proj_name, options) {
+        options = options || {};
+        options = update(options, {type: 'GET', dataType: null});
+
+        this.api_request(utils.url_path_join('user', user, 'project',proj_name, 'sessions'), options);
+    };
+    
+    
+    JHAPI.prototype.get_session_logs = function (user, session_name, options) {
+        options = options || {};
+        options = update(options, {type: 'GET', dataType: "text"});
+
+        this.api_request(utils.url_path_join('user', user,  'session',session_name,'logs'), options);
+    };
+    
+    JHAPI.prototype.get_session_status = function (user, session_name, options) {
+        options = options || {};
+        options = update(options, {type: 'GET', dataType: "text"});
+
+        this.api_request(utils.url_path_join('user', user,  'session',session_name,'status'), options);
+    };
+    
+    JHAPI.prototype.get_session_stats = function (user, session_name, options) {
+        options = options || {};
+        options = update(options, {type: 'GET', dataType: "text"});
+
+        this.api_request(utils.url_path_join('user', user,  'session',session_name,'stats'), options);
+    };
+    
+    JHAPI.prototype.get_session_tags = function (user, session_name, options) {
+        options = options || {};
+        options = update(options, {type: 'GET', dataType: null});
+
+        this.api_request(utils.url_path_join('user', user,  'session',session_name,'tags'), options);
+    };
+    
+    JHAPI.prototype.get_session_comments = function (user, session_name, options) {
+        options = options || {};
+        options = update(options, {type: 'GET', dataType: 'text'});
+
+        this.api_request(utils.url_path_join('session',session_name,'comments'), options);
     };
     
     JHAPI.prototype.start_server = function (user, options) {
@@ -61,6 +102,55 @@ define(['jquery', 'utils'], function ($, utils) {
         options = update(options, {type: 'POST', dataType: null});
         this.api_request(
             utils.url_path_join('user', user, 'session'),
+            options
+        );
+    };
+    
+    JHAPI.prototype.start_project = function (user, proj_name, options) {
+        options = options || {};
+        options = update(options, {type: 'POST', dataType: null});
+        this.api_request(
+            utils.url_path_join('user', user, 'project', proj_name,'session',proj_name),
+            options
+        );
+    };
+    
+    JHAPI.prototype.add_session_tag = function (user, session_name, tag, options) {
+        options = options || {};
+        options = update(options, {type: 'POST', dataType: null});
+        this.api_request(
+            utils.url_path_join('user', user, 'session', session_name,'tag',tag),
+            options
+        );
+    };
+    
+    JHAPI.prototype.add_session_comment = function (user, session_name, comment, options) {
+        options = options || {};
+        var comment_data ={"body":comment};
+        options = update(options, {type: 'POST',data:JSON.stringify(comment_data), dataType: null});
+        this.api_request(
+            utils.url_path_join('session', session_name,'comment'),
+            options
+        );
+    };
+    
+    
+    
+    JHAPI.prototype.start_named_session = function (user, session_name, options) {
+        options = options || {};
+        options = update(options, {type: 'POST', dataType: null});
+        this.api_request(
+            utils.url_path_join('user', user, 'session', session_name),
+            options
+        );
+    };
+    
+    
+    JHAPI.prototype.delete_project = function (user, proj_name, options) {
+        options = options || {};
+        options = update(options, {type: 'DELETE', dataType: null});
+        this.api_request(
+            utils.url_path_join('user', user, 'project', proj_name),
             options
         );
     };

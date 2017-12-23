@@ -101,6 +101,70 @@ class LoginHandler(BaseHandler):
             self.finish(html)
 
 
+class AuthLoginHandler(BaseHandler):
+    def get(self):
+        if self.current_user:
+            self.redirect(self.get_argument("next", "/"))
+        else:
+            self.render("templates/login.html", error=None)
+
+    @gen.coroutine
+    def post(self):
+        cur = yield self.db.execute("SELECT id, email,name,hashed_password FROM users WHERE email = %s",
+                            self.get_argument("email"))
+        user = cur.fetchone()
+        if not user:
+            self.render("templates/login.html", error="email not found")
+            return
+        columns = [col[0] for col in cur.description]
+#        app_log.info("user "+str(columns))
+        user_hashed_password = user[columns.index('hashed_password')]
+        user_name = user[columns.index('name')]
+        
+        app_log.info("Login user_name "+str(user_name))
+        
+        hashed_password = yield executor.submit(
+            bcrypt.hashpw, tornado.escape.utf8(self.get_argument("password")),
+            tornado.escape.utf8(user_hashed_password))
+
+        if hashed_password == tornado.escape.utf8(user_hashed_password):
+            self.set_secure_cookie("trywodeai_user", str(user_name))
+            self.redirect(self.get_argument("next", "/"))
+        else:
+            self.render("templates/login.html", error="incorrect password")
+
+
+class AuthLogoutHandler(BaseHandler):
+    def get(self):
+        self.clear_cookie("trywodeai_user")
+        self.redirect(self.get_argument("next", "/"))
+
+
+"""
+class Application(web.Application):
+    def __init__(self, handlers, settings):
+        super(Application, self).__init__(handlers, **settings)
+        
+        # Have one global connection to the blog DB across all handlers
+        self.db = pools.Pool(
+            dict(host=options.mysql_host, db=options.mysql_database,
+            user=options.mysql_user, passwd=options.mysql_password),
+            max_idle_connections=1,
+            max_recycle_sec=3)
+
+        self.test_db()
+
+    @gen.coroutine
+    def test_db(self):
+        try:
+            cur = yield self.db.execute("SELECT 1 from users limit 1;")
+            cur.fetchall()
+        except Exception as e:
+            app_log.error(e)
+
+            #currenlty not in service
+"""
+
 # /login renders the login page or the "Login with..." link,
 # so it should always be registered.
 # /logout clears cookies.

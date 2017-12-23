@@ -128,7 +128,7 @@ class DockerImageChooserSpawner(DockerSpawner):
         
         if formdata.get('pre-cmd', None) and formdata.get('pre-cmd',None)[0] != "" :
             options['pre-cmd'] = formdata.get('pre-cmd')[0].strip()+';'
-        
+
         if formdata.get('cmd', None) and formdata.get('cmd',None)[0] != "" :
             options['cmd'] = formdata.get('cmd')[0].strip()+';'
         
@@ -153,7 +153,6 @@ class DockerImageChooserSpawner(DockerSpawner):
         env = super().get_env()
         if self.user_options.get('env'):
             env.update(self.user_options['env'])
-        print("----------subclass was invoken get_env")
         return env
     
 

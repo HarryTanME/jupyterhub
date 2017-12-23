@@ -2,21 +2,22 @@
 
 
 {% block main %}
-<div id="proj_info">haha</div>
+<div id="proj_info" class="container">Project Info:</div>
 
+<hr />
+<div id="all_sessions" class="container">All Sessions:</div>
 
 {% endblock %}
 
 {% block script %}
 {{ super() }}
-
     <script type="text/javascript">
-      window.jhdata = {
-          proj_name: "{{proj_name}}",
-            user: "{{user.name}}",
-      }
-      
+        require(["project"]);
+        $.extend(true, jhdata, {
+            proj_name: "{{proj_name}}"
+          }); 
     </script>
+
 
 
 {% endblock %}

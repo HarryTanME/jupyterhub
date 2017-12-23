@@ -258,13 +258,14 @@ class ProjectServerAPIHandler(_ProjectAPIHandler):
         
         options = json.loads(project.config)
         options.update(self.get_json_body() or {})
+        options['project_name'] = proj_name #inject projectname so that the program will save the spawner with project name.
         print("~~~~options~~~~~"+str(options))  
         
         yield self.spawn_single_user(user, server_name, options=options)
         status = 202 if spawner.pending == 'spawn' else 201
         self.set_header('Content-Type', 'text/plain')
         self.set_status(status)
-        self.write(json.dumps({"session_name":"{}".format(server_name)}))
+        self.write(json.dumps({"session_name":"{}".format(server_name),"url":str(user.url+server_name)}))
     
 
 class ServerTagsAPIHandler(UserAPIHandler):
@@ -279,7 +280,7 @@ class ServerTagsAPIHandler(UserAPIHandler):
         return sessions
     
     @gen.coroutine
-    @token_authenticated
+    @admin_or_self
     def get(self, name, session_name): 
         session = self.find_session(session_name)                            
         if session is None:
@@ -299,9 +300,24 @@ class SesseionListAPIHandler(UserAPIHandler):
         sessions = orm.SessionTag.find_sessions_by_project_tag(self.db, proj_name, tag)
         return sessions
     
+    
+    def all_sesssions(self, user, proj_name):
+        sessions = orm.Spawner.find_all_sessions(self.db, user.id, proj_name)
+        return sessions
+    
+    def session_model(self, session):
+        return {"name":sesison.name, "end_time":session.end_time}
+    
     @gen.coroutine
-    @token_authenticated
+    @admin_or_self
     def get(self, user, project_name):
+        user = self.find_user(user)
+        if user is None:
+            status=400
+            error_json ={"error":status, "message":"User {} doesn't exists".format(name)}
+            self.set_status(status)
+            self.write(json.dumps(error_json))
+            return
         tag = self.get_argument("tag", None, False)
         if tag is not None and tag != "":
             aa = []
@@ -311,12 +327,18 @@ class SesseionListAPIHandler(UserAPIHandler):
             self.set_status(200)
             self.write(json.dumps(aa))
         else :
-            return all_sesssions(user, project_name)
+            sessions =  self.all_sesssions(user, project_name)
+            print(str(sessions))
+            aa = []
+            for s in sessions:
+                aa.append(s.name)
+            self.set_status(200)
+            self.write(json.dumps(aa))
 
 default_handlers =[
     (r"/api/user/([^/]+)/sessions/?", UserServerAPIHandler),
-    (r"/api/user/([^/]+)/project/([^/]+)/server/([^/]*)", ProjectServerAPIHandler),
-    (r"/api/user/([^/]+)/project/([^/]*)/servers/?", SesseionListAPIHandler),
+    (r"/api/user/([^/]+)/project/([^/]+)/session/([^/]*)", ProjectServerAPIHandler),
+    (r"/api/user/([^/]+)/project/([^/]*)/sessions/?", SesseionListAPIHandler),
     (r"/api/user/([^/]+)/session/([^/]*)", UserServerAPIHandler),
     (r"/api/user/([^/]+)/session/([^/]*)/status/?", ServerStatusAPIHandler),
     (r"/api/user/([^/]+)/session/([^/]*)/stats/?", ServerStatsAPIHandler),

@@ -220,7 +220,7 @@ class User(HasTraits):
     
     @property
     def running_spawners(self):
-        return [s for s in self.spawners.values() if s.active]
+        return [s for s in self.spawners.values() if s.ready]
     
     @property
     def projects(self):
@@ -462,6 +462,13 @@ class User(HasTraits):
         if self.state is None:
             self.state = {}
         spawner.orm_spawner.state = spawner.get_state()
+        if options is not None:
+            spawner.orm_spawner.option = str(options)
+        if "project_name" in options :    
+            project = orm.Project.find_one(self.db, self.orm_user.id, options['project_name'])
+            if project is not None:
+                spawner.orm_spawner.project_id= project.id
+                
         self.last_activity = spawner.orm_spawner.last_activity = datetime.utcnow()
         if spawner.orm_spawner.state is None and spawner.orm_spawner.server_id is not None:
             self.log.error("Server_id exists but no Container information found:\n {}".format(str(options)))

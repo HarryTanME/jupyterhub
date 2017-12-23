@@ -37,6 +37,13 @@
     <script src="{{static_url("components/requirejs/require.js") }}" type="text/javascript" charset="utf-8"></script>
     <script src="{{static_url("components/jquery/dist/jquery.min.js") }}" type="text/javascript" charset="utf-8"></script>
     <script src="{{static_url("components/bootstrap/dist/js/bootstrap.min.js") }}" type="text/javascript" charset="utf-8"></script>
+    <!--
+    <link rel="stylesheet" href="{{ static_url('css/bootstrap/bootstrap.css') }}" type="text/css">
+    <link rel="stylesheet" href="{{ static_url('css/base.css') }}" type="text/css">
+    <link href="http://wode.ai/Portals/_default/Skins/20073-UnlimitedColorsPack-055/css/dividers.css" media="all" type="text/css" rel="stylesheet"/>
+    <link href="{{ static_url('css/imagebox.css') }} " media="all" type="text/css" rel="stylesheet"/>
+    -->  
+    
     <script>
       require.config({
           {% if version_hash %}
@@ -47,7 +54,7 @@
             components: '../components',
             jquery: '../components/jquery/dist/jquery.min',
             bootstrap: '../components/bootstrap/dist/js/bootstrap.min',
-            moment: "../components/moment/moment",
+            moment: "../components/moment/moment"
           },
           shim: {
             bootstrap: {
@@ -98,7 +105,11 @@
         {% if user %}
         <ul class="nav navbar-nav">
           <li><a href="{{base_url}}home">Home</a></li>
-          <li><a href="{{base_url}}token">Token</a></li>
+          <!--<li><a href="{{base_url}}token">Token</a></li>-->
+            <li><a href="{{base_url}}tutorials">Tutorials</a></li>
+            <li><a href="{{base_url}}datasets">Datasets</a></li>
+            <li><a href="{{base_url}}modelzoo">Modelzoo</a></li>
+            <li><a href="{{base_url}}api_doc">API</a></li>
           {% if user.admin %}
           <li><a href="{{base_url}}admin">Admin</a></li>
           {% endif %}

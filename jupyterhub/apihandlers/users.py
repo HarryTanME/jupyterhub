@@ -108,6 +108,16 @@ def admin_or_self(method):
         return method(self, name, *args, **kwargs)
     return m
 
+def valid_user(method):
+    """Decorator for restricting access to either the target user or admin"""
+    def m(self, name, *args, **kwargs):
+        current = self.get_current_user()
+        if current is None:
+            raise web.HTTPError(403)
+        
+        return method(self, name, *args, **kwargs)
+    return m
+
 class UserAPIHandler(APIHandler):
     
     def find_session(self, session_name):

@@ -8,29 +8,131 @@ require(["jquery", "jhapi"], function ($, JHAPI) {
     var user = window.jhdata.user;
     var api = new JHAPI(base_url);
     
-    /*
-    var proj_name = proj.jhdata.proj_name;
-    
-
-    $('.project-name').click(function () {
-        var url = $(this).data('url');
-        $.get(url, function ( response) {
-            $('body').append(response);
-        });
-    });*/
-
      
-    $(".stop-server").click(function () {
-        var server_name = $(this).data('server_name');
-            var server_name = $(this).data('servername');
+    $(".stop-server").click(function (e) {
+        var btn = $(e.target);
+        btn.attr("disabled", "disabled");
         
-        api.stop_server(user, server_name, {
-            success: function () {
-                //$(_this).parents('li').remove();
+        var server_name = $(this).data('servername');
+        if (confirm("Are you sure?") == true) {
+            api.stop_server(user, server_name, {
+                success: function () {
+                    window.location.reload(true);
+                }
+            });
+        }else{
+            btn.removeAttr('disabled');
+        }
+    });
+    
+    $(".start-project").click(function (e) {
+        var btn = $(e.target);
+        btn.attr("disabled", "disabled");
+        var proj_name = $(this).data('projname');
+        api.start_project(user, proj_name, {
+            success: function (response) {
                 window.location.reload(true);
+                //var data = JSON.parse(response);
+                //window.location.replace(data.url);
+                //window.open(data.url);
             }
         });
     });
     
+    $(".delete-project").click(function (e) {
+        var btn = $(e.target);
+        btn.attr("disabled", "disabled");
+        
+        var proj_name = $(this).data('projname');
+        if (confirm("Deleted project can't be recovered. Are you sure?") == true) {
+            api.delete_project(user, proj_name, {
+                success: function (response) {
+                }
+            });
+        } else {
+            btn.removeAttr('disabled');
+        }
+
+    });
     
+    $(".session-more").click(function (e) {
+        var x = document.getElementById("sessionCommands");
+        
+        if (x.style.display === "none") {
+            x.style.display = "block";
+        } else {
+            x.style.display = "none";
+        }
+        
+    });
+    
+    $(".add-session-tag").click(function (e) {
+      
+        var session_name = $(this).data('servername');
+        var tag= window.prompt("Enter your tag..."); 
+        api.add_session_tag(user, session_name, tag,{
+            success: function (response) {
+            }
+        });
+        
+    });
+    
+    $(".add-session-comment").click(function (e) {
+      
+        var session_name = $(this).data('servername');
+        var comment= window.prompt("Enter your comments..."); 
+        
+        api.add_session_comment(user, session_name,comment, {
+            success: function (response) {
+            }
+        });
+        
+    });
+    
+    $(".session-logs").click(function (e) {        
+        var session_name = $(this).data('servername');
+        
+        api.get_session_logs(user, session_name, {
+            success: function (response) {
+                $('#session_info').empty().append(response)
+            }
+        });
+    });
+    $(".session-stats").click(function (e) {        
+        var session_name = $(this).data('servername');
+        
+        api.get_session_stats(user, session_name, {
+            success: function (response) {
+                $('#session_info').empty().append(response)
+            }
+        });
+    });
+    $(".session-status").click(function (e) {        
+        var session_name = $(this).data('servername');
+        
+        api.get_session_status(user, session_name, {
+            success: function (response) {
+                $('#session_info').empty().append(response)
+            }
+        });
+    });
+    $(".session-comments").click(function (e) {        
+        var session_name = $(this).data('servername');
+        
+        api.get_session_comments(user, session_name, {
+            success: function (response) {
+                $('#session_info').empty().append(response)
+            }
+        });
+    });
+    $(".session-tags").click(function (e) {        
+        var session_name = $(this).data('servername');
+        
+        api.get_session_tags(user, session_name, {
+            success: function (response) {
+                $('#session_info').empty().append(response)
+            }
+        });
+    });
 });
+

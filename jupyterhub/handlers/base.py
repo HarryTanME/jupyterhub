@@ -96,7 +96,15 @@ class BaseHandler(RequestHandler):
     @property
     def oauth_provider(self):
         return self.settings['oauth_provider']
-
+    
+    @property
+    def course_categories(self):
+        return self.settings['course_categories']
+    
+    @property
+    def course_list(self):
+        return self.settings['course_list']
+    
     def finish(self, *args, **kwargs):
         """Roll back any uncommitted transactions from the handler."""
         if self.db.dirty:

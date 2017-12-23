@@ -1,0 +1,2763 @@
+{% extends "page.html" %}
+{% block main %}
+  <body>
+  <h1>WodeAI API</h1>
+    <div class="app-desc">&quot;This is the REST API of WodeAI. &quot;</div>
+    <div class="app-desc">More information: <a href=""></a></div>
+    <div class="app-desc">Contact Info: <a href="hi@wode.ai">hi@wode.ai</a></div>
+    <div class="app-desc">Version: 0.0.1</div>
+    <div class="app-desc">BasePath:/v1</div>
+    <div class="license-info">All rights reserved</div>
+    <div class="license-url">http://apache.org/licenses/LICENSE-2.0.html</div>
+  <h2>Access</h2>
+    <ol>
+      <li>APIKey KeyParamName:Authorization KeyInQuery:false KeyInHeader:true</li>
+    </ol>
+
+  <h2><a name="__Methods">Methods</a></h2>
+  [ Jump to <a href="#__Models">Models</a> ]
+
+  <h3>Table of Contents </h3>
+  <div class="method-summary"></div>
+  <h4><a href="#Comment">Comment</a></h4>
+  <ul>
+  <li><a href="#commentProject"><code><span class="http-method">post</span> /user/{username}/project/{projectname}/comment</code></a></li>
+  <li><a href="#createSessionComment"><code><span class="http-method">post</span> /user/{username}/project/{projectname}/session/{sessionId}/comment</code></a></li>
+  <li><a href="#deleteProjectComment"><code><span class="http-method">delete</span> /user/{username}/project/{projectname}/comment/{commentId}</code></a></li>
+  <li><a href="#deleteSessionComment"><code><span class="http-method">delete</span> /user/{username}/project/{projectname}/session/{sessionId}/comment/{commentId}</code></a></li>
+  <li><a href="#getProjectComments"><code><span class="http-method">get</span> /user/{username}/project/{projectname}/comment</code></a></li>
+  <li><a href="#getSessionComment"><code><span class="http-method">get</span> /user/{username}/project/{projectname}/session/{sessionId}/comment/{commentId}</code></a></li>
+  <li><a href="#getSessionComments"><code><span class="http-method">get</span> /user/{username}/project/{projectname}/session/{sessionId}/comment</code></a></li>
+  </ul>
+  <h4><a href="#Image">Image</a></h4>
+  <ul>
+  <li><a href="#createImage"><code><span class="http-method">post</span> /image</code></a></li>
+  <li><a href="#deleteImage"><code><span class="http-method">delete</span> /image/{imageId}</code></a></li>
+  <li><a href="#getImage"><code><span class="http-method">get</span> /image/{imageId}</code></a></li>
+  <li><a href="#updateImage"><code><span class="http-method">put</span> /image/{imageId}</code></a></li>
+  </ul>
+  <h4><a href="#Project">Project</a></h4>
+  <ul>
+  <li><a href="#archiveProject"><code><span class="http-method">get</span> /user/{username}/project/{projectname}/archive</code></a></li>
+  <li><a href="#cloneProject"><code><span class="http-method">get</span> /user/{username}/project/{projectname}/clone</code></a></li>
+  <li><a href="#createProject"><code><span class="http-method">post</span> /user/{username}/project</code></a></li>
+  <li><a href="#getAllProjects"><code><span class="http-method">get</span> /user/{username}/project</code></a></li>
+  <li><a href="#updateProject"><code><span class="http-method">put</span> /user/{username}/project/{projectname}</code></a></li>
+  </ul>
+  <h4><a href="#Scheduler">Scheduler</a></h4>
+  <ul>
+  <li><a href="#createScheduler"><code><span class="http-method">post</span> /user/{username}/project/{projectname}/scheduler</code></a></li>
+  <li><a href="#deleteSessionscheduler"><code><span class="http-method">get</span> /user/{username}/project/{projectname}/scheduler/{schedulerId}</code></a></li>
+  <li><a href="#getProjectSchedulers"><code><span class="http-method">get</span> /user/{username}/project/{projectname}/scheduler</code></a></li>
+  <li><a href="#scheduler"><code><span class="http-method">delete</span> /user/{username}/project/{projectname}/scheduler/{schedulerId}</code></a></li>
+  </ul>
+  <h4><a href="#Session">Session</a></h4>
+  <ul>
+  <li><a href="#archiveSession"><code><span class="http-method">get</span> /user/{username}/project/{projectname}/session/{sessionId}/archive</code></a></li>
+  <li><a href="#closeSession"><code><span class="http-method">delete</span> /user/{username}/project/{projectname}/session/{sessionId}</code></a></li>
+  <li><a href="#createNamedProjectSession"><code><span class="http-method">post</span> /user/{username}/project/{projectname}/session/{sessionId}</code></a></li>
+  <li><a href="#createProjectSession"><code><span class="http-method">post</span> /user/{username}/project/{projectname}/session</code></a></li>
+  <li><a href="#createSessionTags"><code><span class="http-method">post</span> /user/{username}/project/{projectname}/session/{sessionId}/tags</code></a></li>
+  <li><a href="#getSessionById"><code><span class="http-method">get</span> /user/{username}/project/{projectname}/session/{sessionId}</code></a></li>
+  <li><a href="#getSessionByStatus"><code><span class="http-method">get</span> /user/{username}/project/{projectname}/session/getByStatus</code></a></li>
+  <li><a href="#getSessionByTags"><code><span class="http-method">get</span> /user/{username}/project/{projectname}/session/getByTags</code></a></li>
+  <li><a href="#getSessionLogs"><code><span class="http-method">get</span> /user/{username}/project/{projectname}/session/{sessionId}/logs</code></a></li>
+  <li><a href="#getSessionOutputs"><code><span class="http-method">get</span> /user/{username}/project/{projectname}/session/{sessionId}/outputs</code></a></li>
+  <li><a href="#getSessionStats"><code><span class="http-method">get</span> /user/{username}/project/{projectname}/session/{sessionId}/stats</code></a></li>
+  <li><a href="#getSessionStatus"><code><span class="http-method">get</span> /user/{username}/project/{projectname}/session/{sessionId}/status</code></a></li>
+  </ul>
+  <h4><a href="#User">User</a></h4>
+  <ul>
+  <li><a href="#createUser"><code><span class="http-method">post</span> /user</code></a></li>
+  <li><a href="#getUser"><code><span class="http-method">get</span> /user/{username}</code></a></li>
+  <li><a href="#getUserNotifications"><code><span class="http-method">get</span> /user/{username}/notifications</code></a></li>
+  <li><a href="#loginUser"><code><span class="http-method">get</span> /user/login</code></a></li>
+  <li><a href="#logoutUser"><code><span class="http-method">get</span> /user/logout</code></a></li>
+  <li><a href="#updateUser"><code><span class="http-method">put</span> /user/{username}</code></a></li>
+  </ul>
+
+  <h1><a name="Comment">Comment</a></h1>
+  <div class="method"><a name="commentProject"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /user/{username}/project/{projectname}/comment</code></pre></div>
+    <div class="method-summary">Post a comment to a project. (<span class="nickname">commentProject</span>)</div>
+    <div class="method-notes">post a commment</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">username (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the owner of the project to be operated. </div><div class="param">projectname (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the project that need to be operated. </div>
+    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">body <a href="#Comment">Comment</a> (required)</div>
+
+      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash; comments </div>
+
+    </div>  <!-- field-items -->
+
+
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/xml</code></li>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    successful operation
+        <a href="#"></a>
+    <h4 class="field-label">400</h4>
+    Invalid ID supplied
+        <a href="#"></a>
+    <h4 class="field-label">403</h4>
+    Permission Denied.
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="createSessionComment"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /user/{username}/project/{projectname}/session/{sessionId}/comment</code></pre></div>
+    <div class="method-summary">Post a comment to a session. (<span class="nickname">createSessionComment</span>)</div>
+    <div class="method-notes">post a commment</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">username (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the owner of the project to be operated. </div><div class="param">projectname (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the project that need to be operated. </div><div class="param">sessionId (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the session that need to be operated. </div>
+    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">body <a href="#Comment">Comment</a> (required)</div>
+
+      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash; the comment body </div>
+
+    </div>  <!-- field-items -->
+
+
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/xml</code></li>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    successful operation
+        <a href="#"></a>
+    <h4 class="field-label">400</h4>
+    Invalid ID supplied
+        <a href="#"></a>
+    <h4 class="field-label">403</h4>
+    Permission Denied.
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="deleteProjectComment"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="delete"><code class="huge"><span class="http-method">delete</span> /user/{username}/project/{projectname}/comment/{commentId}</code></pre></div>
+    <div class="method-summary">delete a comment in a project (<span class="nickname">deleteProjectComment</span>)</div>
+    <div class="method-notes">delete a comment</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">username (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the owner of the project to be operated. </div><div class="param">projectname (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the project that need to be operated. </div><div class="param">commentId (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the project that need to be operated. </div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      array[<a href="#Comment">Comment</a>]
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/xml</div>
+    <pre class="example"><code><null>
+  <id>aeiou</id>
+  <type>aeiou</type>
+  <message>aeiou</message>
+  <timestamp>2000-01-23T04:56:07.000Z</timestamp>
+</null></code></pre>
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>[ {
+  "session" : {
+    "Status" : { },
+    "Project" : {
+      "name" : "aeiou",
+      "createdDateTime" : "2000-01-23T04:56:07.000+00:00",
+      "id" : 6,
+      "gitRepo" : "http://example.com/aeiou"
+    },
+    "Log" : {
+      "data" : "{}",
+      "sessionId" : "aeiou"
+    },
+    "Comments" : [ "" ],
+    "Output" : {
+      "data" : "{}",
+      "sessionId" : "aeiou"
+    },
+    "name" : "aeiou",
+    "id" : "aeiou",
+    "Image" : {
+      "createdBy" : "aeiou",
+      "name" : "TensorFlow_Py3",
+      "createdTime" : "2000-01-23T04:56:07.000+00:00",
+      "id" : "aeiou",
+      "version" : "latest"
+    },
+    "tags" : [ {
+      "name" : "aeiou",
+      "sessionId" : "aeiou"
+    } ]
+  },
+  "id" : "aeiou",
+  "type" : "on_session",
+  "message" : "aeiou",
+  "user" : {
+    "firstName" : "aeiou",
+    "lastName" : "aeiou",
+    "password" : "aeiou",
+    "id" : 0,
+    "email" : "aeiou",
+    "username" : "aeiou",
+    "group" : "aeiou"
+  },
+  "timestamp" : "2000-01-23T04:56:07.000+00:00"
+} ]</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/xml</code></li>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    successful operation
+        
+    <h4 class="field-label">400</h4>
+    Invalid ID supplied
+        <a href="#"></a>
+    <h4 class="field-label">403</h4>
+    Permission Denied.
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="deleteSessionComment"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="delete"><code class="huge"><span class="http-method">delete</span> /user/{username}/project/{projectname}/session/{sessionId}/comment/{commentId}</code></pre></div>
+    <div class="method-summary">delete a comment (<span class="nickname">deleteSessionComment</span>)</div>
+    <div class="method-notes">delete a comment</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">username (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the owner of the project to be operated. </div><div class="param">projectname (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the project that need to be operated. </div><div class="param">sessionId (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the session that need to be operated. </div><div class="param">commentId (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the comment that need to be operated. </div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/xml</code></li>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    successful operation
+        <a href="#"></a>
+    <h4 class="field-label">400</h4>
+    Invalid ID supplied
+        <a href="#"></a>
+    <h4 class="field-label">403</h4>
+    Permission Denied.
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getProjectComments"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /user/{username}/project/{projectname}/comment</code></pre></div>
+    <div class="method-summary">get all commments of a project (<span class="nickname">getProjectComments</span>)</div>
+    <div class="method-notes">get all commments</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">username (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the owner of the project to be operated. </div><div class="param">projectname (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the project that need to be operated. </div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      array[<a href="#Comment">Comment</a>]
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/xml</div>
+    <pre class="example"><code><null>
+  <id>aeiou</id>
+  <type>aeiou</type>
+  <message>aeiou</message>
+  <timestamp>2000-01-23T04:56:07.000Z</timestamp>
+</null></code></pre>
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>[ {
+  "session" : {
+    "Status" : { },
+    "Project" : {
+      "name" : "aeiou",
+      "createdDateTime" : "2000-01-23T04:56:07.000+00:00",
+      "id" : 6,
+      "gitRepo" : "http://example.com/aeiou"
+    },
+    "Log" : {
+      "data" : "{}",
+      "sessionId" : "aeiou"
+    },
+    "Comments" : [ "" ],
+    "Output" : {
+      "data" : "{}",
+      "sessionId" : "aeiou"
+    },
+    "name" : "aeiou",
+    "id" : "aeiou",
+    "Image" : {
+      "createdBy" : "aeiou",
+      "name" : "TensorFlow_Py3",
+      "createdTime" : "2000-01-23T04:56:07.000+00:00",
+      "id" : "aeiou",
+      "version" : "latest"
+    },
+    "tags" : [ {
+      "name" : "aeiou",
+      "sessionId" : "aeiou"
+    } ]
+  },
+  "id" : "aeiou",
+  "type" : "on_session",
+  "message" : "aeiou",
+  "user" : {
+    "firstName" : "aeiou",
+    "lastName" : "aeiou",
+    "password" : "aeiou",
+    "id" : 0,
+    "email" : "aeiou",
+    "username" : "aeiou",
+    "group" : "aeiou"
+  },
+  "timestamp" : "2000-01-23T04:56:07.000+00:00"
+} ]</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/xml</code></li>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    successful operation
+        
+    <h4 class="field-label">400</h4>
+    Invalid ID supplied
+        <a href="#"></a>
+    <h4 class="field-label">403</h4>
+    Permission Denied.
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getSessionComment"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /user/{username}/project/{projectname}/session/{sessionId}/comment/{commentId}</code></pre></div>
+    <div class="method-summary">get the content of a comment (<span class="nickname">getSessionComment</span>)</div>
+    <div class="method-notes">get a comment</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">username (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the owner of the project to be operated. </div><div class="param">projectname (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the project that need to be operated. </div><div class="param">sessionId (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the session that need to be operated. </div><div class="param">commentId (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the comment that need to be operated. </div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#Comment">Comment</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/xml</div>
+    <pre class="example"><code><null>
+  <id>aeiou</id>
+  <type>aeiou</type>
+  <message>aeiou</message>
+  <timestamp>2000-01-23T04:56:07.000Z</timestamp>
+</null></code></pre>
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "session" : {
+    "Status" : { },
+    "Project" : {
+      "name" : "aeiou",
+      "createdDateTime" : "2000-01-23T04:56:07.000+00:00",
+      "id" : 6,
+      "gitRepo" : "http://example.com/aeiou"
+    },
+    "Log" : {
+      "data" : "{}",
+      "sessionId" : "aeiou"
+    },
+    "Comments" : [ "" ],
+    "Output" : {
+      "data" : "{}",
+      "sessionId" : "aeiou"
+    },
+    "name" : "aeiou",
+    "id" : "aeiou",
+    "Image" : {
+      "createdBy" : "aeiou",
+      "name" : "TensorFlow_Py3",
+      "createdTime" : "2000-01-23T04:56:07.000+00:00",
+      "id" : "aeiou",
+      "version" : "latest"
+    },
+    "tags" : [ {
+      "name" : "aeiou",
+      "sessionId" : "aeiou"
+    } ]
+  },
+  "id" : "aeiou",
+  "type" : "on_session",
+  "message" : "aeiou",
+  "user" : {
+    "firstName" : "aeiou",
+    "lastName" : "aeiou",
+    "password" : "aeiou",
+    "id" : 0,
+    "email" : "aeiou",
+    "username" : "aeiou",
+    "group" : "aeiou"
+  },
+  "timestamp" : "2000-01-23T04:56:07.000+00:00"
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/xml</code></li>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    successful operation
+        <a href="#Comment">Comment</a>
+    <h4 class="field-label">400</h4>
+    Invalid ID supplied
+        <a href="#"></a>
+    <h4 class="field-label">403</h4>
+    Permission Denied.
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getSessionComments"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /user/{username}/project/{projectname}/session/{sessionId}/comment</code></pre></div>
+    <div class="method-summary"> (<span class="nickname">getSessionComments</span>)</div>
+    <div class="method-notes">get all commments</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">username (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the owner of the project to be operated. </div><div class="param">projectname (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the project that need to be operated. </div><div class="param">sessionId (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the session that need to be operated. </div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      array[<a href="#Comment">Comment</a>]
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/xml</div>
+    <pre class="example"><code><null>
+  <id>aeiou</id>
+  <type>aeiou</type>
+  <message>aeiou</message>
+  <timestamp>2000-01-23T04:56:07.000Z</timestamp>
+</null></code></pre>
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>[ {
+  "session" : {
+    "Status" : { },
+    "Project" : {
+      "name" : "aeiou",
+      "createdDateTime" : "2000-01-23T04:56:07.000+00:00",
+      "id" : 6,
+      "gitRepo" : "http://example.com/aeiou"
+    },
+    "Log" : {
+      "data" : "{}",
+      "sessionId" : "aeiou"
+    },
+    "Comments" : [ "" ],
+    "Output" : {
+      "data" : "{}",
+      "sessionId" : "aeiou"
+    },
+    "name" : "aeiou",
+    "id" : "aeiou",
+    "Image" : {
+      "createdBy" : "aeiou",
+      "name" : "TensorFlow_Py3",
+      "createdTime" : "2000-01-23T04:56:07.000+00:00",
+      "id" : "aeiou",
+      "version" : "latest"
+    },
+    "tags" : [ {
+      "name" : "aeiou",
+      "sessionId" : "aeiou"
+    } ]
+  },
+  "id" : "aeiou",
+  "type" : "on_session",
+  "message" : "aeiou",
+  "user" : {
+    "firstName" : "aeiou",
+    "lastName" : "aeiou",
+    "password" : "aeiou",
+    "id" : 0,
+    "email" : "aeiou",
+    "username" : "aeiou",
+    "group" : "aeiou"
+  },
+  "timestamp" : "2000-01-23T04:56:07.000+00:00"
+} ]</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/xml</code></li>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    successful operation
+        
+    <h4 class="field-label">400</h4>
+    Invalid ID supplied
+        <a href="#"></a>
+    <h4 class="field-label">403</h4>
+    Permission Denied.
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <h1><a name="Image">Image</a></h1>
+  <div class="method"><a name="createImage"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /image</code></pre></div>
+    <div class="method-summary">Create new image (<span class="nickname">createImage</span>)</div>
+    <div class="method-notes"></div>
+
+
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">body <a href="#Image">Image</a> (required)</div>
+
+      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash; Created Image object </div>
+
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#Image">Image</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/xml</div>
+    <pre class="example"><code><Image>
+  <id>aeiou</id>
+  <name>TensorFlow_Py3</name>
+  <version>aeiou</version>
+  <createdBy>aeiou</createdBy>
+  <createdTime>2000-01-23T04:56:07.000Z</createdTime>
+</Image></code></pre>
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "createdBy" : "aeiou",
+  "name" : "TensorFlow_Py3",
+  "createdTime" : "2000-01-23T04:56:07.000+00:00",
+  "id" : "aeiou",
+  "version" : "latest"
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/xml</code></li>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    successful operation
+        <a href="#Image">Image</a>
+    <h4 class="field-label">403</h4>
+    Imageironment not found
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="deleteImage"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="delete"><code class="huge"><span class="http-method">delete</span> /image/{imageId}</code></pre></div>
+    <div class="method-summary">Delete image (<span class="nickname">deleteImage</span>)</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">imageId (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; image ID </div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/xml</code></li>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    successful operation
+        <a href="#"></a>
+    <h4 class="field-label">400</h4>
+    Invalid ID supplied
+        <a href="#"></a>
+    <h4 class="field-label">403</h4>
+    Imageironment not found
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getImage"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /image/{imageId}</code></pre></div>
+    <div class="method-summary">get image info (<span class="nickname">getImage</span>)</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">imageId (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; image ID </div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#Image">Image</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/xml</div>
+    <pre class="example"><code><Image>
+  <id>aeiou</id>
+  <name>TensorFlow_Py3</name>
+  <version>aeiou</version>
+  <createdBy>aeiou</createdBy>
+  <createdTime>2000-01-23T04:56:07.000Z</createdTime>
+</Image></code></pre>
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "createdBy" : "aeiou",
+  "name" : "TensorFlow_Py3",
+  "createdTime" : "2000-01-23T04:56:07.000+00:00",
+  "id" : "aeiou",
+  "version" : "latest"
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/xml</code></li>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    successful operation
+        <a href="#Image">Image</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="updateImage"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="put"><code class="huge"><span class="http-method">put</span> /image/{imageId}</code></pre></div>
+    <div class="method-summary">Update existing image (<span class="nickname">updateImage</span>)</div>
+    <div class="method-notes"></div>
+
+
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">body <a href="#Image">Image</a> (required)</div>
+
+      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash; Created Image object </div>
+
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#Image">Image</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/xml</div>
+    <pre class="example"><code><Image>
+  <id>aeiou</id>
+  <name>TensorFlow_Py3</name>
+  <version>aeiou</version>
+  <createdBy>aeiou</createdBy>
+  <createdTime>2000-01-23T04:56:07.000Z</createdTime>
+</Image></code></pre>
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "createdBy" : "aeiou",
+  "name" : "TensorFlow_Py3",
+  "createdTime" : "2000-01-23T04:56:07.000+00:00",
+  "id" : "aeiou",
+  "version" : "latest"
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/xml</code></li>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    successful operation
+        <a href="#Image">Image</a>
+    <h4 class="field-label">403</h4>
+    Permission Denied
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <h1><a name="Project">Project</a></h1>
+  <div class="method"><a name="archiveProject"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /user/{username}/project/{projectname}/archive</code></pre></div>
+    <div class="method-summary">archive a project (<span class="nickname">archiveProject</span>)</div>
+    <div class="method-notes">archive a project</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">username (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the owner of the project to be cloned. </div><div class="param">projectname (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the project that need to be cloned. </div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/xml</code></li>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    successful operation
+        <a href="#"></a>
+    <h4 class="field-label">400</h4>
+    Invalid status value
+        <a href="#"></a>
+    <h4 class="field-label">403</h4>
+    Permission Forbidden
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="cloneProject"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /user/{username}/project/{projectname}/clone</code></pre></div>
+    <div class="method-summary">clone a project (<span class="nickname">cloneProject</span>)</div>
+    <div class="method-notes">clone a project from other user's workspace</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">username (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the owner of the project to be cloned. </div><div class="param">projectname (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the project that need to be cloned. </div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/xml</code></li>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    successful operation
+        <a href="#"></a>
+    <h4 class="field-label">400</h4>
+    Invalid status value
+        <a href="#"></a>
+    <h4 class="field-label">403</h4>
+    Permission Forbidden
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="createProject"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /user/{username}/project</code></pre></div>
+    <div class="method-summary">create a project (<span class="nickname">createProject</span>)</div>
+    <div class="method-notes">create a new project</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">username (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; create project object </div>
+    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">body <a href="#Project">Project</a> (required)</div>
+
+      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash; Updated user object </div>
+
+    </div>  <!-- field-items -->
+
+
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/xml</code></li>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    successful operation
+        <a href="#"></a>
+    <h4 class="field-label">400</h4>
+    Invalid status value
+        <a href="#"></a>
+    <h4 class="field-label">403</h4>
+    Permission Forbidden
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getAllProjects"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /user/{username}/project</code></pre></div>
+    <div class="method-summary">get projects (<span class="nickname">getAllProjects</span>)</div>
+    <div class="method-notes">get the list of projects of a user.</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">username (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; username of the user </div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      array[<a href="#Project">Project</a>]
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/xml</div>
+    <pre class="example"><code><Project>
+  <id>123456789</id>
+  <name>aeiou</name>
+  <createdDateTime>2000-01-23T04:56:07.000Z</createdDateTime>
+  <gitRepo>aeiou</gitRepo>
+</Project></code></pre>
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>[ {
+  "name" : "aeiou",
+  "createdDateTime" : "2000-01-23T04:56:07.000+00:00",
+  "id" : 0,
+  "gitRepo" : "http://example.com/aeiou"
+} ]</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/xml</code></li>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    successful operation
+        
+    <h4 class="field-label">400</h4>
+    Invalid status value
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="updateProject"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="put"><code class="huge"><span class="http-method">put</span> /user/{username}/project/{projectname}</code></pre></div>
+    <div class="method-summary">update a project (<span class="nickname">updateProject</span>)</div>
+    <div class="method-notes">update project</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">username (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; name that need to be updated </div><div class="param">projectname (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; project name </div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/xml</code></li>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    successful operation
+        <a href="#"></a>
+    <h4 class="field-label">400</h4>
+    Invalid status value
+        <a href="#"></a>
+    <h4 class="field-label">403</h4>
+    Permission Forbidden
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <h1><a name="Scheduler">Scheduler</a></h1>
+  <div class="method"><a name="createScheduler"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /user/{username}/project/{projectname}/scheduler</code></pre></div>
+    <div class="method-summary">Add a scheduler to a project. (<span class="nickname">createScheduler</span>)</div>
+    <div class="method-notes">Add a scheduler</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">username (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the owner of the project to be operated. </div><div class="param">projectname (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the project that need to be operated. </div>
+    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">body <a href="#Scheduler">Scheduler</a> (required)</div>
+
+      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash; scheduler </div>
+
+    </div>  <!-- field-items -->
+
+
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/xml</code></li>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    successful operation
+        <a href="#"></a>
+    <h4 class="field-label">400</h4>
+    Invalid ID supplied
+        <a href="#"></a>
+    <h4 class="field-label">403</h4>
+    Permission Denied.
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="deleteSessionscheduler"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /user/{username}/project/{projectname}/scheduler/{schedulerId}</code></pre></div>
+    <div class="method-summary">get the setting of a scheduler (<span class="nickname">deleteSessionscheduler</span>)</div>
+    <div class="method-notes">delete a scheduler</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">username (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the owner of the project to be operated. </div><div class="param">projectname (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the project that need to be operated. </div><div class="param">schedulerId (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the scheduler that need to be operated. </div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#Scheduler">Scheduler</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/xml</div>
+    <pre class="example"><code><null>
+  <value></value>
+  <createdTime>2000-01-23T04:56:07.000Z</createdTime>
+  <sessionId>aeiou</sessionId>
+  <lastRunTime>2000-01-23T04:56:07.000Z</lastRunTime>
+  <status>aeiou</status>
+</null></code></pre>
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "lastRunTime" : "2000-01-23T04:56:07.000+00:00",
+  "createdBy" : {
+    "firstName" : "aeiou",
+    "lastName" : "aeiou",
+    "password" : "aeiou",
+    "id" : 0,
+    "email" : "aeiou",
+    "username" : "aeiou",
+    "group" : "aeiou"
+  },
+  "createdTime" : "2000-01-23T04:56:07.000+00:00",
+  "sessionId" : "aeiou",
+  "value" : "{}",
+  "status" : "Healthy"
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/xml</code></li>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    successful operation
+        <a href="#Scheduler">Scheduler</a>
+    <h4 class="field-label">400</h4>
+    Invalid ID supplied
+        <a href="#"></a>
+    <h4 class="field-label">403</h4>
+    Permission Denied.
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getProjectSchedulers"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /user/{username}/project/{projectname}/scheduler</code></pre></div>
+    <div class="method-summary">get all schedulers of a project (<span class="nickname">getProjectSchedulers</span>)</div>
+    <div class="method-notes">get all schedulers</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">username (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the owner of the project to be operated. </div><div class="param">projectname (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the project that need to be operated. </div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      array[<a href="#Scheduler">Scheduler</a>]
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/xml</div>
+    <pre class="example"><code><null>
+  <value></value>
+  <createdTime>2000-01-23T04:56:07.000Z</createdTime>
+  <sessionId>aeiou</sessionId>
+  <lastRunTime>2000-01-23T04:56:07.000Z</lastRunTime>
+  <status>aeiou</status>
+</null></code></pre>
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>[ {
+  "lastRunTime" : "2000-01-23T04:56:07.000+00:00",
+  "createdBy" : {
+    "firstName" : "aeiou",
+    "lastName" : "aeiou",
+    "password" : "aeiou",
+    "id" : 0,
+    "email" : "aeiou",
+    "username" : "aeiou",
+    "group" : "aeiou"
+  },
+  "createdTime" : "2000-01-23T04:56:07.000+00:00",
+  "sessionId" : "aeiou",
+  "value" : "{}",
+  "status" : "Healthy"
+} ]</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/xml</code></li>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    successful operation
+        
+    <h4 class="field-label">400</h4>
+    Invalid ID supplied
+        <a href="#"></a>
+    <h4 class="field-label">403</h4>
+    Permission Denied.
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="scheduler"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="delete"><code class="huge"><span class="http-method">delete</span> /user/{username}/project/{projectname}/scheduler/{schedulerId}</code></pre></div>
+    <div class="method-summary">delete a scheduler (<span class="nickname">scheduler</span>)</div>
+    <div class="method-notes">delete a scheduler</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">username (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the owner of the project to be operated. </div><div class="param">projectname (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the project that need to be operated. </div><div class="param">schedulerId (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the scheduler that need to be operated. </div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/xml</code></li>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    successful operation
+        <a href="#"></a>
+    <h4 class="field-label">400</h4>
+    Invalid ID supplied
+        <a href="#"></a>
+    <h4 class="field-label">403</h4>
+    Permission Denied.
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <h1><a name="Session">Session</a></h1>
+  <div class="method"><a name="archiveSession"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /user/{username}/project/{projectname}/session/{sessionId}/archive</code></pre></div>
+    <div class="method-summary">archive a session (<span class="nickname">archiveSession</span>)</div>
+    <div class="method-notes">archive a session</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">username (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the owner of the project to be cloned. </div><div class="param">projectname (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the project that need to be cloned. </div><div class="param">sessionId (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the sessionId that need to be operated. </div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/xml</code></li>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    successful operation
+        <a href="#"></a>
+    <h4 class="field-label">400</h4>
+    Invalid status value
+        <a href="#"></a>
+    <h4 class="field-label">403</h4>
+    Permission Forbidden
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="closeSession"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="delete"><code class="huge"><span class="http-method">delete</span> /user/{username}/project/{projectname}/session/{sessionId}</code></pre></div>
+    <div class="method-summary">Shutdown a session (<span class="nickname">closeSession</span>)</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">username (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the owner of the project to be cloned. </div><div class="param">projectname (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the project that need to be cloned. </div><div class="param">sessionId (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the sessionId that need to be operated. </div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/xml</code></li>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">400</h4>
+    Invalid ID supplied
+        <a href="#"></a>
+    <h4 class="field-label">404</h4>
+    Session not found
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="createNamedProjectSession"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /user/{username}/project/{projectname}/session/{sessionId}</code></pre></div>
+    <div class="method-summary"> (<span class="nickname">createNamedProjectSession</span>)</div>
+    <div class="method-notes">Create a new named session for a particular project.</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">username (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the owner of the project to be cloned. </div><div class="param">projectname (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the project that need to be cloned. </div><div class="param">sessionId (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the sessionId that need to be operated. </div>
+    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">body <a href="#Session">Session</a> (required)</div>
+
+      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
+
+    </div>  <!-- field-items -->
+
+
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/xml</code></li>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">405</h4>
+    Invalid input
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="createProjectSession"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /user/{username}/project/{projectname}/session</code></pre></div>
+    <div class="method-summary">Start new session (<span class="nickname">createProjectSession</span>)</div>
+    <div class="method-notes">Trigger a new running session under a project.</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">username (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the owner of the project to be cloned. </div><div class="param">projectname (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the project that need to be cloned. </div>
+    </div>  <!-- field-items -->
+
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="heaader">Content-Type</span> request header:
+    <ul>
+      <li><code>application/json</code></li>
+      <li><code>application/xml</code></li>
+    </ul>
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">body <a href="#Session">Session</a> (required)</div>
+
+      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
+
+    </div>  <!-- field-items -->
+
+
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/xml</code></li>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">405</h4>
+    Invalid input
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="createSessionTags"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /user/{username}/project/{projectname}/session/{sessionId}/tags</code></pre></div>
+    <div class="method-summary">tag a session with a list of tags. (<span class="nickname">createSessionTags</span>)</div>
+    <div class="method-notes">Returns the status of a session</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">username (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the owner of the project to be operated. </div><div class="param">projectname (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the project that need to be operated. </div><div class="param">sessionId (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the session that need to be operated. </div>
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Query parameters</h3>
+    <div class="field-items">
+      <div class="param">tags (required)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Tags to filter by </div>
+    </div>  <!-- field-items -->
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/xml</code></li>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    successful operation
+        <a href="#"></a>
+    <h4 class="field-label">400</h4>
+    Invalid ID supplied
+        <a href="#"></a>
+    <h4 class="field-label">403</h4>
+    Permission Denied.
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getSessionById"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /user/{username}/project/{projectname}/session/{sessionId}</code></pre></div>
+    <div class="method-summary">Find session by ID (<span class="nickname">getSessionById</span>)</div>
+    <div class="method-notes">Returns a single session</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">username (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the owner of the project to be operated. </div><div class="param">projectname (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the project that need to be operated. </div><div class="param">sessionId (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the sessionId that need to be operated. </div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#Session">Session</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/xml</div>
+    <pre class="example"><code><Session>
+  <id>aeiou</id>
+  <name>aeiou</name>
+  <Comments>
+  </Comments>
+  <tags>
+  </tags>
+</Session></code></pre>
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "Status" : { },
+  "Project" : {
+    "name" : "aeiou",
+    "createdDateTime" : "2000-01-23T04:56:07.000+00:00",
+    "id" : 0,
+    "gitRepo" : "http://example.com/aeiou"
+  },
+  "Log" : {
+    "data" : "{}",
+    "sessionId" : "aeiou"
+  },
+  "Comments" : [ {
+    "session" : "",
+    "id" : "aeiou",
+    "type" : "on_session",
+    "message" : "aeiou",
+    "user" : {
+      "firstName" : "aeiou",
+      "lastName" : "aeiou",
+      "password" : "aeiou",
+      "id" : 6,
+      "email" : "aeiou",
+      "username" : "aeiou",
+      "group" : "aeiou"
+    },
+    "timestamp" : "2000-01-23T04:56:07.000+00:00"
+  } ],
+  "Output" : {
+    "data" : "{}",
+    "sessionId" : "aeiou"
+  },
+  "name" : "aeiou",
+  "id" : "aeiou",
+  "Image" : {
+    "createdBy" : "aeiou",
+    "name" : "TensorFlow_Py3",
+    "createdTime" : "2000-01-23T04:56:07.000+00:00",
+    "id" : "aeiou",
+    "version" : "latest"
+  },
+  "tags" : [ {
+    "name" : "aeiou",
+    "sessionId" : "aeiou"
+  } ]
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/xml</code></li>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    successful operation
+        <a href="#Session">Session</a>
+    <h4 class="field-label">400</h4>
+    Invalid ID supplied
+        <a href="#"></a>
+    <h4 class="field-label">404</h4>
+    Session not found
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getSessionByStatus"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /user/{username}/project/{projectname}/session/getByStatus</code></pre></div>
+    <div class="method-summary">list session by status (<span class="nickname">getSessionByStatus</span>)</div>
+    <div class="method-notes">Returns a list of sessions</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">username (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the owner of the project to be operated. </div><div class="param">projectname (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the project that need to be operated. </div>
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Query parameters</h3>
+    <div class="field-items">
+      <div class="param">Status (required)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Status values that need to be considered for filter </div>
+    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      array[<a href="#Session">Session</a>]
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/xml</div>
+    <pre class="example"><code><Session>
+  <id>aeiou</id>
+  <name>aeiou</name>
+  <Comments>
+  </Comments>
+  <tags>
+  </tags>
+</Session></code></pre>
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>[ {
+  "Status" : { },
+  "Project" : {
+    "name" : "aeiou",
+    "createdDateTime" : "2000-01-23T04:56:07.000+00:00",
+    "id" : 0,
+    "gitRepo" : "http://example.com/aeiou"
+  },
+  "Log" : {
+    "data" : "{}",
+    "sessionId" : "aeiou"
+  },
+  "Comments" : [ {
+    "session" : "",
+    "id" : "aeiou",
+    "type" : "on_session",
+    "message" : "aeiou",
+    "user" : {
+      "firstName" : "aeiou",
+      "lastName" : "aeiou",
+      "password" : "aeiou",
+      "id" : 6,
+      "email" : "aeiou",
+      "username" : "aeiou",
+      "group" : "aeiou"
+    },
+    "timestamp" : "2000-01-23T04:56:07.000+00:00"
+  } ],
+  "Output" : {
+    "data" : "{}",
+    "sessionId" : "aeiou"
+  },
+  "name" : "aeiou",
+  "id" : "aeiou",
+  "Image" : {
+    "createdBy" : "aeiou",
+    "name" : "TensorFlow_Py3",
+    "createdTime" : "2000-01-23T04:56:07.000+00:00",
+    "id" : "aeiou",
+    "version" : "latest"
+  },
+  "tags" : [ {
+    "name" : "aeiou",
+    "sessionId" : "aeiou"
+  } ]
+} ]</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/xml</code></li>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    successful operation
+        
+    <h4 class="field-label">400</h4>
+    Invalid ID supplied
+        <a href="#"></a>
+    <h4 class="field-label">404</h4>
+    Session not found
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getSessionByTags"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /user/{username}/project/{projectname}/session/getByTags</code></pre></div>
+    <div class="method-summary">list session by tags (<span class="nickname">getSessionByTags</span>)</div>
+    <div class="method-notes">Returns a list of sessions</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">username (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the owner of the project to be operated. </div><div class="param">projectname (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the project that need to be operated. </div>
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Query parameters</h3>
+    <div class="field-items">
+      <div class="param">tags (required)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; tags that need to be considered for filter </div>
+    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      array[<a href="#Session">Session</a>]
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/xml</div>
+    <pre class="example"><code><Session>
+  <id>aeiou</id>
+  <name>aeiou</name>
+  <Comments>
+  </Comments>
+  <tags>
+  </tags>
+</Session></code></pre>
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>[ {
+  "Status" : { },
+  "Project" : {
+    "name" : "aeiou",
+    "createdDateTime" : "2000-01-23T04:56:07.000+00:00",
+    "id" : 0,
+    "gitRepo" : "http://example.com/aeiou"
+  },
+  "Log" : {
+    "data" : "{}",
+    "sessionId" : "aeiou"
+  },
+  "Comments" : [ {
+    "session" : "",
+    "id" : "aeiou",
+    "type" : "on_session",
+    "message" : "aeiou",
+    "user" : {
+      "firstName" : "aeiou",
+      "lastName" : "aeiou",
+      "password" : "aeiou",
+      "id" : 6,
+      "email" : "aeiou",
+      "username" : "aeiou",
+      "group" : "aeiou"
+    },
+    "timestamp" : "2000-01-23T04:56:07.000+00:00"
+  } ],
+  "Output" : {
+    "data" : "{}",
+    "sessionId" : "aeiou"
+  },
+  "name" : "aeiou",
+  "id" : "aeiou",
+  "Image" : {
+    "createdBy" : "aeiou",
+    "name" : "TensorFlow_Py3",
+    "createdTime" : "2000-01-23T04:56:07.000+00:00",
+    "id" : "aeiou",
+    "version" : "latest"
+  },
+  "tags" : [ {
+    "name" : "aeiou",
+    "sessionId" : "aeiou"
+  } ]
+} ]</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/xml</code></li>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    successful operation
+        
+    <h4 class="field-label">400</h4>
+    Invalid ID supplied
+        <a href="#"></a>
+    <h4 class="field-label">404</h4>
+    Session not found
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getSessionLogs"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /user/{username}/project/{projectname}/session/{sessionId}/logs</code></pre></div>
+    <div class="method-summary">get the logs of a ssession (<span class="nickname">getSessionLogs</span>)</div>
+    <div class="method-notes">Returns the logs of a session</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">username (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the owner of the project to be operated. </div><div class="param">projectname (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the project that need to be operated. </div><div class="param">sessionId (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the sessionId that need to be operated. </div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      array[<a href="#Session">Session</a>]
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/xml</div>
+    <pre class="example"><code><Session>
+  <id>aeiou</id>
+  <name>aeiou</name>
+  <Comments>
+  </Comments>
+  <tags>
+  </tags>
+</Session></code></pre>
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>[ {
+  "Status" : { },
+  "Project" : {
+    "name" : "aeiou",
+    "createdDateTime" : "2000-01-23T04:56:07.000+00:00",
+    "id" : 0,
+    "gitRepo" : "http://example.com/aeiou"
+  },
+  "Log" : {
+    "data" : "{}",
+    "sessionId" : "aeiou"
+  },
+  "Comments" : [ {
+    "session" : "",
+    "id" : "aeiou",
+    "type" : "on_session",
+    "message" : "aeiou",
+    "user" : {
+      "firstName" : "aeiou",
+      "lastName" : "aeiou",
+      "password" : "aeiou",
+      "id" : 6,
+      "email" : "aeiou",
+      "username" : "aeiou",
+      "group" : "aeiou"
+    },
+    "timestamp" : "2000-01-23T04:56:07.000+00:00"
+  } ],
+  "Output" : {
+    "data" : "{}",
+    "sessionId" : "aeiou"
+  },
+  "name" : "aeiou",
+  "id" : "aeiou",
+  "Image" : {
+    "createdBy" : "aeiou",
+    "name" : "TensorFlow_Py3",
+    "createdTime" : "2000-01-23T04:56:07.000+00:00",
+    "id" : "aeiou",
+    "version" : "latest"
+  },
+  "tags" : [ {
+    "name" : "aeiou",
+    "sessionId" : "aeiou"
+  } ]
+} ]</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/xml</code></li>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    successful operation
+        
+    <h4 class="field-label">400</h4>
+    Invalid ID supplied
+        <a href="#"></a>
+    <h4 class="field-label">404</h4>
+    Session not found
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getSessionOutputs"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /user/{username}/project/{projectname}/session/{sessionId}/outputs</code></pre></div>
+    <div class="method-summary">get the outputs of a ssession in a zip file. (<span class="nickname">getSessionOutputs</span>)</div>
+    <div class="method-notes">Returns the outputs of a session</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">username (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the owner of the project to be operated. </div><div class="param">projectname (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the project that need to be operated. </div><div class="param">sessionId (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the sessionId that need to be operated. </div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      
+      File
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/xml</div>
+    <pre class="example"><code></code></pre>
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>""</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/xml</code></li>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    successful operation
+        <a href="#File">File</a>
+    <h4 class="field-label">400</h4>
+    Invalid ID supplied
+        <a href="#"></a>
+    <h4 class="field-label">404</h4>
+    Session not found
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getSessionStats"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /user/{username}/project/{projectname}/session/{sessionId}/stats</code></pre></div>
+    <div class="method-summary">get the running stats of a ssession, eg, CPU and memory usage history, running time. (<span class="nickname">getSessionStats</span>)</div>
+    <div class="method-notes">Returns the outputs of a session</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">username (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the owner of the project to be operated. </div><div class="param">projectname (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the project that need to be operated. </div><div class="param">sessionId (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the sessionId that need to be operated. </div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      
+      String
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/xml</div>
+    <pre class="example"><code>aeiou</code></pre>
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>"aeiou"</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/xml</code></li>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    successful operation
+        <a href="#String">String</a>
+    <h4 class="field-label">400</h4>
+    Invalid ID supplied
+        <a href="#"></a>
+    <h4 class="field-label">404</h4>
+    Session not found
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getSessionStatus"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /user/{username}/project/{projectname}/session/{sessionId}/status</code></pre></div>
+    <div class="method-summary">get the status of a ssession (<span class="nickname">getSessionStatus</span>)</div>
+    <div class="method-notes">Returns the status of a session</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">username (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the owner of the project to be operated. </div><div class="param">projectname (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the project that need to be operated. </div><div class="param">sessionId (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; the sessionId that need to be operated. </div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      array[<a href="#Session">Session</a>]
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/xml</div>
+    <pre class="example"><code><Session>
+  <id>aeiou</id>
+  <name>aeiou</name>
+  <Comments>
+  </Comments>
+  <tags>
+  </tags>
+</Session></code></pre>
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>[ {
+  "Status" : { },
+  "Project" : {
+    "name" : "aeiou",
+    "createdDateTime" : "2000-01-23T04:56:07.000+00:00",
+    "id" : 0,
+    "gitRepo" : "http://example.com/aeiou"
+  },
+  "Log" : {
+    "data" : "{}",
+    "sessionId" : "aeiou"
+  },
+  "Comments" : [ {
+    "session" : "",
+    "id" : "aeiou",
+    "type" : "on_session",
+    "message" : "aeiou",
+    "user" : {
+      "firstName" : "aeiou",
+      "lastName" : "aeiou",
+      "password" : "aeiou",
+      "id" : 6,
+      "email" : "aeiou",
+      "username" : "aeiou",
+      "group" : "aeiou"
+    },
+    "timestamp" : "2000-01-23T04:56:07.000+00:00"
+  } ],
+  "Output" : {
+    "data" : "{}",
+    "sessionId" : "aeiou"
+  },
+  "name" : "aeiou",
+  "id" : "aeiou",
+  "Image" : {
+    "createdBy" : "aeiou",
+    "name" : "TensorFlow_Py3",
+    "createdTime" : "2000-01-23T04:56:07.000+00:00",
+    "id" : "aeiou",
+    "version" : "latest"
+  },
+  "tags" : [ {
+    "name" : "aeiou",
+    "sessionId" : "aeiou"
+  } ]
+} ]</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/xml</code></li>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    successful operation
+        
+    <h4 class="field-label">400</h4>
+    Invalid ID supplied
+        <a href="#"></a>
+    <h4 class="field-label">404</h4>
+    Session not found
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <h1><a name="User">User</a></h1>
+  <div class="method"><a name="createUser"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /user</code></pre></div>
+    <div class="method-summary">Create user (<span class="nickname">createUser</span>)</div>
+    <div class="method-notes">This can only be done by the logged in user.</div>
+
+
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">body <a href="#User">User</a> (required)</div>
+
+      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash; Created user object </div>
+
+    </div>  <!-- field-items -->
+
+
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/xml</code></li>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">default</h4>
+    successful operation
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getUser"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /user/{username}</code></pre></div>
+    <div class="method-summary">get user info (<span class="nickname">getUser</span>)</div>
+    <div class="method-notes">This can only be done by the logged in user.</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">username (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; username </div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#User">User</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/xml</div>
+    <pre class="example"><code><User>
+  <id>123456789</id>
+  <username>aeiou</username>
+  <firstName>aeiou</firstName>
+  <lastName>aeiou</lastName>
+  <email>aeiou</email>
+  <password>aeiou</password>
+  <group>aeiou</group>
+</User></code></pre>
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "firstName" : "aeiou",
+  "lastName" : "aeiou",
+  "password" : "aeiou",
+  "id" : 0,
+  "email" : "aeiou",
+  "username" : "aeiou",
+  "group" : "aeiou"
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/xml</code></li>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    successful operation
+        <a href="#User">User</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getUserNotifications"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /user/{username}/notifications</code></pre></div>
+    <div class="method-summary">get all notifications (<span class="nickname">getUserNotifications</span>)</div>
+    <div class="method-notes">get the list of notifications of a user.</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">username (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; username of the user </div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      array[<a href="#Notification">Notification</a>]
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/xml</div>
+    <pre class="example"><code><Notification>
+  <name>aeiou</name>
+  <title>aeiou</title>
+  <message>aeiou</message>
+  <timestamp>2000-01-23T04:56:07.000Z</timestamp>
+  <userId>aeiou</userId>
+</Notification></code></pre>
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>[ {
+  "name" : "aeiou",
+  "title" : "aeiou",
+  "message" : "aeiou",
+  "userId" : "aeiou",
+  "timestamp" : "2000-01-23T04:56:07.000+00:00"
+} ]</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/xml</code></li>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    successful operation
+        
+    <h4 class="field-label">400</h4>
+    Invalid status value
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="loginUser"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /user/login</code></pre></div>
+    <div class="method-summary">Logs user into the system (<span class="nickname">loginUser</span>)</div>
+    <div class="method-notes"></div>
+
+
+
+
+
+    <h3 class="field-label">Query parameters</h3>
+    <div class="field-items">
+      <div class="param">username (required)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; The user name for login </div><div class="param">password (required)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; The password for login in clear text </div>
+    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      
+      String
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/xml</div>
+    <pre class="example"><code>aeiou</code></pre>
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>"aeiou"</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/xml</code></li>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    successful operation
+        <a href="#String">String</a>
+    <h4 class="field-label">400</h4>
+    Invalid username/password supplied
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="logoutUser"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /user/logout</code></pre></div>
+    <div class="method-summary">Logs out current logged in user session (<span class="nickname">logoutUser</span>)</div>
+    <div class="method-notes"></div>
+
+
+
+
+
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/xml</code></li>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">default</h4>
+    successful operation
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="updateUser"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="put"><code class="huge"><span class="http-method">put</span> /user/{username}</code></pre></div>
+    <div class="method-summary">update user info (<span class="nickname">updateUser</span>)</div>
+    <div class="method-notes">This can only be done by the logged in user.</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">username (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; The user information format: string</div>
+    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">body <a href="#User">User</a> (required)</div>
+
+      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash; Updated user object </div>
+
+    </div>  <!-- field-items -->
+
+
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/xml</code></li>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">default</h4>
+    successful operation
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+
+  <h2><a name="__Models">Models</a></h2>
+  [ Jump to <a href="#__Methods">Methods</a> ]
+
+  <h3>Table of Contents</h3>
+  <ol>
+    <li><a href="#ApiResponse"><code>ApiResponse</code> - </a></li>
+    <li><a href="#Comment"><code>Comment</code> - </a></li>
+    <li><a href="#Image"><code>Image</code> - </a></li>
+    <li><a href="#Log"><code>Log</code> - </a></li>
+    <li><a href="#Notification"><code>Notification</code> - </a></li>
+    <li><a href="#Output"><code>Output</code> - </a></li>
+    <li><a href="#Project"><code>Project</code> - </a></li>
+    <li><a href="#Scheduler"><code>Scheduler</code> - </a></li>
+    <li><a href="#Session"><code>Session</code> - </a></li>
+    <li><a href="#Status"><code>Status</code> - </a></li>
+    <li><a href="#Tag"><code>Tag</code> - </a></li>
+    <li><a href="#User"><code>User</code> - </a></li>
+  </ol>
+
+  <div class="model">
+    <h3><a name="ApiResponse"><code>ApiResponse</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">code (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  format: int32</div>
+<div class="param">type (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">message (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="Comment"><code>Comment</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">id </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">type (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+        <div class="param-enum-header">Enum:</div>
+        <div class="param-enum">on_session</div><div class="param-enum">on_project</div>
+<div class="param">message </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">timestamp </div><div class="param-desc"><span class="param-type"><a href="#DateTime">Date</a></span>  format: date-time</div>
+<div class="param">user </div><div class="param-desc"><span class="param-type"><a href="#User">User</a></span>  </div>
+<div class="param">session (optional)</div><div class="param-desc"><span class="param-type"><a href="#Session">Session</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="Image"><code>Image</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">id </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  format: 32bit</div>
+<div class="param">name </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">version (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">createdBy </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The creator user Id. </div>
+<div class="param">createdTime (optional)</div><div class="param-desc"><span class="param-type"><a href="#DateTime">Date</a></span>  format: date-time</div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="Log"><code>Log</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">data </div><div class="param-desc"><span class="param-type"><a href="#object">Object</a></span>  </div>
+<div class="param">sessionId </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="Notification"><code>Notification</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">name (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">title (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">message (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">timestamp (optional)</div><div class="param-desc"><span class="param-type"><a href="#DateTime">Date</a></span>  format: date-time</div>
+<div class="param">userId (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="Output"><code>Output</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">data </div><div class="param-desc"><span class="param-type"><a href="#object">Object</a></span>  </div>
+<div class="param">sessionId </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="Project"><code>Project</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">id (optional)</div><div class="param-desc"><span class="param-type"><a href="#long">Long</a></span>  format: int64</div>
+<div class="param">name (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">createdDateTime (optional)</div><div class="param-desc"><span class="param-type"><a href="#DateTime">Date</a></span>  format: date-time</div>
+<div class="param">gitRepo (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  format: uri</div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="Scheduler"><code>Scheduler</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">value </div><div class="param-desc"><span class="param-type"><a href="#object">Object</a></span>  </div>
+<div class="param">createdTime (optional)</div><div class="param-desc"><span class="param-type"><a href="#DateTime">Date</a></span>  format: date-time</div>
+<div class="param">createdBy (optional)</div><div class="param-desc"><span class="param-type"><a href="#User">User</a></span>  </div>
+<div class="param">sessionId </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">lastRunTime (optional)</div><div class="param-desc"><span class="param-type"><a href="#DateTime">Date</a></span>  format: date-time</div>
+<div class="param">status (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+        <div class="param-enum-header">Enum:</div>
+        <div class="param-enum">Healthy</div><div class="param-enum">Failed</div><div class="param-enum">Invalid</div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="Session"><code>Session</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">id (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">name (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">Status (optional)</div><div class="param-desc"><span class="param-type"><a href="#Status">Status</a></span>  </div>
+<div class="param">Project (optional)</div><div class="param-desc"><span class="param-type"><a href="#Project">Project</a></span>  </div>
+<div class="param">Log (optional)</div><div class="param-desc"><span class="param-type"><a href="#Log">Log</a></span>  </div>
+<div class="param">Output (optional)</div><div class="param-desc"><span class="param-type"><a href="#Output">Output</a></span>  </div>
+<div class="param">Image (optional)</div><div class="param-desc"><span class="param-type"><a href="#Image">Image</a></span>  </div>
+<div class="param">Comments (optional)</div><div class="param-desc"><span class="param-type"><a href="#Comment">array[Comment]</a></span>  </div>
+<div class="param">tags (optional)</div><div class="param-desc"><span class="param-type"><a href="#Tag">array[Tag]</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="Status"><code>Status</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+          </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="Tag"><code>Tag</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">name (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">sessionId (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="User"><code>User</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">id (optional)</div><div class="param-desc"><span class="param-type"><a href="#long">Long</a></span>  format: int64</div>
+<div class="param">username (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">firstName (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">lastName (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">email (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">password (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">group (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  </body>
+{% endblock %}

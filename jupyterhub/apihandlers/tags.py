@@ -90,7 +90,7 @@ class ProjectTagListAPIHandler(UserAPIHandler):
         self.write(json.dumps(aa))
     
 default_handlers = [
-    (r"/api/user/([^/]+)/servers/([^/]+)/tag/([^/]+)", TagsAPIHandler),
+    (r"/api/user/([^/]+)/session/([^/]+)/tag/([^/]+)", TagsAPIHandler),
     (r"/api/user/([^/]+)/project/([^/]*)/tags/?", ProjectTagListAPIHandler),
 ]
 

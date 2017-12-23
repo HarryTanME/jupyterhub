@@ -199,7 +199,14 @@ class Spawner(Base):
     @classmethod
     def find_by_userid(cls, db, user_id):
         return db.query(cls).filter(cls.user_id == user_id).order_by(cls.last_activity.desc()).all()
-        
+    
+    @classmethod
+    def find_all_sessions(cls, db, user_id, proj_name):
+        """Find a user by name.
+        Returns None if not found.
+        """
+        return db.query(cls).join(Project).filter(Project.name == proj_name).filter(Project.user_id==user_id).order_by(cls.last_activity.desc()).all()
+    
 class Project(Base):
     """"Metadata about a project"""
     __tablename__ = 'projects'

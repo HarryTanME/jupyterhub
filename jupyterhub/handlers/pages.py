@@ -228,7 +228,30 @@ class TokenPageHandler(BaseHandler):
     def get(self):
         html = self.render_template('token.html')
         self.finish(html)
+        
+class TutorialsPageHandler(BaseHandler):
+    """Handler for view list of courses."""
 
+    @web.authenticated
+    def get(self):
+        html = self.render_template('tutorials.html', courses=self.course_list, categories =self.course_categories)
+        self.finish(html)
+
+class ModelzooPageHandler(BaseHandler):
+    """Handler for view list of pre-trained models."""
+
+    @web.authenticated
+    def get(self):
+        html = self.render_template('modelzoo.html')
+        self.finish(html)
+        
+class DatasetPageHandler(BaseHandler):
+    """Handler for view list of datasets."""
+
+    @web.authenticated
+    def get(self):
+        html = self.render_template('datasets.html')
+        self.finish(html)
 
 class ProxyErrorHandler(BaseHandler):
     """Handler for rendering proxy error pages"""
@@ -262,12 +285,87 @@ class ProxyErrorHandler(BaseHandler):
 
         self.write(html)
 
+class SimpleHtmlFilelistGenerator:
+    def __init__(self, dir, curr):
+        self.base_dir = dir
+        self.curr= curr
+        
+    def make_tree_html(self, path):
+        #big_tree='<div class="tree">'
+        
+        big_tree='<div class="container"><div class="row"><ul id="tree">'
+        tree = dict(name=os.path.basename(path), children=[])
+        try: lst = os.listdir(path)
+        except OSError:
+            pass #ignore errors
+        else:
+            newlist = sorted(lst)
+            #Move README always to the top of the list.
+            if "README.html" in newlist:
+                old_index = newlist.index("README.rst")
+                old_index = newlist.index("README.md")
+                newlist.insert(0, newlist.pop(old_index))
+                
+            for name in newlist:
+                #purposely bypass hidden files.
+                if name.startswith('.'):
+                    continue
+                fn = os.path.join(path, name)
+                if os.path.isdir(fn):
+                    #h = '<div class="list_dir">{}</div>'.format(name)
+                    h='<li>{}</li>'.format(name)
+                    big_tree+=h
+                    big_tree+=self.make_tree_html(fn)
+                else:
+                    href=os.path.join(path.replace(self.base_dir,"/repo/"+self.curr),name)
+                    h = '<li><a href="{}" target="_blank">{}</a></li>'.format(href, name.replace(".html",""))
+                    big_tree+=h
+                   
+        big_tree+='</ul></div></div>'
+        return big_tree
+    
+    def getTree(self):
+        return self.make_tree_html(self.base_dir)
+    
+class CourseHandler(BaseHandler):
+  
+    def get(self):
+        course_code=self.request.uri.split('/')[3]#there could be issues if more than folder name passed in.
 
+        course = self.course_list[course_code]
+        course_folder_name= course['FolderName']
+
+        pth =os.path.join(self.settings['repo_path'],course_folder_name)
+        path = os.path.expanduser(pth)
+        
+        gentr = SimpleHtmlFilelistGenerator(path, course_folder_name)
+        ss = gentr.getTree()
+        
+        html = self.render_template('tutorial.html', course=course, tree=ss)
+        self.write(html)
+
+class ApiDocHandler(BaseHandler):
+    
+    def get(self):
+        html=self.render_template("api_index.html")
+        self.write(html)
+        
+class ConstructionHandler(BaseHandler):
+    
+    def get(self):
+        html=self.render_template("constuction.html")
+        self.write(html)
+        
 default_handlers = [
     (r'/?', RootHandler),
     (r'/home', HomeHandler),
     (r'/admin', AdminHandler),
     (r'/spawn', SpawnHandler),
     (r'/token', TokenPageHandler),
+    (r'/tutorials', TutorialsPageHandler),
+    (r'/tutorial/.*', CourseHandler),
+    (r'/datasets', DatasetPageHandler),
+    (r'/modelzoo', ConstructionHandler),
+    (r'/api_doc', ApiDocHandler),
     (r'/error/(\d+)', ProxyErrorHandler),
 ]
