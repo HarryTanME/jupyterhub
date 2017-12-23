@@ -8,3 +8,4 @@ SQLAlchemy>=1.1
 mysql-connector==2.1.4
 requests
 binascii
+prometheus_client>=0.0.21

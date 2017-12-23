@@ -305,7 +305,7 @@ class Spawner(LoggingConfigurable):
           - The JupyterHub process' environment variables that are whitelisted in `env_keep`
           - Variables to establish contact between the single-user notebook and the hub (such as JUPYTERHUB_API_TOKEN)
 
-        The `enviornment` configurable should be set by JupyterHub administrators to add
+        The `environment` configurable should be set by JupyterHub administrators to add
         installation specific environment variables. It is a dict where the key is the name of the environment
         variable, and the value can be a string or a callable. If it is a callable, it will be called
         with one parameter (the spawner instance), and should return a string fairly quickly (no blocking
@@ -415,7 +415,10 @@ class Spawner(LoggingConfigurable):
         will be able to allocate this much memory - only that it can not
         allocate more than this.
 
-        This needs to be supported by your spawner for it to work.
+        **This is a configuration setting. Your spawner must implement support
+        for the limit to work.** The default spawner, `LocalProcessSpawner`,
+        does **not** implement this support. A custom spawner **must** add
+        support for this setting for it to be enforced.
         """
     ).tag(config=True)
 
@@ -431,7 +434,10 @@ class Spawner(LoggingConfigurable):
         use more cpu-cores than this. There is no guarantee that it can
         access this many cpu-cores.
 
-        This needs to be supported by your spawner for it to work.
+        **This is a configuration setting. Your spawner must implement support
+        for the limit to work.** The default spawner, `LocalProcessSpawner`,
+        does **not** implement this support. A custom spawner **must** add
+        support for this setting for it to be enforced.
         """
     ).tag(config=True)
 
@@ -445,7 +451,10 @@ class Spawner(LoggingConfigurable):
           - G -> Gigabytes
           - T -> Terabytes
 
-        This needs to be supported by your spawner for it to work.
+        **This is a configuration setting. Your spawner must implement support
+        for the limit to work.** The default spawner, `LocalProcessSpawner`,
+        does **not** implement this support. A custom spawner **must** add
+        support for this setting for it to be enforced.
         """
     ).tag(config=True)
 
@@ -457,7 +466,10 @@ class Spawner(LoggingConfigurable):
         If this value is set to 0.5, allows use of 50% of one CPU.
         If this value is set to 2, allows use of up to 2 CPUs.
 
-        Note that this needs to be supported by your spawner for it to work.
+        **This is a configuration setting. Your spawner must implement support
+        for the limit to work.** The default spawner, `LocalProcessSpawner`,
+        does **not** implement this support. A custom spawner **must** add
+        support for this setting for it to be enforced.
         """
     ).tag(config=True)
 
@@ -844,6 +856,8 @@ class LocalProcessSpawner(Spawner):
     Does not work on Windows.
 
     This is the default spawner for JupyterHub.
+
+    Note: This spawner does not implement CPU / memory guarantees and limits.
     """
 
     interrupt_timeout = Integer(10,
