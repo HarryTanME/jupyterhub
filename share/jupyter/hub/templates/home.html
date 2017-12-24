@@ -34,15 +34,14 @@
 {% if allow_named_servers %}
 <div class="container">
  <div>Running Servers:</div>
-    <tr class="user-row" >
+    <table>
     {% for s in user.running_spawners %}
+    <tr class="user-row" >
         <td > <a target="_blank" href="{{ user.url}}{{s.name}}" > {{s.name if s.name != "" else "Default Session"}}</a>
             </td> 
          <td> <span role="button" class ="session-more btn-info btn-xs">More</span>
-        </td>
-        <td> <span role="button" class="stop-server btn btn-xs btn-danger" data-servername="{{s.name}}">Stop Session</span>
             </td>
-
+        
         <div id="sessionCommands" style="display:none">
             <td> <span role="button" class="session-logs btn-info btn-xs " data-servername="{{s.name}}">Logs</span>
                 </td>
@@ -59,8 +58,42 @@
             <td> <span role="button" class="session-comments btn-info btn-xs " data-servername="{{s.name}}">Show Comments</span>
                 </td>
         </div>
-    {% endfor %}
+        <td> <span role="button" class="stop-server btn-xs btn-danger" data-servername="{{s.name}}">Stop Session</span>
+            </td>
+
     </tr>
+    {% endfor %}
+    </table>
+
+<button class="tablink" onclick="openSessionTabs('Status_tab', this)" id="defaultOpen">Status</button>
+<button class="tablink" onclick="openSessionTabs('Logs_tab', this)">Logs</button>
+<button class="tablink" onclick="openSessionTabs('Stats_tab', this)">Stats</button>
+<button class="tablink" onclick="openSessionTabs('Outputs_tab', this)">Outputs</button>
+<button class="tablink" onclick="openSessionTabs('Tags_tab', this)">Tags</button>
+<button class="tablink" onclick="openSessionTabs('Comments_tab', this)">Comments</button>
+    
+    <div id="Status_tab" class="tabcontent">
+      <h3>Status</h3>
+    </div>
+    <div id="Logs_tab" class="tabcontent">
+      <h3>Logs</h3>
+    </div>
+    <div id="Stats_tab" class="tabcontent">
+      <h3>Stats</h3>
+    </div>
+
+    <div id="Outputs_tab" class="tabcontent">
+      <h3>Outputs</h3>
+    </div>
+
+    <div id="Tags_tab" class="tabcontent">
+      <h3>Tags</h3>
+    </div>
+    
+    <div id="Comments_tab" class="tabcontent">
+      <h3>Comments</h3>
+    </div>
+    
     </div>
   </div>
     <hr/>
