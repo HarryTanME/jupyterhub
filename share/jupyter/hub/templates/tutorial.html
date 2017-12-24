@@ -15,8 +15,8 @@
     <div>Estimated Hours: {{ course["Hours"] }}</div>
     {% if course["HasVideo"] and course["VideoURL"] != '' %}
     <div>Video: 
-        {% for i,url in enumerate(course["VideoURL"].split(';')) %}
-            <a href="{{url}}" target="_blank">{{"Video_"+str(i+1)}}</a>
+        {% for url in course["VideoURL"].split(';') %}
+            <a href="{{url}}" target="_blank">{{"Video_"+loop.index|string()}}</a>
         {% endfor %}  
     </div>
     {% endif %}    
