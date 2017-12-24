@@ -9,7 +9,11 @@
 
     <div class="row">
         
+        
+        <div class="col-sm-6"> 
+        
         {% for category, coursez in  categories.items() %}
+            {% if category in ["R","Data Science","NLP","Finance"]%}
             <div class="language category">
                 <h3 class="language-title">{{ category }}</h3>
                 <ul class="list-unstyled">
@@ -31,20 +35,19 @@
                     
                 </ul>
             </div>
-            {% endfor %}
-        
-        
-        
-        {# Below is commentted out, since jinja has some notation issue.
-       <!-- Column 2-->
-        <div class="col-sm-6"> <!--  -->
-            {% for category, coursez in { k:v for k,v in categories.items() if k in ["R","Data Science","NLP","Finance"]}.items() %}
+            {% endif %}
+        {% endfor %}
+        </div>
+            
+        <div class="col-sm-6"> 
+        {% for category, coursez in  categories.items() %}
+            {% if category not in ["R","Data Science","NLP","Finance"]%}
             <div class="language category">
                 <h3 class="language-title">{{ category }}</h3>
                 <ul class="list-unstyled">
                     {% for coursecode in coursez %}
                     <li>
-                        <a href="/course/{{coursecode}}/{{ courses[coursecode]['DisplayName'].strip().replace(' ','_') }}" class="course-name" target="_blank">{{courses[coursecode]["DisplayName"]}}
+                        <a href="/tutorial/{{coursecode}}/{{ courses[coursecode]['DisplayName'].strip().replace(' ','_') }}" class="course-name" target="_blank">{{courses[coursecode]["DisplayName"]}}
                             {% if courses[coursecode]["HasVideo"] and courses[coursecode]["VideoURL"] != '' %}
                             📺
                             {% endif %}
@@ -60,36 +63,10 @@
                     
                 </ul>
             </div>
-            {% endfor %}
+            {% endif %}
+        {% endfor %}
         </div>
-       <!-- Column 2-->
         
-        <div class="col-sm-6">
-            {% for category, coursez in { k:v for k,v in categories.items() if k in ["Python","Machine Learning" , "Deep Learning"]}.items() %}
-            <div class="language category">
-                <h3 class="language-title">{{ category }}</h3>
-                <ul class="list-unstyled">
-                    {% for coursecode in coursez %}
-                    <li>
-                        <a href="/course/{{coursecode}}/{{ courses[coursecode]['DisplayName'].strip().replace(' ','_') }}" class="course-name" target="_blank">{{courses[coursecode]["DisplayName"]}}
-                            {% if courses[coursecode]["HasVideo"] and courses[coursecode]["VideoURL"] != '' %}
-                            📺
-                            {% endif %}
-                            {% if courses[coursecode]["Featured"] %}
-                            👍
-                            {% endif %}
-                            {% if courses[coursecode]["Chinese"] %}
-                            🇨🇳
-                            {% endif %}
-                        </a> 
-                    </li>
-                    {% endfor %}
-                    
-                </ul>
-            </div>
-            {% endfor %}
-        </div>
-        #}
     </div>        
 
 </div>       

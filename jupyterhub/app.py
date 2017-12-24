@@ -152,10 +152,10 @@ class NewToken(Application):
         hub.init_users()
         user = orm.User.find(hub.db, self.name)
         if user is None:
-            print("No such user: %s" % self.name, file=sys.stderr)
+            self.log.warn("No such user: %s" % self.name, file=sys.stderr)
             self.exit(1)
         token = user.new_api_token()
-        print(token)
+        #print(token)
 
 
 class UpgradeDB(Application):
@@ -173,7 +173,7 @@ class UpgradeDB(Application):
     classes = []
 
     def start(self):
-        print("start upgrading-db...")
+        self.log.info("start upgrading-db...")
         hub = JupyterHub(parent=self)
         hub.load_config_file(hub.config_file)
         self.log = hub.log
@@ -812,7 +812,6 @@ class JupyterHub(Application):
         # set default handlers
         h.extend(handlers.default_handlers)
         h.extend(apihandlers.default_handlers)
-        print("~~~~apihandlers.default_handlers~~~"+str(apihandlers.default_handlers))
         h.append((r'/logo', LogoHandler, {'path': self.logo_file}))
         self.handlers = self.add_url_prefix(self.hub_prefix, h)
         # some extra handlers, outside hub_prefix
@@ -1230,7 +1229,7 @@ class JupyterHub(Application):
             yield user.stop(server_name)
 
         for orm_user in db.query(orm.User ):
-            print("~~~~~orm_user~~"+str(orm_user))
+            #print("~~~~~orm_user~~"+str(orm_user))
             self.users[orm_user.id] = user = User(orm_user, self.tornado_settings)
             self.log.debug("Loading state for %s from db", user.name)
             for name, spawner in user.spawners.items():
@@ -1296,8 +1295,6 @@ class JupyterHub(Application):
 
     
     def getCourses(self, json_file):
-        print("current cwd: "+str(os.getcwd()))
-        
         with open(json_file,'r') as jsonfile:
             courses = json.load(jsonfile)
 
@@ -1325,7 +1322,6 @@ class JupyterHub(Application):
 
         
         course_list, course_categories = self.getCourses(self.course_list_file)
-        print(course_categories)
         
         login_url = url_path_join(base_url, 'login')
         logout_url = self.authenticator.logout_url(base_url)
@@ -1508,7 +1504,7 @@ class JupyterHub(Application):
         config_text = self.generate_config_file()
         if isinstance(config_text, bytes):
             config_text = config_text.decode('utf8')
-        print("Writing default config to: %s" % self.config_file)
+        self.log.info("Writing default config to: %s" % self.config_file)
         with open(self.config_file, mode='w') as f:
             f.write(config_text)
 
