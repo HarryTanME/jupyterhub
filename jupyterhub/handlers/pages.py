@@ -365,7 +365,7 @@ default_handlers = [
     (r'/tutorials', TutorialsPageHandler),
     (r'/tutorial/.*', CourseHandler),
     (r'/datasets', DatasetPageHandler),
-    (r'/modelzoo', ConstructionHandler),
+    (r'/modelzoo', ModelzooPageHandler),
     (r'/api_doc', ApiDocHandler),
     (r'/error/(\d+)', ProxyErrorHandler),
 ]
