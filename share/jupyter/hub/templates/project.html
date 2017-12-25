@@ -2,6 +2,12 @@
 
 
 {% block main %}
+<!--Your new content will be displayed in here-->
+<div class="content-placeholder">tst</div>
+
+<hr />
+
+
 <div id="proj_info" class="container">Project Info:</div>
 
 <hr />
@@ -12,9 +18,13 @@
 {% block script %}
 {{ super() }}
     <script type="text/javascript">
-        require(["project"]);
+        require(["project","handlebars"]);
         $.extend(true, jhdata, {
             proj_name: "{{proj_name}}"
           }); 
     </script>
+<script id="address-template" type="text/x-handlebars-template">
+  <p>You can find me in {{city}}. My address is {{number}} {{street}}.</p>
+</script>
+
 {% endblock %}

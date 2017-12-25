@@ -103,7 +103,54 @@ require(["jquery", "jhapi"], function ($, JHAPI) {
         
         api.get_session_stats(user, session_name, {
             success: function (response) {
-                $('#session_info').empty().append(response)
+                //$('#session_info').empty().append(response)
+                
+              
+              google.charts.load('current', {'packages':['corechart']});
+              google.charts.setOnLoadCallback(drawChart);
+
+              function drawChart() {
+                // 5. Create a new DataTable (Charts expects data in this format)
+                var cpudata = new google.visualization.DataTable();
+                var ramdata = new google.visualization.DataTable();
+
+
+                // 6. Add two columns to the DataTable
+                cpudata.addColumn('datetime', 'Timestamp');
+                cpudata.addColumn('number',   'CPU');
+                
+                ramdata.addColumn('datetime', 'Timestamp');
+                ramdata.addColumn('number',   'Memory');
+
+                // 7. Cycle through the records, adding one row per record
+                var records = response;
+                for (var i = 0; i < records.length; i++){
+                    var record = records[i];
+                    cpudata.addRow([
+                      (new Date(record.timestamp)),
+                      parseFloat(record.cpu_usage)
+                    ]);
+                    ramdata.addRow([
+                      (new Date(record.timestamp)),
+                      parseFloat(record.ram_usage)
+                    ]);
+                }
+                var cpuoptions = {
+                  title: 'CPU Usage (%)',
+                  //curveType: 'function',
+                  legend: { position: 'right' }
+                };
+                var ramoptions = {
+                  title: 'Memory Usage (GB)',
+                  //curveType: 'function',
+                  legend: { position: 'right' }
+                };
+                var cpuchart = new google.visualization.LineChart(document.getElementById('cpu_chart'));
+                var ramchart = new google.visualization.LineChart(document.getElementById('memory_chart'));
+
+                cpuchart.draw(cpudata, cpuoptions);
+                ramchart.draw(ramdata, ramoptions);
+              }
             }
         });
     });
@@ -134,8 +181,6 @@ require(["jquery", "jhapi"], function ($, JHAPI) {
             }
         });
     });
-    
-    
     
     
 });

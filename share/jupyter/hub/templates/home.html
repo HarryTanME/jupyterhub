@@ -80,6 +80,8 @@
     </div>
     <div id="Stats_tab" class="tabcontent">
       <h3>Stats</h3>
+        <div id="cpu_chart" style="width: 600px; height: 300px"></div>
+        <div id="memory_chart" style="width: 600px; height: 300px"></div>
     </div>
 
     <div id="Outputs_tab" class="tabcontent">
@@ -120,7 +122,7 @@
 <div id ="session_info" class="container">
     
 </div>
-
+ 
 {% endblock %}
 
 {% block script %}
@@ -128,4 +130,7 @@
 <script type="text/javascript">
 require(["home"]);
 </script>
+
+
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 {% endblock %}

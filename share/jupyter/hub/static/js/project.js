@@ -1,7 +1,7 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-require(["jquery", "jhapi", "project"], function ($, JHAPI) {
+require(["jquery", "jhapi", "project","handlebars"], function ($, JHAPI) {
     "use strict";
     
     var base_url = window.jhdata.base_url;
@@ -33,5 +33,23 @@ require(["jquery", "jhapi", "project"], function ($, JHAPI) {
         }
     });
 
-});
+    
+  // Grab the template script
+  var theTemplateScript = $("#address-template").html();
 
+  // Compile the template
+  var theTemplate = Handlebars.compile(theTemplateScript);
+
+  // Define our data object
+  var context={
+    "city": "London",
+    "street": "Baker Street",
+    "number": "221B"
+  };
+
+  // Pass our data to the template
+  var theCompiledHtml = theTemplate(context);
+
+  // Add the compiled html to the page
+  $('.content-placeholder').html(theCompiledHtml);
+});
