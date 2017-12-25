@@ -71,7 +71,7 @@ define(['jquery', 'utils'], function ($, utils) {
     
     JHAPI.prototype.get_session_status = function (user, session_name, options) {
         options = options || {};
-        options = update(options, {type: 'GET', dataType: "text"});
+        options = update(options, {type: 'GET', dataType: null});
 
         this.api_request(utils.url_path_join('user', user,  'session',session_name,'status'), options);
     };
@@ -92,7 +92,7 @@ define(['jquery', 'utils'], function ($, utils) {
     
     JHAPI.prototype.get_session_comments = function (user, session_name, options) {
         options = options || {};
-        options = update(options, {type: 'GET', dataType: 'text'});
+        options = update(options, {type: 'GET', dataType: null});
 
         this.api_request(utils.url_path_join('session',session_name,'comments'), options);
     };

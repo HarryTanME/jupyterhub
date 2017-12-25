@@ -1,7 +1,7 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-require(["jquery", "jhapi"], function ($, JHAPI) {
+require(["jquery", "jhapi", "Mustache"], function ($, JHAPI) {
     "use strict";
     
     var base_url = window.jhdata.base_url;
@@ -74,7 +74,6 @@ require(["jquery", "jhapi"], function ($, JHAPI) {
             success: function (response) {
             }
         });
-        
     });
     
     $(".add-session-comment").click(function (e) {
@@ -94,10 +93,11 @@ require(["jquery", "jhapi"], function ($, JHAPI) {
         
         api.get_session_logs(user, session_name, {
             success: function (response) {
-                $('#session_info').empty().append(response)
+                $('#logs_tab').empty().append(response.replace(/(\r\n|\n|\r)/gm, "<br>"));
             }
         });
     });
+    
     $(".session-stats").click(function (e) {        
         var session_name = $(this).data('servername');
         
@@ -159,16 +159,50 @@ require(["jquery", "jhapi"], function ($, JHAPI) {
         
         api.get_session_status(user, session_name, {
             success: function (response) {
-                $('#session_info').empty().append(response)
+                //$('#Status_tab').append(JSON.stringify(response));
+                
+                google.charts.load('current', {'packages':['table']});
+                  google.charts.setOnLoadCallback(drawTable);
+
+                  function drawTable() {
+                    var statusdata= response;
+                    var data = new google.visualization.DataTable();
+                    data.addColumn('string', 'KeyName');
+                    data.addColumn('string', 'Value');
+                      
+                      for (var key in statusdata){
+                            data.addRow([key, JSON.stringify(statusdata[key])]);
+                      }
+                    var table = new google.visualization.Table(document.getElementById('status_table'));
+                    
+                    table.draw(data, {showRowNumber: false, width: '300', height: '100%'});
+                    }
             }
         });
     });
+    
     $(".session-comments").click(function (e) {        
         var session_name = $(this).data('servername');
         
         api.get_session_comments(user, session_name, {
             success: function (response) {
-                $('#session_info').empty().append(response)
+                $('#comments_tab').empty().append(response)
+                var data = {
+                    title: "Constructing HTML Elements",
+                    body:{"header1":"nice","header2":"testing."}
+                }
+
+                var template = [
+                    '<div class="tutorial">',
+                        '<h1 class="tutorial-heading">{{title}}</h1>',
+                        '<h2>{{body.header1}}</h2>',
+                        '<p>{{body.header2}}</p>',
+                    '</div>'
+                ].join("\n");
+
+                var html = Mustache.render(template, data);
+                $("#comments_tab").append(html);
+
             }
         });
     });
@@ -177,7 +211,7 @@ require(["jquery", "jhapi"], function ($, JHAPI) {
         
         api.get_session_tags(user, session_name, {
             success: function (response) {
-                $('#session_info').empty().append(response)
+                $('#tags_tab').empty().append(response)
             }
         });
     });

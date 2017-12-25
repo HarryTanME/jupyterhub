@@ -175,7 +175,7 @@ class ServerLogsAPIHandler(UserServerAPIHandler):
             data = yield self._getData(user, server_name)
             status = 200
             self.set_status(status)
-            self.write(str(data))
+            self.write(data)
         
 class ServerStatsAPIHandler(UserServerAPIHandler):
     @gen.coroutine

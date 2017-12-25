@@ -53,8 +53,6 @@
                 </td>
             <td> <span role="button" class="add-session-tag btn-info btn-xs " data-servername="{{s.name}}">Add Tag</span>
                 </td>
-            <td> <span role="button" class="add-session-comment btn-info btn-xs " data-servername="{{s.name}}">Add Comment</span>
-                </td>
             <td> <span role="button" class="session-comments btn-info btn-xs " data-servername="{{s.name}}">Show Comments</span>
                 </td>
         </div>
@@ -74,9 +72,11 @@
     
     <div id="Status_tab" class="tabcontent">
       <h3>Status</h3>
+        <div id="status_table"></div>
     </div>
     <div id="Logs_tab" class="tabcontent">
       <h3>Logs</h3>
+        <div id="logs_tab"></div>
     </div>
     <div id="Stats_tab" class="tabcontent">
       <h3>Stats</h3>
@@ -86,14 +86,25 @@
 
     <div id="Outputs_tab" class="tabcontent">
       <h3>Outputs</h3>
+        <div id="outputs_tab"></div>
     </div>
 
     <div id="Tags_tab" class="tabcontent">
       <h3>Tags</h3>
+        <div id="tags_tab"></div>
     </div>
     
     <div id="Comments_tab" class="tabcontent">
       <h3>Comments</h3>
+        <div id="comments_tab"></div>
+        {#
+        <div class="cmd">
+            <form id="comment_form">
+            <div><textarea rows="2" cols="60" name="body" placeholder="Enter your comments here."></textarea></div>
+            <span role="button" class="add-session-comment btn-info btn-xs " data-servername="{{s.name}}">Add Comment</span>
+            </form>    
+        </div>
+        #}
     </div>
     
     </div>
@@ -128,9 +139,7 @@
 {% block script %}
 {{ super() }}
 <script type="text/javascript">
-require(["home"]);
+require(["home","mustache"]);
 </script>
-
-
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 {% endblock %}

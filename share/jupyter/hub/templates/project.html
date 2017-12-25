@@ -18,13 +18,10 @@
 {% block script %}
 {{ super() }}
     <script type="text/javascript">
-        require(["project","handlebars"]);
+        require(["project",""]);
         $.extend(true, jhdata, {
             proj_name: "{{proj_name}}"
           }); 
     </script>
-<script id="address-template" type="text/x-handlebars-template">
-  <p>You can find me in {{city}}. My address is {{number}} {{street}}.</p>
-</script>
 
 {% endblock %}
