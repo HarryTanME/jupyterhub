@@ -7,8 +7,8 @@ require(["jquery", "jhapi", "Mustache"], function ($, JHAPI) {
     var base_url = window.jhdata.base_url;
     var user = window.jhdata.user;
     var api = new JHAPI(base_url);
+    var selected_session = '';
     
-     
     $(".stop-server").click(function (e) {
         var btn = $(e.target);
         btn.attr("disabled", "disabled");
@@ -90,16 +90,32 @@ require(["jquery", "jhapi", "Mustache"], function ($, JHAPI) {
     
     $(".session-logs").click(function (e) {        
         var session_name = $(this).data('servername');
-        
-        api.get_session_logs(user, session_name, {
+
+        reloadLogTab(session_name);
+    });
+    
+    $("#log_tablink").click(function (e) {        
+        reloadLogTab(selected_session);
+    });
+    
+    function reloadLogTab (session_name) {        
+       api.get_session_logs(user, session_name, {
             success: function (response) {
                 $('#logs_tab').empty().append(response.replace(/(\r\n|\n|\r)/gm, "<br>"));
             }
         });
-    });
+    }
     
     $(".session-stats").click(function (e) {        
         var session_name = $(this).data('servername');
+        reloadStatsTab(session_name);
+    });
+
+    $("#stats_tablink").click(function (e) {        
+        reloadStatsTab(selected_session);
+    });
+
+    function reloadStatsTab(session_name){
         
         api.get_session_stats(user, session_name, {
             success: function (response) {
@@ -152,11 +168,21 @@ require(["jquery", "jhapi", "Mustache"], function ($, JHAPI) {
                 ramchart.draw(ramdata, ramoptions);
               }
             }
+        
         });
-    });
+    }
+    
     $(".session-status").click(function (e) {        
         var session_name = $(this).data('servername');
-        
+        reloadStatusTab(session_name);
+    });
+    
+    
+    $("#status_tablink").click(function (e) {        
+        reloadStatusTab(selected_session);
+    });
+    
+    function reloadStatusTab(session_name){
         api.get_session_status(user, session_name, {
             success: function (response) {
                 //$('#Status_tab').append(JSON.stringify(response));
@@ -179,11 +205,17 @@ require(["jquery", "jhapi", "Mustache"], function ($, JHAPI) {
                     }
             }
         });
-    });
+    }
     
     $(".session-comments").click(function (e) {        
         var session_name = $(this).data('servername');
-        
+        reloadCommentTab(session_name);
+    });
+    $("#session_tablink").click(function (e) {        
+        reloadCommentTab(selected_session);
+    });
+          
+    function reloadCommentTab(session_name) {        
         api.get_session_comments(user, session_name, {
             success: function (response) {
                 $('#comments_tab').empty().append(response)
@@ -205,7 +237,8 @@ require(["jquery", "jhapi", "Mustache"], function ($, JHAPI) {
 
             }
         });
-    });
+    }
+    
     $(".session-tags").click(function (e) {        
         var session_name = $(this).data('servername');
         
@@ -216,11 +249,27 @@ require(["jquery", "jhapi", "Mustache"], function ($, JHAPI) {
         });
     });
     
+    $('.tablink-container .tablink').click(function(e) {
+        var id = $(this).data('contenttabid');        
+        if(id !== '') {
+            $('.tabcontent-container .tabcontent.active').removeClass('active');
+            $('.tabcontent-container ' + '#' + id).addClass('active');
+        }
+    });   
     
+    $('.session-choose').click(function (e){
+        var session_name = $(this).data('servername');
+        selected_session = session_name;
+        //$('.tabcontent-container .tabcontent.active').removeClass('active');
+        //$('.tabcontent-container ' + '#Status_tab' ).addClass('active');
+        $('.tabcontent-container .tabcontent.active' ).click();
+
+
+    });
 });
 
+/*
 
-    /*
     function openSessionTabs(evt, cityName) {
         // Declare all variables
         var i, tabcontent, tablinks;
@@ -239,4 +288,9 @@ require(["jquery", "jhapi", "Mustache"], function ($, JHAPI) {
 
     // Show the current tab, and add an "active" class to the button that opened the tab
     document.getElementById(cityName).style.display = "block";
-    evt.currentTarget.className += " active";*/
+    evt.currentTarget.className += " active";
+    */
+
+
+    
+    

@@ -39,6 +39,7 @@ header nav {
     float: right;
 }
 header nav a {
+    list-style-type: none;
     line-height: 150px;
     margin-left: 20px;
     color: white;
@@ -100,27 +101,50 @@ header.smaller nav a {
 /* Tab styles on home page
 --------------------------------------------*/
 /* Style the tab buttons */
+
+
+.tablink-container{
+    background-color: #ccc;
+    width: 100%;
+}
+
 .tablink {
-    background-color: #555;
-    color: white;
+    background-color: #ccc;
     float: left;
-    border: none;
+    border: 2px;
+    border-color: white;
     outline: none;
     cursor: pointer;
-    padding: 14px 16px;
-    font-size: 17px;
-    width: 25%;
+    padding: 3px 3px;
+    font-size: 14px;
+    width: 16%;
 }
 
 /* Change background color of buttons on hover */
 .tablink:hover {
-    background-color: #777;
+    background-color: #ddd;
 }
-
+.tablink.active {
+    background-color: #fff;
+}
 /* Set default styles for tab content */
 .tabcontent {
     color: white;
     display: none;
     padding: 50px;
-    text-align: center;
+    text-align: left;
+    height: 800px;
+}
+
+
+.tabcontent-container .tabcontent {
+    display: none;
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    width: 96%;
+}
+
+.tabcontent-container .tabcontent.active{
+    display: block;
+    color: black;
 }

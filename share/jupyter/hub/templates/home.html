@@ -32,16 +32,23 @@
     <hr/>
 
 {% if allow_named_servers %}
-<div class="container">
+
+<!-- Begin of running servers.-->    
+<div class="col-sm-4">
  <div>Running Servers:</div>
     <table>
     {% for s in user.running_spawners %}
     <tr class="user-row" >
-        <td > <a target="_blank" href="{{ user.url}}{{s.name}}" > {{s.name if s.name != "" else "Default Session"}}</a>
+        <td > <span class ="session-choose btn-link" data-servername="{{s.name}}" > {{s.name if s.name != "" else "Default Session"}}
+            </span>
             </td> 
+        <td> <a class ="btn-info btn-xs" href="{{ user.url}}{{s.name}}" target="_blank" >Open Session</a>
+            </td>
+<!--
          <td> <span role="button" class ="session-more btn-info btn-xs">More</span>
             </td>
         
+       
         <div id="sessionCommands" style="display:none">
             <td> <span role="button" class="session-logs btn-info btn-xs " data-servername="{{s.name}}">Logs</span>
                 </td>
@@ -56,59 +63,70 @@
             <td> <span role="button" class="session-comments btn-info btn-xs " data-servername="{{s.name}}">Show Comments</span>
                 </td>
         </div>
-        <td> <span role="button" class="stop-server btn-xs btn-danger" data-servername="{{s.name}}">Stop Session</span>
+-->
+        <td> <span role="button" class="stop-server btn-xs btn-danger" data-servername="{{s.name}}">Stop</span>
             </td>
 
     </tr>
     {% endfor %}
     </table>
-
-<button class="tablink" onclick="openSessionTabs('Status_tab', this)" id="defaultOpen">Status</button>
-<button class="tablink" onclick="openSessionTabs('Logs_tab', this)">Logs</button>
-<button class="tablink" onclick="openSessionTabs('Stats_tab', this)">Stats</button>
-<button class="tablink" onclick="openSessionTabs('Outputs_tab', this)">Outputs</button>
-<button class="tablink" onclick="openSessionTabs('Tags_tab', this)">Tags</button>
-<button class="tablink" onclick="openSessionTabs('Comments_tab', this)">Comments</button>
+</div>
+<!-- end of running servers.-->    
     
-    <div id="Status_tab" class="tabcontent">
-      <h3>Status</h3>
-        <div id="status_table"></div>
+<!-- Begin of Tabs.-->   
+<div  class="col-sm-8">
+    <div class="tablink-container">
+        <button class="tablink" id="status_tablink" data-contenttabid="Status_tab" >Status</button>
+        <button class="tablink" id="log_tablink" data-contenttabid="Logs_tab">Logs</button>
+        <button class="tablink" id="stats_tablink" data-contenttabid="Stats_tab">Stats</button>
+        <button class="tablink" id="output_tablink" data-contenttabid="Outputs_tab">Outputs</button>
+        <button class="tablink" id="tag_tablink" data-contenttabid="Tags_tab">Tags</button>
+        <button class="tablink" id="comment_tablink" data-contenttabid="Comments_tab">Comments</button>
     </div>
-    <div id="Logs_tab" class="tabcontent">
-      <h3>Logs</h3>
-        <div id="logs_tab"></div>
-    </div>
-    <div id="Stats_tab" class="tabcontent">
-      <h3>Stats</h3>
-        <div id="cpu_chart" style="width: 600px; height: 300px"></div>
-        <div id="memory_chart" style="width: 600px; height: 300px"></div>
-    </div>
-
-    <div id="Outputs_tab" class="tabcontent">
-      <h3>Outputs</h3>
-        <div id="outputs_tab"></div>
-    </div>
-
-    <div id="Tags_tab" class="tabcontent">
-      <h3>Tags</h3>
-        <div id="tags_tab"></div>
-    </div>
-    
-    <div id="Comments_tab" class="tabcontent">
-      <h3>Comments</h3>
-        <div id="comments_tab"></div>
-        {#
-        <div class="cmd">
-            <form id="comment_form">
-            <div><textarea rows="2" cols="60" name="body" placeholder="Enter your comments here."></textarea></div>
-            <span role="button" class="add-session-comment btn-info btn-xs " data-servername="{{s.name}}">Add Comment</span>
-            </form>    
+    <div class="tabcontent-container">
+        <div id="Status_tab" class="tabcontent active">
+          <h3>Status</h3>
+            <div id="status_table"></div>
         </div>
-        #}
+        <div id="Logs_tab" class="tabcontent">
+          <h3>Logs</h3>
+            <div id="logs_tab"></div>
+        </div>
+        <div id="Stats_tab" class="tabcontent">
+          <h3>Stats</h3>
+            <div id="cpu_chart" style="width: 600px; height: 300px"></div>
+            <div id="memory_chart" style="width: 600px; height: 300px"></div>
+        </div>
+
+        <div id="Outputs_tab" class="tabcontent">
+          <h3>Outputs</h3>
+            <div id="outputs_tab"></div>
+        </div>
+
+        <div id="Tags_tab" class="tabcontent">
+          <h3>Tags</h3>
+            <div id="tags_tab"></div>
+        </div>
+
+        <div id="Comments_tab" class="tabcontent">
+          <h3>Comments</h3>
+            <div id="comments_tab"></div>
+            {#
+            <div class="cmd">
+                <form id="comment_form">
+                <div><textarea rows="2" cols="60" name="body" placeholder="Enter your comments here."></textarea></div>
+                <span role="button" class="add-session-comment btn-info btn-xs " data-servername="{{s.name}}">Add Comment</span>
+                </form>    
+            </div>
+            #}
+        </div>
     </div>
+</div>
+<!-- end of tabs.-->    
     
-    </div>
-  </div>
+</div>
+    
+    
     <hr/>
 </div>
 {% endif %}   
@@ -139,7 +157,8 @@
 {% block script %}
 {{ super() }}
 <script type="text/javascript">
-require(["home","mustache"]);
+require(["home"]);
 </script>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 {% endblock %}
+
