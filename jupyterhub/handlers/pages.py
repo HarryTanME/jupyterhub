@@ -75,6 +75,7 @@ class HomeHandler(BaseHandler):
         html = self.render_template('home.html',
             user=user,
             url=url,
+            selected_session=user.running_spawners[0].name if len(user.running_spawners) > 0 else '',
         )
         self.finish(html)
 
@@ -234,7 +235,7 @@ class TutorialsPageHandler(BaseHandler):
 
     @web.authenticated
     def get(self):
-        html = self.render_template('tutorials.html', courses=self.course_list, categories =self.course_categories)
+        html = self.render_template('tutorials.html', courses=self.course_list, categories =self.course_categories, title="Tutorials | WodeAI")
         self.finish(html)
 
 class ModelzooPageHandler(BaseHandler):
@@ -242,7 +243,7 @@ class ModelzooPageHandler(BaseHandler):
 
     @web.authenticated
     def get(self):
-        html = self.render_template('modelzoo.html')
+        html = self.render_template('modelzoo.html', title="Model Zoo | WodeAI")
         self.finish(html)
         
 class DatasetPageHandler(BaseHandler):
@@ -250,7 +251,7 @@ class DatasetPageHandler(BaseHandler):
 
     @web.authenticated
     def get(self):
-        html = self.render_template('datasets.html')
+        html = self.render_template('datasets.html', title="Datasets | WodeAI")
         self.finish(html)
 
 class ProxyErrorHandler(BaseHandler):
@@ -341,13 +342,13 @@ class CourseHandler(BaseHandler):
         gentr = SimpleHtmlFilelistGenerator(path, course_folder_name)
         ss = gentr.getTree()
         
-        html = self.render_template('tutorial.html', course=course, tree=ss)
+        html = self.render_template('tutorial.html', course=course, tree=ss, title = course['DisplayName'])
         self.write(html)
 
 class ApiDocHandler(BaseHandler):
     
     def get(self):
-        html=self.render_template("api_index.html")
+        html=self.render_template("api_index.html", title = "API Document")
         self.write(html)
         
 class ConstructionHandler(BaseHandler):

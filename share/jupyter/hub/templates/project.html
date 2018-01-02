@@ -2,23 +2,18 @@
 
 
 {% block main %}
-<!--Your new content will be displayed in here-->
-<div class="content-placeholder">tst</div>
+
+<div id="proj_info" class="container"></div>
 
 <hr />
-
-
-<div id="proj_info" class="container">Project Info:</div>
-
-<hr />
-<div id="all_sessions" class="container">All Sessions:</div>
+<div id="proj_sessions" class="container"></div>
 
 {% endblock %}
 
 {% block script %}
 {{ super() }}
     <script type="text/javascript">
-        require(["project",""]);
+        require(["Mustache", "project"]);
         $.extend(true, jhdata, {
             proj_name: "{{proj_name}}"
           }); 

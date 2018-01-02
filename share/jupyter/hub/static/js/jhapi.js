@@ -53,6 +53,19 @@ define(['jquery', 'utils'], function ($, utils) {
     };
     
     
+    JHAPI.prototype.get_sessions = function (user, options) {
+        options = options || {};
+        options = update(options, {type: 'GET', dataType: null});
+
+        this.api_request(utils.url_path_join('user', user, 'sessions'), options);
+    };
+    
+    JHAPI.prototype.get_active_sessions = function (user, options) {
+        options = options || {};
+        options = update(options, {type: 'GET', dataType: null});
+        //FIXME: This is too ugly.
+        this.api_request(utils.url_path_join('user', user, 'sessions?status=active'), options);
+    };
     
     JHAPI.prototype.get_project_sessions = function (user, proj_name, options) {
         options = options || {};
@@ -133,7 +146,14 @@ define(['jquery', 'utils'], function ($, utils) {
             options
         );
     };
-    
+    JHAPI.prototype.delete_session_comment =function (user, session_name, comment_id, options) {
+        options = options || {};
+        options = update(options, {type: 'DELETE', dataType: null});
+        this.api_request(
+            utils.url_path_join('session', session_name,'comment', comment_id),
+            options
+        );
+    };
     
     
     JHAPI.prototype.start_named_session = function (user, session_name, options) {

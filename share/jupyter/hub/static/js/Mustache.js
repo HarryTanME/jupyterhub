@@ -6,14 +6,14 @@
 /*global define: false Mustache: true*/
 
 (function defineMustache (global, factory) {
-  if (typeof exports === 'object' && exports && typeof exports.nodeName !== 'string') {
-    factory(exports); // CommonJS
-  } else if (typeof define === 'function' && define.amd) {
-    define(['exports'], factory); // AMD
-  } else {
+//  if (typeof exports === 'object' && exports && typeof exports.nodeName !== 'string') {
+//    factory(exports); // CommonJS
+//  } else if (typeof define === 'function' && define.amd) {
+//    define(['exports'], factory); // AMD
+//  } else {
     global.Mustache = {};
     factory(global.Mustache); // script, wsh, asp
-  }
+//  }
 }(this, function mustacheFactory (mustache) {
 
   var objectToString = Object.prototype.toString;

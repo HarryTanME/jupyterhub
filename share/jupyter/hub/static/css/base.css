@@ -34,11 +34,16 @@ header h1#logo {
 header h1#logo a {
     color: white;
 }    
-header nav {
+header nav {/*
     display: inline-block;
-    float: right;
+    float: right;*/
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    width: 200px;
+    background-color: #f1f1f1;
 }
-header nav a {
+header nav a {/*
     list-style-type: none;
     line-height: 150px;
     margin-left: 20px;
@@ -49,7 +54,11 @@ header nav a {
     -moz-transition: all 0.3s;
     -ms-transition: all 0.3s;
     -o-transition: all 0.3s;
-    transition: all 0.3s;
+    transition: all 0.3s;*/
+    display: block;
+    color: #000;
+    padding: 8px 16px;
+    text-decoration: none;
 }
 header nav a:hover {
     color: white;
@@ -147,4 +156,32 @@ header.smaller nav a {
 .tabcontent-container .tabcontent.active{
     display: block;
     color: black;
+}
+
+
+/* Styles for comments*/
+.CommentMeta {
+    font-size: 14px;
+    padding: 3px 10px 3px;
+    color: #444;
+    background: #eee;
+}
+
+.CommentBody {
+    font-size: 16px;
+    color: black;
+    margin-left: 10px;
+}
+
+
+/* Styles for session tabs*/
+div.scrollingDiv
+{
+   overflow:scroll;
+}
+.DivWithScroll{
+    height:660px;
+    width:100%;
+    overflow:scroll;
+    overflow-x:hidden;
 }

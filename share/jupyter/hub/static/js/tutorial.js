@@ -30,8 +30,6 @@ require(["jquery", "jhapi"], function ($, JHAPI) {
         }else{
             var datastr='{"docker_image": "'.concat(image).concat('", "pre-cmd":"git clone ').concat(github).concat('; ", ').concat(' "argv":["--NotebookApp.default_url=').concat(default_notebook).concat('"] }');
         }
-        $('body').append(datastr)
-                     
         api.start_named_session(user, session_name, {
             success: function (response) {
                 btn.removeAttr('disabled');

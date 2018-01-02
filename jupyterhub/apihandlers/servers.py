@@ -15,6 +15,12 @@ from .base import APIHandler
 from .projects import _ProjectAPIHandler, admin_or_self
 from .users import UserAPIHandler
 
+def session_model(session):
+        ss= {"name":session.name, "project":session.project_id, "option":session.option}
+        ss['status'] ='active' if session.end_time is None else 'stopped'
+        ss["end_time"] = session.end_time.isoformat() if session.end_time is not None else None
+        return ss
+    
 class UserServerAPIHandler(APIHandler):
     """Start and stop single-user servers"""
 
@@ -59,19 +65,15 @@ class UserServerAPIHandler(APIHandler):
         self.write(json.dumps({"session_name":"{}".format(server_name),"url":str(user.url+server_name)}))
     
     def _getActiveSpawners(self, user):
-        model = self.user_model(self.users[user])
-        if self.allow_named_servers :
-            servers = model['servers'] 
-        elif model['server'] is not None:
-            servers = {"":model['server']}
-        else:
-            servers = {}
-        return servers
+        spawners = orm.Spawner.find_all_active_sessions(self.db, user.id)
+        return spawners
     
     def _getAllSpawners(self, user):
         spawners = orm.Spawner.find_by_userid(self.db, user.id)
         return spawners
     
+    
+        
     @gen.coroutine
     @admin_or_self
     def get(self, name):
@@ -86,7 +88,10 @@ class UserServerAPIHandler(APIHandler):
         elif sess_stats is not None and sess_stats != "" :
             if sess_stats not in ['active']:
                 raise  web.HTTPError(403, 'Status can only be "active" (for now).')
-            data = self._getActiveSpawners(user)
+            orm_spawners = self._getActiveSpawners(user)
+            data =[]
+            for s in orm_spawners:
+                data.append(session_model(s))
             status = 200
             self.set_status(status)
             self.write(json.dumps(data))
@@ -96,7 +101,7 @@ class UserServerAPIHandler(APIHandler):
             self.set_status(status)
             data =[]
             for s in orm_spawners:
-                data.append(s.name)
+                data.append(session_model(s))
             self.write(json.dumps(data))
             
     @gen.coroutine
@@ -304,10 +309,7 @@ class SesseionListAPIHandler(UserAPIHandler):
     def all_sesssions(self, user, proj_name):
         sessions = orm.Spawner.find_all_sessions(self.db, user.id, proj_name)
         return sessions
-    
-    def session_model(self, session):
-        return {"name":sesison.name, "end_time":session.end_time}
-    
+
     @gen.coroutine
     @admin_or_self
     def get(self, user, project_name):
@@ -323,7 +325,7 @@ class SesseionListAPIHandler(UserAPIHandler):
             aa = []
             sessions = self.find_by_project(project_name, tag)
             for s in sessions:
-                aa.append(s.session_name)
+                aa.append(session_model(s))
             self.set_status(200)
             self.write(json.dumps(aa))
         else :
@@ -331,7 +333,7 @@ class SesseionListAPIHandler(UserAPIHandler):
             print(str(sessions))
             aa = []
             for s in sessions:
-                aa.append(s.name)
+                aa.append(session_model(s))
             self.set_status(200)
             self.write(json.dumps(aa))
 

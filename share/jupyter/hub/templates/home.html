@@ -31,10 +31,15 @@
 
     <hr/>
 
-{% if allow_named_servers %}
+{% if allow_named_servers and user.running_spawners|length > 0%}
 
 <!-- Begin of running servers.-->    
 <div class="col-sm-4">
+    
+ <div id="session_list"></div>
+    
+    
+  
  <div>Running Servers:</div>
     <table>
     {% for s in user.running_spawners %}
@@ -44,11 +49,11 @@
             </td> 
         <td> <a class ="btn-info btn-xs" href="{{ user.url}}{{s.name}}" target="_blank" >Open Session</a>
             </td>
-<!--
+
+       <!--
+        
          <td> <span role="button" class ="session-more btn-info btn-xs">More</span>
             </td>
-        
-       
         <div id="sessionCommands" style="display:none">
             <td> <span role="button" class="session-logs btn-info btn-xs " data-servername="{{s.name}}">Logs</span>
                 </td>
@@ -70,6 +75,7 @@
     </tr>
     {% endfor %}
     </table>
+
 </div>
 <!-- end of running servers.-->    
     
@@ -81,7 +87,7 @@
         <button class="tablink" id="stats_tablink" data-contenttabid="Stats_tab">Stats</button>
         <button class="tablink" id="output_tablink" data-contenttabid="Outputs_tab">Outputs</button>
         <button class="tablink" id="tag_tablink" data-contenttabid="Tags_tab">Tags</button>
-        <button class="tablink" id="comment_tablink" data-contenttabid="Comments_tab">Comments</button>
+        <button class="tablink" id="comment_tablink" data-contenttabid="Comments_tab">Discussion</button>
     </div>
     <div class="tabcontent-container">
         <div id="Status_tab" class="tabcontent active">
@@ -90,7 +96,7 @@
         </div>
         <div id="Logs_tab" class="tabcontent">
           <h3>Logs</h3>
-            <div id="logs_tab"></div>
+            <div id="logs_tab" class="DivToScroll"></div>
         </div>
         <div id="Stats_tab" class="tabcontent">
           <h3>Stats</h3>
@@ -100,25 +106,29 @@
 
         <div id="Outputs_tab" class="tabcontent">
           <h3>Outputs</h3>
-            <div id="outputs_tab"></div>
+            <div id="outputs_tab" class="DivToScroll"></div>
         </div>
 
         <div id="Tags_tab" class="tabcontent">
           <h3>Tags</h3>
-            <div id="tags_tab"></div>
+            <div id="tags_tab">
+            
+            <td> <span role="button" class="add-session-tag btn-info btn-xs " data-servername="{{selected_session}}">Add Tag</span>
+                </td>
+            </div>
         </div>
 
         <div id="Comments_tab" class="tabcontent">
           <h3>Comments</h3>
             <div id="comments_tab"></div>
-            {#
-            <div class="cmd">
-                <form id="comment_form">
-                <div><textarea rows="2" cols="60" name="body" placeholder="Enter your comments here."></textarea></div>
-                <span role="button" class="add-session-comment btn-info btn-xs " data-servername="{{s.name}}">Add Comment</span>
-                </form>    
-            </div>
-            #}
+                
+                <div class="comment-form">
+                    <div>
+                        <textarea class="form-textarea" id="comment_body_id" placeholder=" Share your thoughts here." rows="4" cols="90"></textarea>
+                    </div>
+                    <button class="add-session-comment2">Add Comment</button> 
+                </div>
+            
         </div>
     </div>
 </div>
@@ -156,9 +166,15 @@
 
 {% block script %}
 {{ super() }}
-<script type="text/javascript">
-require(["home"]);
-</script>
+    <script type="text/javascript">
+        require(["home"]);
+    </script>
+
+    <script type="text/javascript">
+        $.extend(true, jhdata, {
+            selected_session: "{{selected_session}}"
+          }); 
+    </script>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 {% endblock %}
 

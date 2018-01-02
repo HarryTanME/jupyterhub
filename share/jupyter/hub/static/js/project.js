@@ -14,42 +14,64 @@ require(["jquery", "jhapi", "project","handlebars"], function ($, JHAPI) {
 
         success: function (response) {
             var data = JSON.parse(JSON.stringify(response));
-            $('#proj_info').append(data.owner);
-            $('#proj_info').append(data.create_time);
-            $('#proj_info').append(data.last_update);
-            $('#proj_info').append(data.config);
+                       
+                var template = [
+                    '<table>',
+                    '<tr >',
+                        '<td> Project Name:</td>', '<td> <b>{{config.name}}</b> </td>',
+                    '</tr>',
+                    '<trc>',
+                        '<td >Project Owner:</td> ', '<td>  {{owner}} </td> ',
+                    '</tr>',
+                    '<tr>',
+                        '<td> Create Time:</td>','<td>{{create_time}}</td>',
+                    '</tr>',
+                    '<tr >',
+                        '<td> Last Update:</td>','<td>{{last_update}}</td>',
+                    '</tr>',
+                    '<tr >',
+                        '<td> Git Repo:</td>', '<td>{{config.git_repo}}</td>',
+                    '</tr>',
+                    '<tr >',
+                        '<td> Description:</td>', '<td>{{config.description}}</td>',
+                    '</tr>',
+                    '<tr >',
+                        '<td> Server Image:</td>', '<td>{{config.docker_image}}</td>',
+                    '</tr>',
+                    '<tr >',
+                        '<td> Data Sources:</td>', '<td>{{config.data_sources}}</td>',
+                    '</tr>',
+                    '</table>'].join("\n");
+
+                var html = Mustache.render(template, response);
+                $("#proj_info").append(html);
         }
     });
 
-
+/*
     api.get_project_sessions(user, proj_name, {
-
         success: function (response) {
             var data = JSON.parse(JSON.stringify(response));
-            $('#all_sessions').append(JSON.stringify(response));
-            /*$('#proj_info').append(data.create_time);
-            $('#proj_info').append(data.last_update);
-            $('#proj_info').append(data.config);*/
+            $('#proj_sessions').append(JSON.stringify(response));
+
+                var template = ['<div>All Sessionss:</div>',
+                    '<table>',
+                   '{{#.}}',
+                    '<tr class="user-row" >',
+                        '<td > <span class ="session-choose btn-link" data-servername="{{name}}" > {{name if name != "" else "Default Session"}}',
+                            '</span>',
+                            '</td> ',
+                        '<td> <a class ="btn-info btn-xs" href="{{ user.url}}{name}}" target="_blank" >Open Session</a>',
+                            '</td>',
+                        '<td> <span role="button" class="stop-server btn-xs btn-danger" data-servername="{{name}}">Stop</span></td>',
+                    '</tr>',
+                    '{{/.}}',
+                    '</table>'].join("\n");
+
+                var html = Mustache.render(template, response);
+                $("#proj_sessions").empty().append(html);
         }
     });
 
-    
-  // Grab the template script
-  var theTemplateScript = $("#address-template").html();
-
-  // Compile the template
-  var theTemplate = Handlebars.compile(theTemplateScript);
-
-  // Define our data object
-  var context={
-    "city": "London",
-    "street": "Baker Street",
-    "number": "221B"
-  };
-
-  // Pass our data to the template
-  var theCompiledHtml = theTemplate(context);
-
-  // Add the compiled html to the page
-  $('.content-placeholder').html(theCompiledHtml);
+   */
 });

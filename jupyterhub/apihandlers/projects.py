@@ -27,7 +27,7 @@ class _ProjectAPIHandler(UserAPIHandler):
             'owner': user.name,
             'create_time':str(project.create_time),
             'last_update':str(project.last_update),
-            'config':project.config
+            'config':json.loads(project.config)
         }
     
     def find_user_projects(self, user):

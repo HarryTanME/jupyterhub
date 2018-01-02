@@ -23,18 +23,11 @@ class ProjectHandler(BaseHandler):
         html = self.render_template('project.html',
             user=user,
             proj_name=proj_name,
+            title=proj_name,
         )
         self.finish(html)
 
-class ServerInfoHandler(BaseHandler):
-    @web.authenticated
-    def get(self, username, server_name):
-        self.write(username+"  "+server_name)
-
-
 default_handlers = [
-    (r'/user/([^/]+)/project/([^/]+)/?', ProjectHandler),
-    (r'/user/([^/]+)/session/([^/]+)/info', ServerInfoHandler),
-    
+    (r'/user/([^/]+)/project/([^/]+)/?', ProjectHandler),    
 ]
 

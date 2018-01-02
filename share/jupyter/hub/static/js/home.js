@@ -7,7 +7,7 @@ require(["jquery", "jhapi", "Mustache"], function ($, JHAPI) {
     var base_url = window.jhdata.base_url;
     var user = window.jhdata.user;
     var api = new JHAPI(base_url);
-    var selected_session = '';
+    var selected_session = window.jhdata.selected_session;
     
     $(".stop-server").click(function (e) {
         var btn = $(e.target);
@@ -80,13 +80,47 @@ require(["jquery", "jhapi", "Mustache"], function ($, JHAPI) {
       
         var session_name = $(this).data('servername');
         var comment= window.prompt("Enter your comments..."); 
-        
+        if (val != null){
+            api.add_session_comment(user, session_name,comment, {
+                success: function (response) {
+                    reloadCommentTab(selected_session);
+                }
+            });
+        }
+    });
+     $(".add-session-comment2").click(function (e) {
+      
+        var session_name = selected_session;
+        var comment= document.getElementById("comment_body_id").value;
+        if (comment == null | comment == ""){
+            window.alert("Commment is empty.");
+        }else if (comment.length > 2250){
+            
+            window.alert("Your comments is longer than the system limit of 2250 characters.\n Can you break it down to several comments?");
+        }
+        else{
         api.add_session_comment(user, session_name,comment, {
             success: function (response) {
+                reloadCommentTab(selected_session);
+                var box = document.getElementById("comment_body_id");
+                box.empty();
             }
         });
-        
+        }
     });
+    
+    $(".delete-session-comment").click(function (e) {   
+         window.alert("  adsfad "); 
+           // window.alert(session_name+"   "+comment_id); 
+        var session_name = $(this).data('sessionName'); 
+        var comment_id = $(this).data('commentId');
+        api.delete_session_comment(user, session_name,comment_id, {
+                success: function (response) {
+                    reloadCommentTab(session_name);
+                }
+            });
+    });
+    
     
     $(".session-logs").click(function (e) {        
         var session_name = $(this).data('servername');
@@ -94,7 +128,8 @@ require(["jquery", "jhapi", "Mustache"], function ($, JHAPI) {
         reloadLogTab(session_name);
     });
     
-    $("#log_tablink").click(function (e) {        
+    $("#log_tablink").click(function (e) { 
+        $('#logs_tab').empty();
         reloadLogTab(selected_session);
     });
     
@@ -111,7 +146,7 @@ require(["jquery", "jhapi", "Mustache"], function ($, JHAPI) {
         reloadStatsTab(session_name);
     });
 
-    $("#stats_tablink").click(function (e) {        
+    $("#stats_tablink").click(function (e) {  
         reloadStatsTab(selected_session);
     });
 
@@ -140,6 +175,7 @@ require(["jquery", "jhapi", "Mustache"], function ($, JHAPI) {
 
                 // 7. Cycle through the records, adding one row per record
                 var records = response;
+                var max_ram = 0.5;
                 for (var i = 0; i < records.length; i++){
                     var record = records[i];
                     cpudata.addRow([
@@ -150,16 +186,35 @@ require(["jquery", "jhapi", "Mustache"], function ($, JHAPI) {
                       (new Date(record.timestamp)),
                       parseFloat(record.ram_usage)
                     ]);
+                    if (record.ram_usage>max_ram)
+                    {
+                        max_ram = record.ram_usage;
+                    }
                 }
+                  max_ram=max_ram*2;//make the chart look better
                 var cpuoptions = {
                   title: 'CPU Usage (%)',
                   //curveType: 'function',
-                  legend: { position: 'right' }
+                  legend: { position: 'right' },
+                  vAxis: {
+                    viewWindowMode:'explicit',
+                    viewWindow: {
+                      max:100,
+                      min:0
+                    }
+                  },
                 };
                 var ramoptions = {
                   title: 'Memory Usage (GB)',
                   //curveType: 'function',
-                  legend: { position: 'right' }
+                  legend: { position: 'right' },
+                  vAxis: {
+                    viewWindowMode:'explicit',
+                    viewWindow: {
+                      max:max_ram,
+                      min:0
+                    }
+                  },
                 };
                 var cpuchart = new google.visualization.LineChart(document.getElementById('cpu_chart'));
                 var ramchart = new google.visualization.LineChart(document.getElementById('memory_chart'));
@@ -211,42 +266,49 @@ require(["jquery", "jhapi", "Mustache"], function ($, JHAPI) {
         var session_name = $(this).data('servername');
         reloadCommentTab(session_name);
     });
-    $("#session_tablink").click(function (e) {        
+    $("#comment_tablink").click(function (e) {        
         reloadCommentTab(selected_session);
     });
           
     function reloadCommentTab(session_name) {        
         api.get_session_comments(user, session_name, {
             success: function (response) {
-                $('#comments_tab').empty().append(response)
-                var data = {
-                    title: "Constructing HTML Elements",
-                    body:{"header1":"nice","header2":"testing."}
-                }
-
+                
                 var template = [
-                    '<div class="tutorial">',
-                        '<h1 class="tutorial-heading">{{title}}</h1>',
-                        '<h2>{{body.header1}}</h2>',
-                        '<p>{{body.header2}}</p>',
-                    '</div>'
+                    '{{#.}}',
+                    '<div>',
+                        '<div class="CommentMeta">{{comment_by}} wrote at {{create_time}}:',
+                        '<span role="button" class="delete-session-comment btn-link" data-commentId="{{id}}" data-sessionName="{{session_name}}" >DELETE</span>',
+                        '</div>',
+                        '<div class="CommentBody">{{body}}</div>',
+                        '<br/>',
+                    '</div>',
+                    '{{/.}}'
                 ].join("\n");
-
-                var html = Mustache.render(template, data);
-                $("#comments_tab").append(html);
-
+                /*FIXME the {{body}} is not formated, no way to return to new lines. */
+                var html = Mustache.render(template, response);
+                
+                $("#comments_tab").empty().append(html);
             }
         });
     }
     
-    $(".session-tags").click(function (e) {        
-        var session_name = $(this).data('servername');
+    function reloadTagTab(session_name){
         
         api.get_session_tags(user, session_name, {
             success: function (response) {
                 $('#tags_tab').empty().append(response)
             }
         });
+    }
+    $(".session-tags").click(function (e) {        
+        var session_name = $(this).data('servername');
+        reloadTagTab(session_name);
+    });
+    
+    $("#tag_tablink").click(function (e) {        
+        
+        reloadTagTab(selected_session);
     });
     
     $('.tablink-container .tablink').click(function(e) {
@@ -260,12 +322,40 @@ require(["jquery", "jhapi", "Mustache"], function ($, JHAPI) {
     $('.session-choose').click(function (e){
         var session_name = $(this).data('servername');
         selected_session = session_name;
-        //$('.tabcontent-container .tabcontent.active').removeClass('active');
-        //$('.tabcontent-container ' + '#Status_tab' ).addClass('active');
-        $('.tabcontent-container .tabcontent.active' ).click();
-
+        $('.tabcontent-container .tabcontent.active').removeClass('active');
+        $('.tabcontent-container ' + '#Status_tab' ).addClass('active');
+        //$('.tabcontent-container .tabcontent.active' ).click();
+        
 
     });
+    function loadSessionList(e){
+        api.get_active_sessions(user, {
+            success: function (response) {
+                $('#tags_tab').empty().append(response);
+                
+                var template = ['<div>Running Servers:</div>',
+                    '<table>',
+                   '{{#.}}',
+                    '<tr class="user-row" >',
+                        '<td > <span class ="session-choose btn-link" data-servername="{{name}}" > {{name if name != "" else "Default Session"}}',
+                            '</span>',
+                            '</td> ',
+                        '<td> <a class ="btn-info btn-xs" href="{{ user.url}}{name}}" target="_blank" >Open Session</a>',
+                            '</td>',
+                        '<td> <span role="button" class="stop-server btn-xs btn-danger" data-servername="{{name}}">Stop</span></td>',
+                    '</tr>',
+                    '{{/.}}',
+                    '</table>'].join("\n");
+
+                var html = Mustache.render(template, response);
+
+                $("#session_list").empty().append(html);
+            }
+        });
+        
+    }
+    //loadSessionList();
+    
 });
 
 /*
