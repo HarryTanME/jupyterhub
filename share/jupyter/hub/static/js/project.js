@@ -1,7 +1,7 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-require(["jquery", "jhapi", "project","handlebars"], function ($, JHAPI) {
+require(["jquery", "jhapi","handlebars"], function ($, JHAPI) {
     "use strict";
     
     var base_url = window.jhdata.base_url;
@@ -33,45 +33,70 @@ require(["jquery", "jhapi", "project","handlebars"], function ($, JHAPI) {
                         '<td> Git Repo:</td>', '<td>{{config.git_repo}}</td>',
                     '</tr>',
                     '<tr >',
-                        '<td> Description:</td>', '<td>{{config.description}}</td>',
-                    '</tr>',
                     '<tr >',
                         '<td> Server Image:</td>', '<td>{{config.docker_image}}</td>',
                     '</tr>',
                     '<tr >',
                         '<td> Data Sources:</td>', '<td>{{config.data_sources}}</td>',
                     '</tr>',
-                    '</table>'].join("\n");
+                    '<tr>',
+                        '<td> Description:</td>', '<td>{{config.description}}</td>',
+                    '</tr>',
+                    '</table>',
+                    ' <span role="button" class="start-project btn btn-sm btn-success" data-projname="{{name}}">Start Project Session </span> ',
+                //    '<span role="button" class="delete-project btn btn-xs btn-danger" data-projname="{{proj.name}}">Delete</span> ',
+                    ].join("\n");
 
                 var html = Mustache.render(template, response);
                 $("#proj_info").append(html);
         }
     });
 
-/*
+
     api.get_project_sessions(user, proj_name, {
         success: function (response) {
             var data = JSON.parse(JSON.stringify(response));
-            $('#proj_sessions').append(JSON.stringify(response));
+            //$('#proj_sessions').append(JSON.stringify(response));
 
                 var template = ['<div>All Sessionss:</div>',
-                    '<table>',
+                    '<div>',
                    '{{#.}}',
-                    '<tr class="user-row" >',
-                        '<td > <span class ="session-choose btn-link" data-servername="{{name}}" > {{name if name != "" else "Default Session"}}',
+                        '<span role="button" class ="session-choose btn-link" data-servername="{{name}}" > {{name}}',
                             '</span>',
-                            '</td> ',
-                        '<td> <a class ="btn-info btn-xs" href="{{ user.url}}{name}}" target="_blank" >Open Session</a>',
-                            '</td>',
-                        '<td> <span role="button" class="stop-server btn-xs btn-danger" data-servername="{{name}}">Stop</span></td>',
-                    '</tr>',
+                        '<div>Status:{{status}} ',
+                        '   End Time:{{end_time}}',
+                        '<span role="button" class="delete-session btn-xs btn-danger" data-servername="{{name}}">X</span></div>',
                     '{{/.}}',
-                    '</table>'].join("\n");
+                    '</div>'].join("\n");
 
                 var html = Mustache.render(template, response);
                 $("#proj_sessions").empty().append(html);
         }
     });
 
-   */
+    $(".start-project").click(function (e) {
+        var btn = $(e.target);
+        btn.attr("disabled", "disabled");
+        var proj_name = $(this).data('projname');
+        api.start_project(user, proj_name, {
+            success: function (response) {
+                window.location.reload(true);
+                //var data = JSON.parse(response);
+                //window.location.replace(data.url);
+                //window.open(data.url);
+            }
+        });
+    });
+    
+    $(".delete-session").click(function (e) {        
+        var session_name = $(this).data('servername');
+        window.alert('Are you sure?');
+        api.delete_seassion(user, session_name, {
+            success: function (response) {
+                window.location.reload(true);
+            }
+        });
+    });
+    
+    
 });

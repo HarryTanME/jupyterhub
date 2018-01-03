@@ -13,7 +13,7 @@
 {% block script %}
 {{ super() }}
     <script type="text/javascript">
-        require(["Mustache", "project"]);
+        require(["Mustache", "project","home"]);
         $.extend(true, jhdata, {
             proj_name: "{{proj_name}}"
           }); 

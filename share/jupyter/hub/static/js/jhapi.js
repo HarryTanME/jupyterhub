@@ -175,6 +175,16 @@ define(['jquery', 'utils'], function ($, utils) {
         );
     };
     
+    
+    JHAPI.prototype.delete_session = function (user, session_name, options) {
+        options = options || {};
+        options = update(options, {type: 'DELETE', dataType: null});
+        this.api_request(
+            utils.url_path_join('user', user, 'session', session_name),
+            options
+        );
+    };
+    
     JHAPI.prototype.stop_server = function (user, server_name, options) {
         options = options || {};
         options = update(options, {type: 'DELETE', dataType: null});
@@ -216,7 +226,7 @@ define(['jquery', 'utils'], function ($, utils) {
         });
         
         this.api_request(
-            utils.url_path_join('users', user),
+            utils.url_path_join('user', user),
             options
         );
     };
@@ -229,7 +239,7 @@ define(['jquery', 'utils'], function ($, utils) {
         });
         
         this.api_request(
-            utils.url_path_join('users', user, 'admin-access'),
+            utils.url_path_join('user', user, 'admin-access'),
             options
         );
     };
@@ -238,7 +248,7 @@ define(['jquery', 'utils'], function ($, utils) {
         options = options || {};
         options = update(options, {type: 'DELETE', dataType: null});
         this.api_request(
-            utils.url_path_join('users', user),
+            utils.url_path_join('user', user),
             options
         );
     };

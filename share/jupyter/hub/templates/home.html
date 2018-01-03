@@ -1,6 +1,8 @@
 {% extends "page.html" %}
 
 {% block main %}
+<link rel="stylesheet" href="http://wode.ai/Portals/_default/Containers/20073-UnlimitedColorsPack-055/container.css?cdv=104" type="text/css">
+<link rel="stylesheet" href="http://wode.ai/Portals/_default/skins/20073-unlimitedcolorspack-055/skin.css?cdv=104" type="text/css">
 
 {% if not allow_named_servers %}
 <div class="container">
@@ -149,7 +151,6 @@
         <div class="col-sm-3">
            <a target="_blank" href="{{ user.url}}project/{{proj.name}}" ><p class="project-name" data-projname="{{proj.name}}"> {{proj.name}} </p></a>
            <span role="button" class="start-project btn btn-sm btn-success" data-projname="{{proj.name}}">Start Project Session </span> 
-            <span role="button" class="delete-project btn btn-xs btn-danger" data-projname="{{proj.name}}">Delete Project </span> 
         </div>    
         {% endif %}
     {% endfor %}

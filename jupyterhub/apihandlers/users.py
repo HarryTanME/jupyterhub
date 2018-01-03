@@ -78,8 +78,10 @@ class UserListAPIHandler(APIHandler):
             if admin:
                 user.admin = True
                 self.db.commit()
+            orm_user = self.find_user(name)
             try:
                 yield gen.maybe_future(self.authenticator.add_user(user))
+                yield gen.maybe_future(self.create_user_env(orm_user.id))
             except Exception as e:
                 self.log.error("Failed to create user: %s" % name, exc_info=True)
                 del self.users[user]
@@ -129,11 +131,28 @@ class UserAPIHandler(APIHandler):
         user = self.find_user(name)
         self.write(json.dumps(self.user_model(user)))
 
+    @gen.coroutine
+    def create_user_env(self, user_id):
+        root = self.settings.get('users_data_path')
+        user_folder = os.path.join(root,str(user_id))
+        if not os.path.exists(user_folder):
+            os.mkdir(user_folder)
+            os.mkdir(os.path.join(user_folder, "Default"))
+    
+    @gen.coroutine
+    def archive_user_env(self, user_id):
+        root = self.settings.get('users_data_path')
+        user_folder = os.path.join(root,str(user_id))
+        if os.path.exists(user_folder):
+            os.rename(user_folder, user_folder+"_obs")
+        
+        
     @admin_only
     @gen.coroutine
     def post(self, name):
         data = self.get_json_body()
         user = self.find_user(name)
+        
         if user is not None:
             raise web.HTTPError(400, "User %s already exists" % name)
         
@@ -144,8 +163,10 @@ class UserAPIHandler(APIHandler):
                 user.admin = data['admin']
                 self.db.commit()
         
+        orm_user = self.find_user(name)
         try:
             yield gen.maybe_future(self.authenticator.add_user(user))
+            yield gen.maybe_future(self.create_user_env(orm_user.id))
         except Exception:
             self.log.error("Failed to create user: %s" % name, exc_info=True)
             # remove from registry
@@ -172,6 +193,7 @@ class UserAPIHandler(APIHandler):
                 raise web.HTTPError(400, "%s's server is in the process of stopping, please wait." % name)
         
         yield gen.maybe_future(self.authenticator.delete_user(user))
+        yield gen.maybe_future(self.archive_user_env(user.id))
         # remove from registry
         del self.users[user]
 

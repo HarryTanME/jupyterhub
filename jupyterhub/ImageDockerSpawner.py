@@ -137,7 +137,7 @@ class DockerImageChooserSpawner(DockerSpawner):
             arg_s += software
         if arg_s:
             options['argv'] = shlex.split(arg_s)
-        options['workspace'] =self.user.user_data_path
+        options['workspace'] =os.path.join(self.user.user_data_path, "Default")
         return options
 
         
