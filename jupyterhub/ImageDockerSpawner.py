@@ -30,7 +30,7 @@ class DockerImageChooserSpawner(DockerSpawner):
     )
     form_template = Unicode("""
         <div>
-        <label for="dockerimage">Select a Docker image:</label>
+        <label for="dockerimage">Select a Server Type:</label>
         <select class="form-control" name="dockerimage" required autofocus>
             {option_template}
         </select>

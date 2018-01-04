@@ -74,7 +74,19 @@ define(['jquery', 'utils'], function ($, utils) {
         this.api_request(utils.url_path_join('user', user, 'project',proj_name, 'sessions'), options);
     };
     
-    
+    JHAPI.prototype.get_project_tags = function (user, proj_name, options) {
+        options = options || {};
+        options = update(options, {type: 'GET', dataType: null});
+
+        this.api_request(utils.url_path_join('user', user, 'project',proj_name, 'tags'), options);
+    };
+    //FIXME
+    JHAPI.prototype.get_project_sessions_by_tags = function (user, proj_name, tag, options) {
+        options = options || {};
+        options = update(options, {type: 'GET',data:"tag=".concat(tag), dataType: null});
+
+        this.api_request(utils.url_path_join('user', user, 'project',proj_name, 'sessions'), options);
+    };
     JHAPI.prototype.get_session_logs = function (user, session_name, options) {
         options = options || {};
         options = update(options, {type: 'GET', dataType: "text"});

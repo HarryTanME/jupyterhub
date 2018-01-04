@@ -5,6 +5,7 @@
 
 
 import json
+from collections import Counter
 import binascii
 import os,datetime
 from tornado import gen, web
@@ -77,21 +78,23 @@ class ProjectTagListAPIHandler(UserAPIHandler):
         return tags
     
     @gen.coroutine
-    @token_authenticated
+    @admin_or_self
     def get(self, name, project_name):
         user = self.find_user(name)
         if user is None:
             raise web.HTTPError(400, "User [{}] doesn't exists.".format(name))
-        aa = []
+        aa= Counter()
         tags = self.find_tags_by_project(user=user, proj_name=project_name)
         for tag in tags:
-            aa.append(tag.tag)
+            aa[tag.tag]+=1
+            
+        ss =[]  
+        for a in aa.most_common()  :
+            ss.append({"tag":a[0], "count":a[1]})
         self.set_status(200)
-        self.write(json.dumps(aa))
+        self.write(json.dumps(ss))
     
 default_handlers = [
     (r"/api/user/([^/]+)/session/([^/]+)/tag/([^/]+)", TagsAPIHandler),
     (r"/api/user/([^/]+)/project/([^/]*)/tags/?", ProjectTagListAPIHandler),
 ]
-
-

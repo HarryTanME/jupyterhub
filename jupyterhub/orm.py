@@ -318,7 +318,7 @@ class SessionTag(Base):
         """Find a project by session_id/spawner_id.
         Returns None if not found.
         """
-        return db.query(cls).join(Spawner).join(Project).filter(cls.tag == tag).filter(Project.name==project_name).all()
+        return db.query(Spawner).join(cls).join(Project).filter(cls.tag == tag).filter(Project.name==project_name).all()
     
 class ProjectComment(Base):
     """"Metadata about a project comment"""

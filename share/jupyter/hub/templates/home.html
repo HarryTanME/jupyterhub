@@ -46,10 +46,10 @@
     <table>
     {% for s in user.running_spawners %}
     <tr class="user-row" >
-        <td > <span class ="session-choose btn-link" data-servername="{{s.name}}" > {{s.name if s.name != "" else "Default Session"}}
+        <td > <span role="button" class ="session-choose btn-link" data-servername="{{s.name}}" > {{s.name if s.name != "" else "Default Session"}}
             </span>
             </td> 
-        <td> <a class ="btn-info btn-xs" href="{{ user.url}}{{s.name}}" target="_blank" >Open Session</a>
+            <td> <a class ="btn-info btn-xs" href="{{ user.url}}{{s.name}}" target="_blank" >Open Session</a>
             </td>
 
        <!--
@@ -70,7 +70,7 @@
             <td> <span role="button" class="session-comments btn-info btn-xs " data-servername="{{s.name}}">Show Comments</span>
                 </td>
         </div>
--->
+        -->
         <td> <span role="button" class="stop-server btn-xs btn-danger" data-servername="{{s.name}}">Stop</span>
             </td>
 
@@ -114,10 +114,10 @@
         <div id="Tags_tab" class="tabcontent">
           <h3>Tags</h3>
             <div id="tags_tab">
+            </div>
             
             <td> <span role="button" class="add-session-tag btn-info btn-xs " data-servername="{{selected_session}}">Add Tag</span>
                 </td>
-            </div>
         </div>
 
         <div id="Comments_tab" class="tabcontent">

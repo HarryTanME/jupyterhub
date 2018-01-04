@@ -322,15 +322,16 @@ class SesseionListAPIHandler(UserAPIHandler):
             return
         tag = self.get_argument("tag", None, False)
         if tag is not None and tag != "":
+            print("TAG NOT FOUND.")
             aa = []
             sessions = self.find_by_project(project_name, tag)
             for s in sessions:
+                print(dir(s))
                 aa.append(session_model(s))
             self.set_status(200)
             self.write(json.dumps(aa))
         else :
             sessions =  self.all_sesssions(user, project_name)
-            print(str(sessions))
             aa = []
             for s in sessions:
                 aa.append(session_model(s))

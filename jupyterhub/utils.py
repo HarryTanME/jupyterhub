@@ -307,3 +307,52 @@ def unique_server_name(server_name=""):
         server_name = "DefaultServer"
     server_name += "_"+timestamp
     return server_name
+
+
+
+
+
+
+class SimpleHtmlFilelistGenerator:
+    def __init__(self, dir, curr):
+        self.base_dir = dir
+        self.curr= curr
+        
+    def make_tree_html(self, path):
+        #big_tree='<div class="tree">'
+        
+        big_tree='<div class="container"><div class="row"><ul id="tree">'
+        tree = dict(name=os.path.basename(path), children=[])
+        try: lst = os.listdir(path)
+        except OSError:
+            pass #ignore errors
+        else:
+            newlist = sorted(lst)
+            #Move README always to the top of the list.
+            if "README.rst" in newlist :
+                old_index = newlist.index("README.rst")
+                newlist.insert(0, newlist.pop(old_index))
+            if "README.md" in newlist:
+                old_index = newlist.index("README.md")
+                newlist.insert(0, newlist.pop(old_index))
+                
+            for name in newlist:
+                #purposely bypass hidden files.
+                if name.startswith('.'):
+                    continue
+                fn = os.path.join(path, name)
+                if os.path.isdir(fn):
+                    #h = '<div class="list_dir">{}</div>'.format(name)
+                    h='<li>{}</li>'.format(name)
+                    big_tree+=h
+                    big_tree+=self.make_tree_html(fn)
+                else:
+                    href=os.path.join(path.replace(self.base_dir,"/repo/"+self.curr),name)
+                    h = '<li><a href="{}" target="_blank">{}</a></li>'.format(href, name.replace(".html",""))
+                    big_tree+=h
+                   
+        big_tree+='</ul></div></div>'
+        return big_tree
+    
+    def getTree(self):
+        return self.make_tree_html(self.base_dir)

@@ -103,7 +103,7 @@ require(["jquery", "jhapi", "Mustache"], function ($, JHAPI) {
             success: function (response) {
                 reloadCommentTab(selected_session);
                 var box = document.getElementById("comment_body_id");
-                box.empty();
+                box.value = "";
             }
         });
         }
@@ -278,7 +278,7 @@ require(["jquery", "jhapi", "Mustache"], function ($, JHAPI) {
                     '{{#.}}',
                     '<div>',
                         '<div class="CommentMeta">{{comment_by}} wrote at {{create_time}}:',
-                        '<span role="button" class="delete-session-comment btn-link" data-commentId="{{id}}" data-sessionName="{{session_name}}" >DELETE</span>',
+                        '<span role="button" class="delete-session-comment btn btn-link" data-commentId="{{id}}" data-sessionName="{{session_name}}" >DELETE</span>',
                         '</div>',
                         '<div class="CommentBody">{{body}}</div>',
                         '<br/>',
