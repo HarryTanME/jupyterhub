@@ -144,8 +144,11 @@
 {% endif %}   
 {% if user.projects %}
     <div class="container">
-    <div>Your Projects:</div>
-
+    <div>Your Projects:
+        <a id="start" role="button" class="btn btn-xs btn-success" href="/new_project">
+          Create New Project
+        </a>
+    </div>
     {% for proj in user.projects %}
         {% if proj != ""  %}
         <div class="col-sm-3">

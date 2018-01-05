@@ -18,7 +18,7 @@ import datetime
 from tornado import web, gen, ioloop
 from tornado.httpclient import AsyncHTTPClient, HTTPError
 from tornado.log import app_log
-
+import unicodedata,re
 
 def random_port():
     """Get a single random port."""
@@ -356,3 +356,18 @@ class SimpleHtmlFilelistGenerator:
     
     def getTree(self):
         return self.make_tree_html(self.base_dir)
+    
+    
+def slugify(value, allow_unicode=False):
+    """
+    Normalizes string, converts to lowercase, removes non-alpha characters,
+    and converts spaces to hyphens.
+    URL: https://stackoverflow.com/questions/295135/turn-a-string-into-a-valid-filename
+    """
+    value = str(value)
+    if allow_unicode:
+        value = unicodedata.normalize('NFKC', value)
+    else:
+        value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore').decode('ascii')
+    value = re.sub(r'[^\w\s-]', '', value).strip().lower()
+    return re.sub(r'[-\s]+', '-', value)

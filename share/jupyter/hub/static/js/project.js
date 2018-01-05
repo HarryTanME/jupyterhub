@@ -33,6 +33,21 @@ require(["jquery", "jhapi","handlebars"], function ($, JHAPI) {
         });
     });
     
+    $(".delete-project").click(function (e) {
+        var btn = $(e.target);
+        btn.attr("disabled", "disabled");
+        
+        var proj_name = $(this).data('projname');
+        if (confirm("Deleted project can't be recovered. Are you sure?") == true) {
+            api.delete_project(user, proj_name, {
+                success: function (response) {
+                }
+            });
+        } else {
+            btn.removeAttr('disabled');
+        }
+
+    });
     
     api.get_project(user, proj_name, {
 
@@ -68,7 +83,7 @@ require(["jquery", "jhapi","handlebars"], function ($, JHAPI) {
                     '</tr>',
                     '</table>',
                     ' <span role="button" class="start-project btn btn-sm btn-success" data-projname="{{name}}">Start Project Session </span> ',
-                //    '<span role="button" class="delete-project btn btn-xs btn-danger" data-projname="{{proj.name}}">Delete</span> ',
+                    '<span role="button" class="delete-project btn btn-xs" data-projname="{{name}}">Delete Project</span> ',
                     ].join("\n");
 
                 var html = Mustache.render(template, response);

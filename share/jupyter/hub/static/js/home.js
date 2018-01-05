@@ -39,21 +39,6 @@ require(["jquery", "jhapi", "Mustache"], function ($, JHAPI) {
         });
     });
     
-    $(".delete-project").click(function (e) {
-        var btn = $(e.target);
-        btn.attr("disabled", "disabled");
-        
-        var proj_name = $(this).data('projname');
-        if (confirm("Deleted project can't be recovered. Are you sure?") == true) {
-            api.delete_project(user, proj_name, {
-                success: function (response) {
-                }
-            });
-        } else {
-            btn.removeAttr('disabled');
-        }
-
-    });
     
     $(".session-more").click(function (e) {
         var x = document.getElementById("sessionCommands");

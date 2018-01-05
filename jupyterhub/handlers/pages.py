@@ -8,9 +8,10 @@ from http.client import responses
 from jinja2 import TemplateNotFound
 from tornado import web, gen
 from tornado.httputil import url_concat
+import json, datetime
 
 from .. import orm
-from ..utils import admin_only, url_path_join, unique_server_name, SimpleHtmlFilelistGenerator
+from ..utils import admin_only, url_path_join, unique_server_name, SimpleHtmlFilelistGenerator, slugify
 from .base import BaseHandler
 import os, binascii
 
@@ -316,6 +317,75 @@ class ConstructionHandler(BaseHandler):
         html=self.render_template("constuction.html")
         self.write(html)
         
+
+def init_project(data):
+    proj_name = slugify(form_options['name'])
+    if not self._check_project_model(data):
+        raise web.HTTPError(401, "A valid project config must have name, description, docker_image, workspace_software.")
+    else :
+        raise web.HTTPError(401, "Project config is empty.")
+
+    new_proj= orm.Project(name=proj_name, user_id = user.id, config=json.dumps(form_options),
+                      create_time = datetime.datetime.now(), last_update =  datetime.datetime.now())
+    self.db.add(new_proj)
+    self.db.commit()
+    self.set_status(200)
+
+
+        
+
+class ProjectHandler(BaseHandler):
+    @web.authenticated
+    def get(self):
+        url = url_path_join(self.hub.base_url, 'new_project')
+        html=self.render_template("new_project.html", title = "Create New Project", url =url)
+        self.write(html)
+    
+    def _check_project_model(self, data):
+        checks = [lambda x : x in data.keys() for x in ['name','description','docker_image','workspace_software']]
+        if all(checks):
+            return True
+        return False
+    
+    @web.authenticated
+    @gen.coroutine
+    def post(self):    
+        """POST create a new project."""
+        user = self.get_current_user()
+        
+        form_options = {}
+        for key, byte_list in self.request.body_arguments.items():
+            form_options[key] =  (' ').join([bs.decode('utf8') for bs in byte_list ])
+        #for key, byte_list in self.request.files.items():
+        #   print("+++"+str(key))
+        #    form_options["%s_file"%key] = byte_list
+        #{'name': ['asdf'], 'description': ['df'], 'git_repo': ['dfs'], 'software': ['notebook'], 'data2mount':[''], 'pre-cmd': [''], 'cmd': [''], 'env': ['']}[I 2018-01-05 20:06:51.010 JupyterHub log:124] 200 POST
+        
+        print (user.user_data_path)
+        
+        try:
+            proj_name = slugify(form_options['name'])
+            if not self._check_project_model(form_options):
+                raise web.HTTPError(401, "A valid project config must have name, description, docker_image, workspace_software.")
+
+            new_proj= orm.Project(name=proj_name, user_id = user.id, config=json.dumps(form_options),
+                              create_time = datetime.datetime.now(), last_update =  datetime.datetime.now())
+            self.db.add(new_proj)
+            
+            realpath =(os.path.join(user.user_data_path, proj_name))
+            print(realpath)
+            if os.path.exists(realpath):
+                raise web.HTTPError(401, "There has been a project named '{}' existed in your workspace. Can you rename your project and try again?")
+            else:
+                os.mkdir(realpath)
+            self.db.commit()
+            self.set_status(200)
+            self.redirect("/")
+        except Exception as e:
+            self.log.error("Failed to create new project", exc_info=True)
+            self.redirect("/")
+            return
+      
 default_handlers = [
     (r'/?', RootHandler),
     (r'/home', HomeHandler),
@@ -327,5 +397,6 @@ default_handlers = [
     (r'/datasets', DatasetPageHandler),
     (r'/modelzoo', ModelzooPageHandler),
     (r'/api_doc', ApiDocHandler),
+    (r'/new_project', ProjectHandler),
     (r'/error/(\d+)', ProxyErrorHandler),
 ]
