@@ -9,7 +9,7 @@ require(["jquery", "jhapi","handlebars"], function ($, JHAPI) {
     var api = new JHAPI(base_url);
     var proj_name = window.jhdata.proj_name;
 
-    $(".start-project").click(function (e) {
+    $(document).on("click", ".start-project", function (e) {
         var btn = $(e.target);
         btn.attr("disabled", "disabled");
         var proj_name = $(this).data('projname');
@@ -23,7 +23,7 @@ require(["jquery", "jhapi","handlebars"], function ($, JHAPI) {
         });
     });
     
-    $(".delete-session").click(function (e) {        
+    $(document).on("click", ".delete-session", function (e) {      
         var session_name = $(this).data('servername');
         window.alert('Are you sure?');
         api.delete_seassion(user, session_name, {
@@ -33,7 +33,7 @@ require(["jquery", "jhapi","handlebars"], function ($, JHAPI) {
         });
     });
     
-    $(".delete-project").click(function (e) {
+    $(document).on("click", ".delete-project", function (e) {       
         var btn = $(e.target);
         btn.attr("disabled", "disabled");
         

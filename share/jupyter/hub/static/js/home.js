@@ -94,8 +94,8 @@ require(["jquery", "jhapi", "Mustache"], function ($, JHAPI) {
         }
     });
     
-    $(".delete-session-comment").click(function (e) {   
-         window.alert("  adsfad "); 
+    $("#Comments_tab").on("click", ".delete-session-comment", function () {
+        window.alert("  adsfad "); 
            // window.alert(session_name+"   "+comment_id); 
         var session_name = $(this).data('sessionName'); 
         var comment_id = $(this).data('commentId');
@@ -105,8 +105,7 @@ require(["jquery", "jhapi", "Mustache"], function ($, JHAPI) {
                 }
             });
     });
-    
-    
+        
     $(".session-logs").click(function (e) {        
         var session_name = $(this).data('servername');
 
@@ -258,14 +257,20 @@ require(["jquery", "jhapi", "Mustache"], function ($, JHAPI) {
     function reloadCommentTab(session_name) {        
         api.get_session_comments(user, session_name, {
             success: function (response) {
-                
+                var len = response.length;
+                var item = null;
+                for(var i = 0; i < len; i++) {
+                    item = response[i];
+                    response[i].body = '<p>' + response[i].body.replace(/\n/g, "</p>\n<p>") + '</p>';
+                }
+
                 var template = [
                     '{{#.}}',
                     '<div>',
                         '<div class="CommentMeta">{{comment_by}} wrote at {{create_time}}:',
                         '<span role="button" class="delete-session-comment btn btn-link" data-commentId="{{id}}" data-sessionName="{{session_name}}" >DELETE</span>',
                         '</div>',
-                        '<div class="CommentBody">{{body}}</div>',
+                        '<div class="CommentBody">{{{body}}}</div>',
                         '<br/>',
                     '</div>',
                     '{{/.}}'
@@ -301,6 +306,9 @@ require(["jquery", "jhapi", "Mustache"], function ($, JHAPI) {
         if(id !== '') {
             $('.tabcontent-container .tabcontent.active').removeClass('active');
             $('.tabcontent-container ' + '#' + id).addClass('active');
+            
+            $('.tablink-container .tablink.active').removeClass('active');
+            $(this).addClass('active');
         }
     });   
     

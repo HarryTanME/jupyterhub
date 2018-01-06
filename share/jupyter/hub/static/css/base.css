@@ -134,7 +134,8 @@ header.smaller nav a {
     background-color: #ddd;
 }
 .tablink.active {
-    background-color: #fff;
+    background-color: #ddd;
+    font-weight: bold;
 }
 /* Set default styles for tab content */
 .tabcontent {
@@ -143,6 +144,7 @@ header.smaller nav a {
     padding: 50px;
     text-align: left;
     height: 800px;
+    overflow: scroll;
 }
 
 
