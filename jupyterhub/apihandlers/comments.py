@@ -108,7 +108,7 @@ class SessionCommentsAPIHandler(UserAPIHandler):
         self.write(json.dumps(self._comment_model( comment)))
     
     @gen.coroutine
-    @admin_or_self
+    @valid_user
     def delete(self, session_name, comment_id):
         comment = self.find_by_comment_id(comment_id)
         if comment is None:
@@ -125,7 +125,7 @@ class SessionCommentsAPIHandler(UserAPIHandler):
         self.write({"status":200, "message":"Comment is deleted."})
         
     @gen.coroutine
-    @admin_or_self
+    @valid_user
     def put(self, session_name, comment_id):
         comment = self.find_by_comment_id(comment_id)
         if comment is None:

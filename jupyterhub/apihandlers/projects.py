@@ -24,6 +24,7 @@ class _ProjectAPIHandler(UserAPIHandler):
     def _project_model(self, user, project):
         """Produce the model for a project."""
         return {
+            'name':project.name,
             'owner': user.name,
             'create_time':str(project.create_time),
             'last_update':str(project.last_update),

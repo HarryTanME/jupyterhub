@@ -338,7 +338,7 @@ class ProjectHandler(BaseHandler):
     @web.authenticated
     def get(self):
         url = url_path_join(self.hub.base_url, 'new_project')
-        html=self.render_template("new_project.html", title = "Create New Project", url =url)
+        html=self.render_template("new_project.html", title = "Create New Project", url=url)
         self.write(html)
     
     def _check_project_model(self, data):
@@ -359,7 +359,7 @@ class ProjectHandler(BaseHandler):
         #for key, byte_list in self.request.files.items():
         #   print("+++"+str(key))
         #    form_options["%s_file"%key] = byte_list
-        #{'name': ['asdf'], 'description': ['df'], 'git_repo': ['dfs'], 'software': ['notebook'], 'data2mount':[''], 'pre-cmd': [''], 'cmd': [''], 'env': ['']}[I 2018-01-05 20:06:51.010 JupyterHub log:124] 200 POST
+        #{'name': ['asdf'], 'description': ['df'], 'git_repo': ['dfs'], 'software': ['notebook'], 'data2mount':[''], 'pre-cmd': [''], 'cmd': [''], 'env': ['']}
         
         print (user.user_data_path)
         

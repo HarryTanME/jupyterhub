@@ -17,13 +17,14 @@ import os, binascii
 class ProjectHandler(BaseHandler):
     @web.authenticated
     def get(self, username, proj_name):
-        
         user = self.get_current_user()
+        owner = self.find_user(username)
         
         html = self.render_template('project.html',
-            user=user,
+            user_url=user.url,
             proj_name=proj_name,
             title=proj_name,
+            is_self =  (user.id == owner.id),
         )
         self.finish(html)
 

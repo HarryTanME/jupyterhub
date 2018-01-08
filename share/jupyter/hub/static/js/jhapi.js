@@ -130,7 +130,14 @@ define(['jquery', 'utils'], function ($, utils) {
             options
         );
     };
-    
+    JHAPI.prototype.delete_seassion = function (user, session_name, options) {
+        options = options || {};
+        options = update(options, {type: 'GET', dataType: null});
+        this.api_request(
+            utils.url_path_join('user', user, 'session',session_name,'archive'),
+            options
+        );
+    };
     JHAPI.prototype.start_project = function (user, proj_name, options) {
         options = options || {};
         options = update(options, {type: 'POST', dataType: null});

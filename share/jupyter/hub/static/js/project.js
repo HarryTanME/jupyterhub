@@ -8,7 +8,9 @@ require(["jquery", "jhapi","handlebars"], function ($, JHAPI) {
     var user = window.jhdata.user;
     var api = new JHAPI(base_url);
     var proj_name = window.jhdata.proj_name;
+    var user_url = window.jhdata.user_url;
 
+    
     $(document).on("click", ".start-project", function (e) {
         var btn = $(e.target);
         btn.attr("disabled", "disabled");
@@ -23,7 +25,8 @@ require(["jquery", "jhapi","handlebars"], function ($, JHAPI) {
         });
     });
     
-    $(document).on("click", ".delete-session", function (e) {      
+    $(document).on("click", ".delete-session", function (e) {  
+
         var session_name = $(this).data('servername');
         window.alert('Are you sure?');
         api.delete_seassion(user, session_name, {
@@ -105,7 +108,7 @@ require(["jquery", "jhapi","handlebars"], function ($, JHAPI) {
             } 
             
             var active_temp = ['{{#.}}','<span role="button" class ="session-choose btn-link" data-servername="{{name}}" > {{name}}</span>',
-                                '<div><a class ="btn-info btn-xs" href="{{ user.url}}{{name}}" target="_blank" >Open Session</a>',
+                                '<div><a class ="btn-info btn-xs" href="'.concat(user_url).concat('{{name}}" target="_blank" >Open Session</a>'),
                                 '<span role="button" class="stop-server btn-xs btn-danger" data-servername="{{name}}">Stop</span></div>',
                               '{{/.}}'].join("\n");
 
@@ -137,6 +140,21 @@ require(["jquery", "jhapi","handlebars"], function ($, JHAPI) {
     });
 
     
+    $(document).on("click", ".stop-server", function (e) {  
+        var btn = $(e.target);
+        btn.attr("disabled", "disabled");
+        
+        var server_name = $(this).data('servername');
+        if (confirm("Are you sure to stop the running server?") == true) {
+            api.stop_server(user, server_name, {
+                success: function () {
+                    window.location.reload(true);
+                }
+            });
+        }else{
+            btn.removeAttr('disabled');
+        }
+    });
 
     api.get_project_tags(user, proj_name, {
         success: function (response) {
@@ -155,10 +173,10 @@ require(["jquery", "jhapi","handlebars"], function ($, JHAPI) {
         }
     });
 
-    $('.get-sessions-by-tag').click(function (e) {      
-        window.alert("nihao");
-        
-        api.get_project_sessions_by_tags(user, proj_name, 'base',{
+    $(document).on("click", ".get-sessions-by-tag", function (e) {     
+
+        var tag = $(this).data('tag');
+        api.get_project_sessions_by_tags(user, proj_name, tag,{
         success: function (response) {
             var data = JSON.parse(JSON.stringify(response));
             //$('#proj_sessions').append(JSON.stringify(response));

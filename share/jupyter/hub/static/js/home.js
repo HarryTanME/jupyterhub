@@ -14,7 +14,7 @@ require(["jquery", "jhapi", "Mustache"], function ($, JHAPI) {
         btn.attr("disabled", "disabled");
         
         var server_name = $(this).data('servername');
-        if (confirm("Are you sure?") == true) {
+        if (confirm("Are you sure to stop the running server?") == true) {
             api.stop_server(user, server_name, {
                 success: function () {
                     window.location.reload(true);
@@ -94,11 +94,11 @@ require(["jquery", "jhapi", "Mustache"], function ($, JHAPI) {
         }
     });
     
-    $("#Comments_tab").on("click", ".delete-session-comment", function () {
-        window.alert("  adsfad "); 
+    $("#Comments_tab").on("click", ".delete-session-comment", function () { 
            // window.alert(session_name+"   "+comment_id); 
-        var session_name = $(this).data('sessionName'); 
-        var comment_id = $(this).data('commentId');
+        var session_name = $(this).data('sessionname'); 
+        var comment_id = $(this).data('commentid');
+
         api.delete_session_comment(user, session_name,comment_id, {
                 success: function (response) {
                     reloadCommentTab(session_name);

@@ -16,6 +16,8 @@
     <script type="text/javascript">
         require(["Mustache", "project","home"]);
         $.extend(true, jhdata, {
+            user_url:"{{user_url}}",
+            is_self:"{{is_self}}",
             proj_name: "{{proj_name}}"
           }); 
     </script>

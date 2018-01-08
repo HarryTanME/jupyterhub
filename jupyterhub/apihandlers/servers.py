@@ -187,7 +187,9 @@ class ServerStatsAPIHandler(UserServerAPIHandler):
     def _getData(self, user, server_name=""):
         spawner = user.spawners[server_name]
         hist= spawner.stats_history
-#        print(str(hist))
+        #for sp in user.spawners:
+        #    #print("----------- "+str(sp))
+        #    print(user.spawners[sp].container_name+"----------- "+str(id(user.spawners[sp].container_name)))
         return hist
     
     @gen.coroutine
@@ -338,8 +340,23 @@ class SesseionListAPIHandler(UserAPIHandler):
             self.set_status(200)
             self.write(json.dumps(aa))
 
+class ServerArchiverAPIHandler(UserAPIHandler):
+    @gen.coroutine
+    @admin_or_self
+    def get(self,name, session_name):
+        session = self.find_session(session_name)                            
+        if session is None:
+            raise web.HTTPError(400, "Session [{}] doesn't exists.".format(session_name))
+        
+        self.log.info("Archiving session %s for user %s", session_name, name)
+        self.db.delete(session)
+        self.db.commit()
+        self.set_status(204)    
+            
+            
 default_handlers =[
     (r"/api/user/([^/]+)/sessions/?", UserServerAPIHandler),
+    (r"/api/user/([^/]+)/session/([^/]*)/archive", ServerArchiverAPIHandler),
     (r"/api/user/([^/]+)/project/([^/]+)/session/([^/]*)", ProjectServerAPIHandler),
     (r"/api/user/([^/]+)/project/([^/]*)/sessions/?", SesseionListAPIHandler),
     (r"/api/user/([^/]+)/session/([^/]*)", UserServerAPIHandler),
