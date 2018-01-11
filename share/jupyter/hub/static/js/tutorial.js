@@ -25,6 +25,8 @@ require(["jquery", "jhapi"], function ($, JHAPI) {
             sources='"data_sources":[{"source":"/data/data" ,"target":"/home/wode-user/shared/data", "control":"ro"}, {"source":"/data/modelzoo" ,"target":"/home/wode-user/shared/modelzoo", "control":"ro"}],'
         } else if(image == 'r'){
             image = "wodeai/r-notebook:hubdev";
+        }else if(image == 'spk'){
+            image = "wodeai/pyspark:hubdev";
         }else{
             image = "wodeai/datascience:hubdev";
         }
