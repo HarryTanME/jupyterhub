@@ -19,6 +19,8 @@ from tornado import web, gen, ioloop
 from tornado.httpclient import AsyncHTTPClient, HTTPError
 from tornado.log import app_log
 import unicodedata,re
+import markdown
+from nbconvert import HTMLExporter
 
 def random_port():
     """Get a single random port."""
@@ -371,3 +373,10 @@ def slugify(value, allow_unicode=False):
         value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore').decode('ascii')
     value = re.sub(r'[^\w\s-]', '', value).strip().lower()
     return re.sub(r'[-\s]+', '-', value)
+
+
+def convertMarkdown(filepath):
+    with open(filepath, 'r') as f:
+        mdstr= f.read()
+        content = markdown.markdown(mdstr)
+    return content

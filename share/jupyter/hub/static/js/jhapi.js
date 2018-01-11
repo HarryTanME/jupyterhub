@@ -122,6 +122,13 @@ define(['jquery', 'utils'], function ($, utils) {
         this.api_request(utils.url_path_join('session',session_name,'comments'), options);
     };
     
+    JHAPI.prototype.get_project_comments = function (user, proj_name, options) {
+        options = options || {};
+        options = update(options, {type: 'GET', dataType: null});
+
+        this.api_request(utils.url_path_join('user',user,'project', proj_name,'comments'), options);
+    };
+    
     JHAPI.prototype.start_server = function (user, options) {
         options = options || {};
         options = update(options, {type: 'POST', dataType: null});
@@ -165,6 +172,18 @@ define(['jquery', 'utils'], function ($, utils) {
             options
         );
     };
+    
+    JHAPI.prototype.add_project_comment = function (user, project_name, comment, options) {
+        options = options || {};
+        var comment_data ={"body":comment};
+        options = update(options, {type: 'POST',data:JSON.stringify(comment_data), dataType: null});
+        this.api_request(
+            utils.url_path_join('user',user,'project', project_name,'comment'),
+            options
+        );
+    };
+    
+    
     JHAPI.prototype.delete_session_comment =function (user, session_name, comment_id, options) {
         options = options || {};
         options = update(options, {type: 'DELETE', dataType: null});
@@ -174,6 +193,14 @@ define(['jquery', 'utils'], function ($, utils) {
         );
     };
     
+    JHAPI.prototype.delete_project_comment =function (user, project_name, comment_id, options) {
+        options = options || {};
+        options = update(options, {type: 'DELETE', dataType: null});
+        this.api_request(
+            utils.url_path_join('user',user,'project', project_name,'comment', comment_id),
+            options
+        );
+    };
     
     JHAPI.prototype.start_named_session = function (user, session_name, options) {
         options = options || {};

@@ -13,7 +13,7 @@ from .. import orm
 from ..utils import admin_only, token_authenticated
 from .base import APIHandler
 from .users import admin_or_self, UserAPIHandler, valid_user
-
+from .projects import _ProjectAPIHandler
 
 
 class SessionCommenListtsAPIHandler(APIHandler):
@@ -144,7 +144,7 @@ class SessionCommentsAPIHandler(UserAPIHandler):
         
         self.write({"status":200, "message":"Comment is updated."})
         
-class ProjectCommenListtsAPIHandler(APIHandler):
+class ProjectCommenListtsAPIHandler(_ProjectAPIHandler):
     """Handler a list of comments on a project."""
     
     def _comment_model(self, proj_name, comment):
@@ -167,13 +167,11 @@ class ProjectCommenListtsAPIHandler(APIHandler):
     @valid_user
     def get(self, name, proj_name):
         user = self.find_user(name)
-        project = self.find_project(user, proj_name)
+        project = self.find_user_project(user, proj_name)
         if project is None:
             raise web.HTTPError(400, "Project [{}] doesn't exists.".format(proj_name))
         
         comments = self.find_project_comments(project)
-        if comment is None:
-            raise web.HTTPError(400, "Comment [{}] doesn't exists.".format(comment_id))
             
         aa = []
         for c in comments:
@@ -230,7 +228,7 @@ class ProjectCommentsAPIHandler(APIHandler):
             
         comment_id = server_name=binascii.hexlify(os.urandom(16)).decode('ascii')
         print(len(comment_id))
-        new_comment= orm.ProjectComment(id=comment_id ,user_id = user.id, proejct_id=project.id, body=data['body'],
+        new_comment= orm.ProjectComment(id=comment_id ,user_id = user.id, project_id=project.id, body=data['body'],
                           create_time = datetime.datetime.now(), last_update =  datetime.datetime.now())
         self.db.add(new_comment)
         self.db.commit()

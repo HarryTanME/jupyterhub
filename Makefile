@@ -2,7 +2,7 @@ build-image:
 	docker build -t wodeai/datascience:hubdev -f Dockerfile.datascience .
 	docker build -t wodeai/deeplearning:hubdev -f Dockerfile.deeplearning .
 	docker build -t wodeai/nlp:hubdev -f Dockerfile.nlp .
-	docker build -t wodeai/r-ntoebook -f Dockerfile.r-notebook .
+	docker build -t wodeai/r-notebook -f Dockerfile.r-notebook .
 env:
 	source ./env
 clear:

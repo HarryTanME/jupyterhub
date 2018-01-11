@@ -14,6 +14,7 @@ from .. import orm
 from ..utils import admin_only, url_path_join, unique_server_name, SimpleHtmlFilelistGenerator, slugify
 from .base import BaseHandler
 import os, binascii
+import re
 
 class RootHandler(BaseHandler):
     """Render the Hub root page.
@@ -301,8 +302,7 @@ class CourseHandler(BaseHandler):
         
         gentr = SimpleHtmlFilelistGenerator(path, course_folder_name)
         ss = gentr.getTree()
-        
-        html = self.render_template('tutorial.html', course=course, tree=ss, title = course['DisplayName'])
+        html = self.render_template('tutorial.html', course=course, tree=ss.encode('utf-8','ignore'), title = course['DisplayName'])
         self.write(html)
 
 class ApiDocHandler(BaseHandler):
@@ -334,11 +334,31 @@ def init_project(data):
 
         
 
-class ProjectHandler(BaseHandler):
+class NewProjectHandler(BaseHandler):
+    
+    def _projectFolderPath(self, user,proj_name):
+        return (os.path.join(user.user_data_path, proj_name))
+    
+    def _projectReadmePath(self, user, proj_name):
+        if os.path.exists(os.path.join(self._projectFolderPath(user, proj_name),"README.md")):
+            return os.path.join(self._projectFolderPath(user, proj_name),"README.md")
+        elif os.path.exists(os.path.join(self._projectFolderPath(user, proj_name),"README.rst")):
+            return os.path.join(self._projectFolderPath(user, proj_name),"README.md")
+        else:
+            return None
+    
+        
+    def _options_form(self):
+        return ''.join([
+            """<option value="{image}">{name}</option>""".format(image=di, name= re.split('\W+', di)[1]) for di in self.settings['dockerimages']
+        ])
+    
     @web.authenticated
     def get(self):
         url = url_path_join(self.hub.base_url, 'new_project')
-        html=self.render_template("new_project.html", title = "Create New Project", url=url)
+        options_form = self._options_form()
+        print(options_form)
+        html=self.render_template("new_project.html", title = "Create New Project", url=url, image_options= options_form)
         self.write(html)
     
     def _check_project_model(self, data):
@@ -346,7 +366,9 @@ class ProjectHandler(BaseHandler):
         if all(checks):
             return True
         return False
-    
+   
+
+        
     @web.authenticated
     @gen.coroutine
     def post(self):    
@@ -361,8 +383,6 @@ class ProjectHandler(BaseHandler):
         #    form_options["%s_file"%key] = byte_list
         #{'name': ['asdf'], 'description': ['df'], 'git_repo': ['dfs'], 'software': ['notebook'], 'data2mount':[''], 'pre-cmd': [''], 'cmd': [''], 'env': ['']}
         
-        print (user.user_data_path)
-        
         try:
             proj_name = slugify(form_options['name'])
             if not self._check_project_model(form_options):
@@ -372,7 +392,7 @@ class ProjectHandler(BaseHandler):
                               create_time = datetime.datetime.now(), last_update =  datetime.datetime.now())
             self.db.add(new_proj)
             
-            realpath =(os.path.join(user.user_data_path, proj_name))
+            realpath =self._projectFolderPath(user, proj_name)
             print(realpath)
             if os.path.exists(realpath):
                 raise web.HTTPError(401, "There has been a project named '{}' existed in your workspace. Can you rename your project and try again?")
@@ -397,6 +417,6 @@ default_handlers = [
     (r'/datasets', DatasetPageHandler),
     (r'/modelzoo', ModelzooPageHandler),
     (r'/api_doc', ApiDocHandler),
-    (r'/new_project', ProjectHandler),
+    (r'/new_project', NewProjectHandler),
     (r'/error/(\d+)', ProxyErrorHandler),
 ]

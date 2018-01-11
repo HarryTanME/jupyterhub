@@ -612,7 +612,14 @@ class JupyterHub(Application):
         if '://' not in new:
             # assume sqlite, if given as a plain filename
             self.db_url = 'sqlite:///%s' % new
-
+    dockerimages =List(
+        trait = Unicode(),
+        default_value = ['wodeai/datascience:hubdev'],
+        minlen = 1,
+        config = True,
+        help = "Docker images that have been pre-pulled to the execution host."
+    )
+    
     db_kwargs = Dict(
         help="""Include any kwargs to pass to the database connection.
         See sqlalchemy.create_engine for details.
@@ -1368,6 +1375,7 @@ class JupyterHub(Application):
             course_list = course_list,
             course_categories = course_categories,
             repo_path = self.repo_path,
+            dockerimages = self.dockerimages,
         )
 
         # allow configured settings to have priority

@@ -7,6 +7,7 @@ from tornado.web import StaticFileHandler
 from .base import BaseHandler
 import markdown
 from nbconvert import HTMLExporter
+from ..utils import convertMarkdown
 
 
 
@@ -65,9 +66,7 @@ class MarkdownHandler(BaseHandler):
         filepath = self.settings['repo_path']+url_path+'.'+filenameext
         filenamebase = url_path.split('/')[-1]
         
-        with open(filepath, 'r') as f:
-            mdstr= f.read()
-        content = markdown.markdown(mdstr)
+        content = convertMarkdown(filepath)
         
         html = self.render_template('static.html',
             html_content = content,

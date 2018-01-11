@@ -6,9 +6,8 @@
 <div id="proj_info" class="container"></div>
 
 <hr />
-<div id="proj_tags" class="container"></div>
+<div id="proj_sessions" class="container">{{file_tree|safe}} <div id="proj_tags" class="container"></div></div>
 
-<div id="proj_sessions" class="container"></div>
 {% endblock %}
 
 {% block script %}
@@ -18,7 +17,8 @@
         $.extend(true, jhdata, {
             user_url:"{{user_url}}",
             is_self:"{{is_self}}",
-            proj_name: "{{proj_name}}"
+            proj_name: "{{proj_name}}",
+            file_tree:"{{file_tree}}",
           }); 
     </script>
 

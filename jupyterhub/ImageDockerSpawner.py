@@ -7,6 +7,7 @@ from traitlets import (
 from tornado import web, gen
 import shlex
 import os
+import re
 
 class DockerImageChooserSpawner(DockerSpawner):
     '''Enable the user to select the docker image that gets spawned.
@@ -75,7 +76,7 @@ class DockerImageChooserSpawner(DockerSpawner):
         config = True, help = "Form template."
     )
     option_template = Unicode("""
-        <option value="{image}">{image}</option>""",
+        <option value="{image}">{name}</option>""",
         config = True, help = "Template for html form options."
     )
 
@@ -83,7 +84,7 @@ class DockerImageChooserSpawner(DockerSpawner):
     def _options_form(self):
         """Return the form with the drop-down menu."""
         options = ''.join([
-            self.option_template.format(image=di) for di in self.dockerimages
+            self.option_template.format(image=di, name= re.split('\W+', di)[1]) for di in self.dockerimages
         ])
         return self.form_template.format(option_template=options)
 

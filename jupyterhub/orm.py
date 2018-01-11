@@ -325,7 +325,7 @@ class ProjectComment(Base):
     __tablename__ = 'projectComments'
     
     id = Column(Unicode(32), primary_key=True)
-    proejct_id = Column(Integer, ForeignKey('projects.id', ondelete='CASCADE'))
+    project_id = Column(Integer, ForeignKey('projects.id', ondelete='CASCADE'))
     user_id = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'))
     body=  Column(Unicode(2550))
     create_time = Column(DateTime, default=datetime.utcnow)
