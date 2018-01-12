@@ -47,15 +47,17 @@ class RootHandler(BaseHandler):
             return
         user = self.get_current_user()
         if user:
-            if user.running and not self.allow_named_servers: # when allow multi servers, do NOT redirect.
-                url = user.url
-                self.log.debug("User is running: %s", url)
-                self.set_login_cookie(user) # set cookie
-            else:
-                url = url_path_join(self.hub.base_url, 'home')
-                self.log.debug("User is not running: %s", url)
+            url = 'home'
+            #if user.running and not self.allow_named_servers: # when allow multi servers, do NOT redirect.
+            #    url = user.url
+            #    self.log.debug("User is running: %s", url)
+            #    self.set_login_cookie(user) # set cookie
+            #else:
+            #    url = url_path_join(self.hub.base_url, 'home')
+            #    self.log.debug("User is not running: %s", url)
         else:
-            url = self.settings['login_url']
+            #url = self.settings['login_url']
+            url = 'login'
         self.redirect(url)
 
 
@@ -235,7 +237,7 @@ class TokenPageHandler(BaseHandler):
 class TutorialsPageHandler(BaseHandler):
     """Handler for view list of courses."""
 
-    @web.authenticated
+    #@web.authenticated
     def get(self):
         html = self.render_template('tutorials.html', courses=self.course_list, categories =self.course_categories, title="Tutorials | WodeAI")
         self.finish(html)
@@ -243,7 +245,7 @@ class TutorialsPageHandler(BaseHandler):
 class ModelzooPageHandler(BaseHandler):
     """Handler for view list of pre-trained models."""
 
-    @web.authenticated
+    #@web.authenticated
     def get(self):
         html = self.render_template('modelzoo.html', title="Model Zoo | WodeAI")
         self.finish(html)
@@ -251,7 +253,7 @@ class ModelzooPageHandler(BaseHandler):
 class DatasetPageHandler(BaseHandler):
     """Handler for view list of datasets."""
 
-    @web.authenticated
+    #@web.authenticated
     def get(self):
         html = self.render_template('datasets.html', title="Datasets | WodeAI")
         self.finish(html)
@@ -405,7 +407,14 @@ class NewProjectHandler(BaseHandler):
             self.log.error("Failed to create new project", exc_info=True)
             self.redirect("/")
             return
-      
+
+class IndexHandler(BaseHandler):
+    def get(self):
+        html=self.render_template("index.html")
+        self.write(html)
+    
+    
+    
 default_handlers = [
     (r'/?', RootHandler),
     (r'/home', HomeHandler),

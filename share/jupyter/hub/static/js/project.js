@@ -280,7 +280,7 @@ require(["jquery", "jhapi","handlebars"], function ($, JHAPI) {
                         '</div>'].join("\n");
 
                     var html = Mustache.render(template, response);
-                    $("#proj_tags").empty().append(html);
+                    $("#proj_sessions").empty().append(html);
             }
         });
     });

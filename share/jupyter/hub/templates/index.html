@@ -1,0 +1,95 @@
+{% extends "page.html" %}
+
+{% block login_widget %}
+{% endblock %}
+
+{% block main %}
+<link rel="stylesheet" href="http://wode.ai/Portals/_default/Containers/20073-UnlimitedColorsPack-055/container.css?cdv=104" type="text/css">
+<link rel="stylesheet" href="http://wode.ai/Portals/_default/skins/20073-unlimitedcolorspack-055/skin.css?cdv=104" type="text/css">
+
+
+<div class="container">
+<div class="DNNModuleContent ModDNNHTMLC" id="dnn_ctr8124_ModuleContent">
+<div class="Normal" id="dnn_ctr8124_HtmlModule_lblContent">
+<div class="ourteam01-title1">
+<p>&nbsp;</p>
+
+<h4>Wode.AI - Your AI Platform in Cloud</h4>
+</div>
+
+<div class="row">
+<div class="col-md-3 col-sm-6">
+<div class="service02-ibox ">
+<div class="ico color_1"><span class="fa fa-space-shuttle"></span></div>
+
+<h3>Faster Iteration</h3>
+
+<p>Launch multiple sessions in parallel to test&nbsp;different models or parameters, and compare the results in one place.&nbsp;</p>
+</div>
+</div>
+
+<div class="col-md-3 col-sm-6">
+<div class="service02-ibox">
+<div class="ico color_2"><span class="fa fa-cloud"></span></div>
+
+<h3>Instant Access</h3>
+
+<p>Everything is in your browser. Start and access your server from anywhere.&nbsp;Several common servers are pre-built and optimized.</p>
+</div>
+</div>
+
+<div class="col-md-3 col-sm-6">
+<div class="service02-ibox">
+<div class="ico color_3"><span class="fa fa-users"></span></div>
+
+<h3><font color="#333333">Team Collaboration</font></h3>
+
+<p>You can easily&nbsp;share and present your work, and your colleaugues can comment and discuss them, and further&nbsp;clone your project, and replicate the results.</p>
+</div>
+</div>
+
+<div class="col-md-3 col-sm-6">
+<div class="service02-ibox">
+<div class="ico color_4"><span class="fa fa-shield"></span></div>
+
+<h3><font color="#333333">Managed Model Risk</font></h3>
+
+<p>All model results are saved. Easy to review for model validation and compliance management.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="promo promo-border">
+<div class="promo-icon"><span class="fa fa-lightbulb-o"></span></div>
+
+<div class="promo-content">
+
+<h2>No more interruption to your creativity!</h2>
+<p>Let Wode.AI takes care of the boring parts.</p>
+
+</div>
+
+
+<div class="promo-button"><a class="dg-btn-1 btn-accent size-xl radius-3px" href="/login">START CREATING</a></div>
+</div>
+
+    
+    </div>
+    
+    
+    
+{% endblock %}
+
+{% block script %}
+{{ super() }}
+<script>
+if (window.location.protocol === "http:") {
+  // unhide http warning
+  var warning = document.getElementById('insecure-login-warning');
+  warning.className = warning.className.replace(/\bhidden\b/, '');
+}
+</script>
+
+{% endblock %}
+

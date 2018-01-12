@@ -104,9 +104,11 @@
       </div>
 
       <div class="collapse navbar-collapse" id="thenavbar">
-        {% if user %}
+       
         <ul class="nav navbar-nav">
+             {% if user %}
           <li><a href="{{base_url}}home">Home</a></li>
+            {% endif %}
           <!--<li><a href="{{base_url}}token">Token</a></li>-->
             <li><a href="{{base_url}}tutorials">Tutorials</a></li>
             <li><a href="{{base_url}}datasets">Datasets</a></li>
@@ -116,7 +118,6 @@
           <li><a href="{{base_url}}admin">Admin</a></li>
           {% endif %}
         </ul>
-        {% endif %}
         <ul class="nav navbar-nav navbar-right">
           <li>
             {% block login_widget %}
