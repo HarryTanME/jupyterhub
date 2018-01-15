@@ -384,12 +384,18 @@ class NewProjectHandler(BaseHandler):
         #   print("+++"+str(key))
         #    form_options["%s_file"%key] = byte_list
         #{'name': ['asdf'], 'description': ['df'], 'git_repo': ['dfs'], 'software': ['notebook'], 'data2mount':[''], 'pre-cmd': [''], 'cmd': [''], 'env': ['']}
+        if len(form_options['data2mount']) > 0 :
+            form_options['data_sources'] = [{'source':form_options['data2mount'][0],'target':"/home/wode-user/dataset","control":"ro"}]
         
+        if len(form_options['cmd']) ==0 :
+            form_options.pop('cmd',None)
+    
         try:
             proj_name = slugify(form_options['name'])
+            form_options['workspace'] =os.path.join(user.user_data_path,proj_name)
             if not self._check_project_model(form_options):
                 raise web.HTTPError(401, "A valid project config must have name, description, docker_image, workspace_software.")
-
+            
             new_proj= orm.Project(name=proj_name, user_id = user.id, config=json.dumps(form_options),
                               create_time = datetime.datetime.now(), last_update =  datetime.datetime.now())
             self.db.add(new_proj)
